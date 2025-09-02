@@ -35,3 +35,6 @@ billing-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore certifcates directory
+certificates/*
+priv/static/uploads/*
