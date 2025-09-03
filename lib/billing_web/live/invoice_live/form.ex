@@ -15,6 +15,12 @@ defmodule BillingWeb.InvoiceLive.Form do
 
       <.form for={@form} id="invoice-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:customer_id]} type="select" options={@customers} label="Customer" />
+        <.input
+          field={@form[:emission_profile_id]}
+          type="select"
+          options={@emission_profiles}
+          label="Emission Profile"
+        />
         <.input field={@form[:issued_at]} type="date" label="Issued at" />
         <.input field={@form[:due_date]} type="date" label="Due Date" />
         <.input field={@form[:description]} type="textarea" label="Description" />
@@ -39,6 +45,9 @@ defmodule BillingWeb.InvoiceLive.Form do
   def mount(params, _session, socket) do
     customers = Billing.Customers.list_customers() |> Enum.map(&{&1.full_name, &1.id})
 
+    emission_profiles =
+      Billing.EmissionProfiles.list_emission_profiles() |> Enum.map(&{&1.name, &1.id})
+
     payment_methods = [
       {"Credit Card", :credit_card},
       {"Cash", :cash},
@@ -49,6 +58,7 @@ defmodule BillingWeb.InvoiceLive.Form do
      socket
      |> assign(:return_to, return_to(params["return_to"]))
      |> assign(:customers, customers)
+     |> assign(:emission_profiles, emission_profiles)
      |> assign(:payment_methods, payment_methods)
      |> apply_action(socket.assigns.live_action, params)}
   end

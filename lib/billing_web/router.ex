@@ -17,7 +17,7 @@ defmodule BillingWeb.Router do
   scope "/", BillingWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", InvoiceLive.Index, :index
 
     live "/customers", CustomerLive.Index, :index
     live "/customers/new", CustomerLive.Form, :new
@@ -33,6 +33,16 @@ defmodule BillingWeb.Router do
     live "/certificates/new", CertificateLive.Form, :new
     live "/certificates/:id", CertificateLive.Show, :show
     live "/certificates/:id/edit", CertificateLive.Form, :edit
+
+    live "/companies", CompanyLive.Index, :index
+    live "/companies/new", CompanyLive.Form, :new
+    live "/companies/:id", CompanyLive.Show, :show
+    live "/companies/:id/edit", CompanyLive.Form, :edit
+
+    live "/emission_profiles", EmissionProfileLive.Index, :index
+    live "/emission_profiles/new", EmissionProfileLive.Form, :new
+    live "/emission_profiles/:id", EmissionProfileLive.Show, :show
+    live "/emission_profiles/:id/edit", EmissionProfileLive.Form, :edit
   end
 
   # Other scopes may use custom stacks.

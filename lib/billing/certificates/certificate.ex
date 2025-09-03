@@ -3,6 +3,7 @@ defmodule Billing.Certificates.Certificate do
   import Ecto.Changeset
 
   schema "certificates" do
+    field :name, :string
     field :file, :string
     field :password, :string
 
@@ -12,7 +13,7 @@ defmodule Billing.Certificates.Certificate do
   @doc false
   def changeset(certificate, attrs) do
     certificate
-    |> cast(attrs, [:file, :password])
-    |> validate_required([:file, :password])
+    |> cast(attrs, [:name, :file, :password])
+    |> validate_required([:name, :file, :password])
   end
 end

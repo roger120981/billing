@@ -45,17 +45,29 @@ defmodule BillingWeb.Layouts do
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li>
-            <.link navigate={~p"/customers"} class="btn btn-ghost">
-              Customers
-            </.link>
-          </li>
-          <li>
             <.link navigate={~p"/invoices"} class="btn btn-ghost">
               Invoices
             </.link>
           </li>
           <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
+            <.link navigate={~p"/customers"} class="btn btn-ghost">
+              Customers
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/certificates"} class="btn btn-ghost">
+              Certificates
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/companies"} class="btn btn-ghost">
+              Companies
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/emission_profiles"} class="btn btn-ghost">
+              Emission Profiles
+            </.link>
           </li>
           <li>
             <.theme_toggle />

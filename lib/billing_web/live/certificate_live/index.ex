@@ -21,6 +21,7 @@ defmodule BillingWeb.CertificateLive.Index do
         rows={@streams.certificates}
         row_click={fn {_id, certificate} -> JS.navigate(~p"/certificates/#{certificate}") end}
       >
+        <:col :let={{_id, certificate}} label="Name">{certificate.name}</:col>
         <:col :let={{_id, certificate}} label="File">{certificate.file}</:col>
         <:col :let={{_id, certificate}} label="Password">{certificate.password}</:col>
         <:action :let={{_id, certificate}}>

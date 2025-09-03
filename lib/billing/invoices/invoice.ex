@@ -4,6 +4,7 @@ defmodule Billing.Invoices.Invoice do
 
   schema "invoices" do
     belongs_to :customer, Billing.Customers.Customer
+    belongs_to :emission_profile, Billing.EmissionProfiles.EmissionProfile
 
     field :issued_at, :date
     field :description, :string
@@ -19,7 +20,25 @@ defmodule Billing.Invoices.Invoice do
   @doc false
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:customer_id, :issued_at, :description, :due_date, :amount, :tax_rate, :payment_method])
-    |> validate_required([:customer_id, :issued_at, :description, :due_date, :amount, :tax_rate, :payment_method])
+    |> cast(attrs, [
+      :customer_id,
+      :emission_profile_id,
+      :issued_at,
+      :description,
+      :due_date,
+      :amount,
+      :tax_rate,
+      :payment_method
+    ])
+    |> validate_required([
+      :customer_id,
+      :emission_profile_id,
+      :issued_at,
+      :description,
+      :due_date,
+      :amount,
+      :tax_rate,
+      :payment_method
+    ])
   end
 end
