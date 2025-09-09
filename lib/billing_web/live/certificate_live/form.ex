@@ -103,6 +103,18 @@ defmodule BillingWeb.CertificateLive.Form do
   end
 
   defp save_certificate(socket, :edit, certificate_params) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, _entry ->
+        dest =
+          Path.join(Application.app_dir(:billing, "priv/static/uploads"), Path.basename(path))
+
+        File.cp!(path, dest)
+        {:ok, Path.basename(dest)}
+      end)
+
+    [file_name | _tail] = uploaded_files
+    certificate_params = Map.put(certificate_params, "file", file_name)
+
     case Certificates.update_certificate(socket.assigns.certificate, certificate_params) do
       {:ok, certificate} ->
         {:noreply,

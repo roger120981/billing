@@ -3,6 +3,7 @@ defmodule Billing.Invoicing do
 
   alias Billing.Invoices.Invoice
   alias Billing.Repo
+  alias Billing.Certificates.Certificate
 
   def build_request_params(%Invoice{} = invoice) do
     query =
@@ -16,12 +17,27 @@ defmodule Billing.Invoicing do
     invoice_additional_info = build_invoice_additional_info(invoice)
     invoice_details = build_invoice_details(invoice)
 
-    %{
-      info_factura: invoice_info,
-      info_tributaria: invoice_company,
-      info_adicional: invoice_additional_info,
-      detalles: invoice_details
+    invoice_params = %{
+      factura: %{
+        info_factura: invoice_info,
+        info_tributaria: invoice_company,
+        info_adicional: invoice_additional_info,
+        detalles: invoice_details
+      }
     }
+
+    {:ok, invoice_params}
+  end
+
+  def fetch_certificate(invoice) do
+    query =
+      from(c in Certificate,
+        join: ep in assoc(c, :emission_profiles),
+        join: i in assoc(ep, :invoices),
+        where: i.id == ^invoice.id
+      )
+
+    Repo.one(query)
   end
 
   defp build_invoice_info(invoice) do

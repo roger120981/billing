@@ -59,9 +59,9 @@ defmodule Billing.InvoicingTest do
 
   describe "build_request_params" do
     test "creates invoice request params", %{invoice: invoice} do
-      params = Billing.Invoicing.build_request_params(invoice)
+      {:ok, params} = Billing.Invoicing.build_request_params(invoice)
 
-      assert params[:info_factura] == %{
+      assert params[:factura][:info_factura] == %{
                fecha_emision: "2025-08-21",
                contribuyente_especial: nil,
                dir_establecimiento: "Ciudadela: XYZ Calle: XYZ Número: XYZ Intersección: XYZ",
@@ -95,7 +95,7 @@ defmodule Billing.InvoicingTest do
                total_sin_impuestos: 24.75
              }
 
-      assert params[:info_tributaria] == %{
+      assert params[:factura][:info_tributaria] == %{
                ruc: "1792146739001",
                ambiente: 1,
                estab: 1,
@@ -119,7 +119,7 @@ defmodule Billing.InvoicingTest do
                razon_social: "Henry Case"
              }
 
-      assert params[:info_adicional] == [
+      assert params[:factura][:info_adicional] == [
                %{
                  nombre: "Dirección",
                  valor: "Ciudadela: XYZ Calle: XYZ Número: XYZ Intersección: XYZ"
@@ -127,7 +127,7 @@ defmodule Billing.InvoicingTest do
                %{nombre: "Correo electrónico", valor: "cliente@ejemplo.com"}
              ]
 
-      assert params[:detalles] == [
+      assert params[:factura][:detalles] == [
                %{
                  cantidad: 1,
                  codigo_auxiliar: Integer.to_string(invoice.id),

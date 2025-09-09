@@ -3,6 +3,8 @@ defmodule Billing.Certificates.Certificate do
   import Ecto.Changeset
 
   schema "certificates" do
+    has_many :emission_profiles, Billing.EmissionProfiles.EmissionProfile
+
     field :name, :string
     field :file, :string
     field :password, :string

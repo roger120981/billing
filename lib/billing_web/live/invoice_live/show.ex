@@ -19,8 +19,8 @@ defmodule BillingWeb.InvoiceLive.Show do
           <.button variant="primary" navigate={~p"/invoices/#{@invoice}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> Edit invoice
           </.button>
-          <.button phx-click="build_xml">
-            <.icon name="hero-pencil-square" /> Build XML
+          <.button phx-click="sign_xml">
+            <.icon name="hero-pencil-square" /> Sign XML
           </.button>
         </:actions>
       </.header>
@@ -42,17 +42,26 @@ defmodule BillingWeb.InvoiceLive.Show do
   end
 
   @impl true
-  def handle_event("build_xml", _params, socket) do
-    invoice_params = Invoicing.build_request_params(socket.assigns.invoice)
+  def handle_event("sign_xml", _params, socket) do
+    certificate = Billing.Invoicing.fetch_certificate(socket.assigns.invoice)
 
-    case TaxiDriver.build_invoice_xml(invoice_params) do
-      {:ok, xml} ->
-        File.write("/home/joselo/Documents/invoice-#{socket.assigns.invoice.id}.xml", xml)
+    with {:ok, invoice_params} <- Invoicing.build_request_params(socket.assigns.invoice),
+         {:ok, xml} <- TaxiDriver.build_invoice_xml(invoice_params),
+         {:ok, xml_path} <- save_xml(xml, socket.assigns.invoice.id),
+         {:ok, signed_xml} <- TaxiDriver.sing_invoice_xml(xml_path, certificate) do
+      IO.inspect(signed_xml)
 
-        {:noreply, put_flash(socket, :info, "Xml success!!")}
-
+      {:noreply, put_flash(socket, :info, "Xml success!!")}
+    else
       {:error, error} ->
         {:noreply, put_flash(socket, :error, "Xml error: #{inspect(error)}")}
     end
+  end
+
+  defp save_xml(xml, invoice_id) do
+    path = "/home/joselo/Documents/invoice-#{invoice_id}.xml"
+    File.write(path, xml)
+
+    {:ok, path}
   end
 end
