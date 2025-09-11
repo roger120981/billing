@@ -21,7 +21,11 @@ defmodule Billing.CompaniesTest do
     end
 
     test "create_company/1 with valid data creates a company" do
-      valid_attrs = %{name: "some name", address: "some address", identification_number: "some identification_number"}
+      valid_attrs = %{
+        name: "some name",
+        address: "some address",
+        identification_number: "some identification_number"
+      }
 
       assert {:ok, %Company{} = company} = Companies.create_company(valid_attrs)
       assert company.name == "some name"
@@ -35,7 +39,12 @@ defmodule Billing.CompaniesTest do
 
     test "update_company/2 with valid data updates the company" do
       company = company_fixture()
-      update_attrs = %{name: "some updated name", address: "some updated address", identification_number: "some updated identification_number"}
+
+      update_attrs = %{
+        name: "some updated name",
+        address: "some updated address",
+        identification_number: "some updated identification_number"
+      }
 
       assert {:ok, %Company{} = company} = Companies.update_company(company, update_attrs)
       assert company.name == "some updated name"

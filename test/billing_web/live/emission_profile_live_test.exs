@@ -78,7 +78,10 @@ defmodule BillingWeb.EmissionProfileLiveTest do
     test "deletes emission_profile in listing", %{conn: conn, emission_profile: emission_profile} do
       {:ok, index_live, _html} = live(conn, ~p"/emission_profiles")
 
-      assert index_live |> element("#emission_profiles-#{emission_profile.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#emission_profiles-#{emission_profile.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#emission_profiles-#{emission_profile.id}")
     end
   end
@@ -93,14 +96,20 @@ defmodule BillingWeb.EmissionProfileLiveTest do
       assert html =~ emission_profile.name
     end
 
-    test "updates emission_profile and returns to show", %{conn: conn, emission_profile: emission_profile} do
+    test "updates emission_profile and returns to show", %{
+      conn: conn,
+      emission_profile: emission_profile
+    } do
       {:ok, show_live, _html} = live(conn, ~p"/emission_profiles/#{emission_profile}")
 
       assert {:ok, form_live, _} =
                show_live
                |> element("a", "Edit")
                |> render_click()
-               |> follow_redirect(conn, ~p"/emission_profiles/#{emission_profile}/edit?return_to=show")
+               |> follow_redirect(
+                 conn,
+                 ~p"/emission_profiles/#{emission_profile}/edit?return_to=show"
+               )
 
       assert render(form_live) =~ "Edit Emission profile"
 

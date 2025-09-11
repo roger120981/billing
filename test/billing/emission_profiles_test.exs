@@ -23,32 +23,45 @@ defmodule Billing.EmissionProfilesTest do
     test "create_emission_profile/1 with valid data creates a emission_profile" do
       valid_attrs = %{name: "some name"}
 
-      assert {:ok, %EmissionProfile{} = emission_profile} = EmissionProfiles.create_emission_profile(valid_attrs)
+      assert {:ok, %EmissionProfile{} = emission_profile} =
+               EmissionProfiles.create_emission_profile(valid_attrs)
+
       assert emission_profile.name == "some name"
     end
 
     test "create_emission_profile/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = EmissionProfiles.create_emission_profile(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               EmissionProfiles.create_emission_profile(@invalid_attrs)
     end
 
     test "update_emission_profile/2 with valid data updates the emission_profile" do
       emission_profile = emission_profile_fixture()
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %EmissionProfile{} = emission_profile} = EmissionProfiles.update_emission_profile(emission_profile, update_attrs)
+      assert {:ok, %EmissionProfile{} = emission_profile} =
+               EmissionProfiles.update_emission_profile(emission_profile, update_attrs)
+
       assert emission_profile.name == "some updated name"
     end
 
     test "update_emission_profile/2 with invalid data returns error changeset" do
       emission_profile = emission_profile_fixture()
-      assert {:error, %Ecto.Changeset{}} = EmissionProfiles.update_emission_profile(emission_profile, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               EmissionProfiles.update_emission_profile(emission_profile, @invalid_attrs)
+
       assert emission_profile == EmissionProfiles.get_emission_profile!(emission_profile.id)
     end
 
     test "delete_emission_profile/1 deletes the emission_profile" do
       emission_profile = emission_profile_fixture()
-      assert {:ok, %EmissionProfile{}} = EmissionProfiles.delete_emission_profile(emission_profile)
-      assert_raise Ecto.NoResultsError, fn -> EmissionProfiles.get_emission_profile!(emission_profile.id) end
+
+      assert {:ok, %EmissionProfile{}} =
+               EmissionProfiles.delete_emission_profile(emission_profile)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        EmissionProfiles.get_emission_profile!(emission_profile.id)
+      end
     end
 
     test "change_emission_profile/1 returns a emission_profile changeset" do

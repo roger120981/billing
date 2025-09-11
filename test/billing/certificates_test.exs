@@ -36,14 +36,19 @@ defmodule Billing.CertificatesTest do
       certificate = certificate_fixture()
       update_attrs = %{file: "some updated file", password: "some updated password"}
 
-      assert {:ok, %Certificate{} = certificate} = Certificates.update_certificate(certificate, update_attrs)
+      assert {:ok, %Certificate{} = certificate} =
+               Certificates.update_certificate(certificate, update_attrs)
+
       assert certificate.file == "some updated file"
       assert certificate.password == "some updated password"
     end
 
     test "update_certificate/2 with invalid data returns error changeset" do
       certificate = certificate_fixture()
-      assert {:error, %Ecto.Changeset{}} = Certificates.update_certificate(certificate, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Certificates.update_certificate(certificate, @invalid_attrs)
+
       assert certificate == Certificates.get_certificate!(certificate.id)
     end
 

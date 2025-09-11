@@ -14,7 +14,10 @@ defmodule BillingWeb.EmissionProfileLive.Show do
           <.button navigate={~p"/emission_profiles"}>
             <.icon name="hero-arrow-left" />
           </.button>
-          <.button variant="primary" navigate={~p"/emission_profiles/#{@emission_profile}/edit?return_to=show"}>
+          <.button
+            variant="primary"
+            navigate={~p"/emission_profiles/#{@emission_profile}/edit?return_to=show"}
+          >
             <.icon name="hero-pencil-square" /> Edit emission_profile
           </.button>
         </:actions>

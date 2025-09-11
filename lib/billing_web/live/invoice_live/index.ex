@@ -8,7 +8,7 @@ defmodule BillingWeb.InvoiceLive.Index do
     ~H"""
     <Layouts.app flash={@flash}>
       <.header>
-        Listing Invoices
+        Listado de Facturas
         <:actions>
           <.button variant="primary" navigate={~p"/invoices/new"}>
             <.icon name="hero-plus" /> New Invoice
@@ -48,7 +48,7 @@ defmodule BillingWeb.InvoiceLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Invoices")
+     |> assign(:page_title, "Listado de Facturas")
      |> stream(:invoices, Invoices.list_invoices())}
   end
 

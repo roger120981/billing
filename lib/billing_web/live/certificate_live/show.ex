@@ -22,7 +22,6 @@ defmodule BillingWeb.CertificateLive.Show do
 
       <.list>
         <:item title="File">{@certificate.file}</:item>
-        <:item title="Password">{@certificate.password}</:item>
       </.list>
     </Layouts.app>
     """

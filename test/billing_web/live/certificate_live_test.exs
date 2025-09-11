@@ -78,7 +78,10 @@ defmodule BillingWeb.CertificateLiveTest do
     test "deletes certificate in listing", %{conn: conn, certificate: certificate} do
       {:ok, index_live, _html} = live(conn, ~p"/certificates")
 
-      assert index_live |> element("#certificates-#{certificate.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#certificates-#{certificate.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#certificates-#{certificate.id}")
     end
   end

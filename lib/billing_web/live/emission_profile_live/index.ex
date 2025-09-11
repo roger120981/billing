@@ -19,7 +19,9 @@ defmodule BillingWeb.EmissionProfileLive.Index do
       <.table
         id="emission_profiles"
         rows={@streams.emission_profiles}
-        row_click={fn {_id, emission_profile} -> JS.navigate(~p"/emission_profiles/#{emission_profile}") end}
+        row_click={
+          fn {_id, emission_profile} -> JS.navigate(~p"/emission_profiles/#{emission_profile}") end
+        }
       >
         <:col :let={{_id, emission_profile}} label="Name">{emission_profile.name}</:col>
         <:action :let={{_id, emission_profile}}>

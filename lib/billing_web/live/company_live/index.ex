@@ -21,7 +21,9 @@ defmodule BillingWeb.CompanyLive.Index do
         rows={@streams.companies}
         row_click={fn {_id, company} -> JS.navigate(~p"/companies/#{company}") end}
       >
-        <:col :let={{_id, company}} label="Identification number">{company.identification_number}</:col>
+        <:col :let={{_id, company}} label="Identification number">
+          {company.identification_number}
+        </:col>
         <:col :let={{_id, company}} label="Address">{company.address}</:col>
         <:col :let={{_id, company}} label="Name">{company.name}</:col>
         <:action :let={{_id, company}}>

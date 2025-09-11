@@ -4,8 +4,16 @@ defmodule BillingWeb.CompanyLiveTest do
   import Phoenix.LiveViewTest
   import Billing.CompaniesFixtures
 
-  @create_attrs %{name: "some name", address: "some address", identification_number: "some identification_number"}
-  @update_attrs %{name: "some updated name", address: "some updated address", identification_number: "some updated identification_number"}
+  @create_attrs %{
+    name: "some name",
+    address: "some address",
+    identification_number: "some identification_number"
+  }
+  @update_attrs %{
+    name: "some updated name",
+    address: "some updated address",
+    identification_number: "some updated identification_number"
+  }
   @invalid_attrs %{name: nil, address: nil, identification_number: nil}
   defp create_company(_) do
     company = company_fixture()

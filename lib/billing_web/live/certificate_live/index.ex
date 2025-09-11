@@ -23,7 +23,6 @@ defmodule BillingWeb.CertificateLive.Index do
       >
         <:col :let={{_id, certificate}} label="Name">{certificate.name}</:col>
         <:col :let={{_id, certificate}} label="File">{certificate.file}</:col>
-        <:col :let={{_id, certificate}} label="Password">{certificate.password}</:col>
         <:action :let={{_id, certificate}}>
           <div class="sr-only">
             <.link navigate={~p"/certificates/#{certificate}"}>Show</.link>
