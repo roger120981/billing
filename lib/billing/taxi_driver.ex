@@ -1,6 +1,7 @@
 defmodule Billing.TaxiDriver do
   @invoice_url "https://api.taxideral.com/facturas"
   @sign_invoice_url "https://api.taxideral.com/firmar"
+  @send_invoice_url "https://api.taxideral.com/enviar"
 
   @headers [
     {"Content-Type", "application/json"},
@@ -36,6 +37,28 @@ defmodule Billing.TaxiDriver do
     headers = [{"Content-Type", "multipart/form-data"}]
 
     case HTTPoison.post(@sign_invoice_url, {:multipart, multipart_body}, headers) do
+      {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
+        {:ok, body}
+
+      {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+        {:error, %{status_code: status_code, body: body}}
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
+    end
+  end
+
+  def send_invoice_xml(xml_signed_path) do
+    multipart_body = [
+      {"environment", "1"},
+      {:file, xml_signed_path,
+       {"form-data", [name: "xml_file", filename: Path.basename(xml_signed_path)]},
+       [{"Content-Type", "text/plain"}]}
+    ]
+
+    headers = [{"Content-Type", "multipart/form-data"}]
+
+    case HTTPoison.post(@send_invoice_url, {:multipart, multipart_body}, headers) do
       {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
         {:ok, body}
 

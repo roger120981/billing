@@ -5,6 +5,8 @@ defmodule Billing.Invoicing do
   alias Billing.Repo
   alias Billing.Certificates.Certificate
 
+  @secuencial 519
+
   def build_request_params(%Invoice{} = invoice) do
     query =
       from i in Invoice,
@@ -135,7 +137,7 @@ defmodule Billing.Invoicing do
       ambiente: get_environment(),
       estab: 1,
       pto_emi: 1,
-      secuencial: 109,
+      secuencial: @secuencial,
       tipo_emision: get_emission_type(),
       clave: build_access_key(invoice),
       cod_doc: get_cod_doc(),
@@ -166,7 +168,7 @@ defmodule Billing.Invoicing do
       estab: 1,
       fecha_emision: Date.to_string(invoice.issued_at),
       pto_emi: 1,
-      secuencial: 109,
+      secuencial: @secuencial,
       tipo_comprobante: get_cod_doc(),
       tipo_emision: get_emission_type()
     }
