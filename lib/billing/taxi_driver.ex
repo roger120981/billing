@@ -2,6 +2,7 @@ defmodule Billing.TaxiDriver do
   @invoice_url "https://api.taxideral.com/facturas"
   @sign_invoice_url "https://api.taxideral.com/firmar"
   @send_invoice_url "https://api.taxideral.com/enviar"
+  @auth_invoice_url "https://api.taxideral.com/consultar_autorizacion"
 
   @headers [
     {"Content-Type", "application/json"},
@@ -12,8 +13,11 @@ defmodule Billing.TaxiDriver do
     json_body = Jason.encode!(invoice_params)
 
     case HTTPoison.post(@invoice_url, json_body, @headers) do
-      {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
-        {:ok, body}
+      {:ok, %HTTPoison.Response{status_code: 201, body: body, headers: headers}} ->
+        {"x-access-key", access_key} =
+          Enum.find(headers, fn {key, _value} -> key == "x-access-key" end)
+
+        {:ok, body: body, access_key: access_key}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
         {:error, %{status_code: status_code, body: body}}
@@ -61,6 +65,28 @@ defmodule Billing.TaxiDriver do
     case HTTPoison.post(@send_invoice_url, {:multipart, multipart_body}, headers) do
       {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
         {:ok, body}
+
+      {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+        {:error, %{status_code: status_code, body: body}}
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
+    end
+  end
+
+  def auth_invoice(access_key, environment \\ 1) do
+    json_body =
+      Jason.encode!(%{
+        access_key: access_key,
+        environment: environment
+      })
+
+    case HTTPoison.post(@auth_invoice_url, json_body, @headers) do
+      {:ok, %HTTPoison.Response{status_code: 201, body: body, headers: headers}} ->
+        {"x-sri-status", sri_status} =
+          Enum.find(headers, fn {key, _value} -> key == "x-sri-status" end)
+
+        {:ok, body: body, sri_status: sri_status}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
         {:error, %{status_code: status_code, body: body}}

@@ -46,13 +46,19 @@ defmodule BillingWeb.InvoiceLive.Show do
     certificate = Billing.Invoicing.fetch_certificate(socket.assigns.invoice)
 
     with {:ok, invoice_params} <- Invoicing.build_request_params(socket.assigns.invoice),
-         {:ok, xml} <- TaxiDriver.build_invoice_xml(invoice_params),
+         {:ok, body: xml, access_key: access_key} <- TaxiDriver.build_invoice_xml(invoice_params),
          {:ok, xml_path} <- save_xml(xml, socket.assigns.invoice.id),
          {:ok, signed_xml} <- TaxiDriver.sing_invoice_xml(xml_path, certificate),
          {:ok, signed_xml_path} <- save_signed_xml(signed_xml, socket.assigns.invoice.id),
          {:ok, response_xml} <- TaxiDriver.send_invoice_xml(signed_xml_path),
-         {:ok, response_xml_path} <- save_response_xml(response_xml, socket.assigns.invoice.id) do
-      IO.inspect(response_xml_path)
+         {:ok, _response_xml_path} <- save_response_xml(response_xml, socket.assigns.invoice.id),
+         {:ok, body: auth_xml, sri_status: sri_status} <- TaxiDriver.auth_invoice(access_key),
+         {:ok, auth_xml_path} <- save_auth_response_xml(auth_xml, socket.assigns.invoice.id) do
+      IO.inspect("--------")
+      IO.inspect(auth_xml_path)
+      IO.inspect("--------")
+      IO.inspect(sri_status)
+      IO.inspect("--------")
 
       {:noreply, put_flash(socket, :info, "Xml success!!")}
     else
@@ -77,6 +83,13 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   defp save_response_xml(xml, invoice_id) do
     path = "/home/joselo/Documents/invoice-#{invoice_id}-response.xml"
+    File.write(path, xml)
+
+    {:ok, path}
+  end
+
+  defp save_auth_response_xml(xml, invoice_id) do
+    path = "/home/joselo/Documents/invoice-#{invoice_id}-auth.xml"
     File.write(path, xml)
 
     {:ok, path}
