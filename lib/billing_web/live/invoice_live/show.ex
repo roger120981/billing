@@ -79,42 +79,38 @@ defmodule BillingWeb.InvoiceLive.Show do
   end
 
   defp save_xml(xml, access_key) do
-    path = "#{get_storage_path()}/#{access_key}.xml"
+    path = "#{Billing.get_storage_path()}/#{access_key}.xml"
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_signed_xml(xml, access_key) do
-    path = "#{get_storage_path()}/#{access_key}-signed.xml"
+    path = "#{Billing.get_storage_path()}/#{access_key}-signed.xml"
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_response_xml(xml, access_key) do
-    path = "#{get_storage_path()}/#{access_key}-response.xml"
+    path = "#{Billing.get_storage_path()}/#{access_key}-response.xml"
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_auth_response_xml(xml, access_key) do
-    path = "#{get_storage_path()}/#{access_key}-auth.xml"
+    path = "#{Billing.get_storage_path()}/#{access_key}-auth.xml"
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_pdf_file(pdf_content, access_key) do
-    path = "#{get_storage_path()}/#{access_key}.pdf"
+    path = "#{Billing.get_storage_path()}/#{access_key}.pdf"
     File.write(path, pdf_content)
 
     {:ok, path}
-  end
-
-  defp get_storage_path do
-    Application.get_env(:billing, :storage_path)
   end
 
   defp increment_emission_profile_sequence(emission_profile_id) do

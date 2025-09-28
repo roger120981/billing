@@ -31,7 +31,7 @@ defmodule Billing.TaxiDriver do
   end
 
   def sing_invoice_xml(xml_path, certificate) do
-    p12_path = "/home/joselo/Facturacion/billing/priv/static/uploads/#{certificate.file}"
+    p12_path = Path.join(Billing.get_storage_path(), certificate.file)
 
     multipart_body = [
       {"p12_password", certificate.password},

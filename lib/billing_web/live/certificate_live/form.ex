@@ -104,9 +104,10 @@ defmodule BillingWeb.CertificateLive.Form do
 
   defp save_certificate(socket, :edit, certificate_params) do
     uploaded_files =
-      consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, _entry ->
+      consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, entry ->
+        file_name = entry.uuid
         dest =
-          Path.join(Application.app_dir(:billing, "priv/static/uploads"), Path.basename(path))
+          Path.join(Billing.get_storage_path(), file_name)
 
         File.cp!(path, dest)
         {:ok, Path.basename(dest)}
@@ -129,9 +130,11 @@ defmodule BillingWeb.CertificateLive.Form do
 
   defp save_certificate(socket, :new, certificate_params) do
     uploaded_files =
-      consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, _entry ->
+      consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, entry ->
+        file_name = entry.uuid
+
         dest =
-          Path.join(Application.app_dir(:billing, "priv/static/uploads"), Path.basename(path))
+          Path.join(Billing.get_storage_path(), file_name)
 
         File.cp!(path, dest)
         {:ok, Path.basename(dest)}
