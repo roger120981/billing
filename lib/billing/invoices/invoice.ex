@@ -6,6 +6,8 @@ defmodule Billing.Invoices.Invoice do
     belongs_to :customer, Billing.Customers.Customer
     belongs_to :emission_profile, Billing.EmissionProfiles.EmissionProfile
 
+    has_many :electronic_invoices, Billing.Invoices.ElectronicInvoice
+
     field :issued_at, :date
     field :description, :string
     field :due_date, :date

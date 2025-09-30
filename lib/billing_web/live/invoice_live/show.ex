@@ -6,6 +6,7 @@ defmodule BillingWeb.InvoiceLive.Show do
   alias Billing.TaxiDriver
   alias Billing.ElectronicInvoices
   alias Billing.EmissionProfiles
+  alias Billing.Invoices.ElectronicInvoice
 
   @impl true
   def render(assigns) do
@@ -28,6 +29,9 @@ defmodule BillingWeb.InvoiceLive.Show do
       </.header>
 
       <.list>
+        <:item title="Status">
+          <.electronic_state electronic_invoice={@electronic_invoice} />
+        </:item>
         <:item title="Issued at">{@invoice.issued_at}</:item>
         <:item title="Customer">{@invoice.customer.full_name}</:item>
       </.list>
@@ -40,7 +44,8 @@ defmodule BillingWeb.InvoiceLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Show Invoice")
-     |> assign(:invoice, Invoices.get_invoice!(id))}
+     |> assign(:invoice, Invoices.get_invoice!(id))
+     |> assign(:electronic_invoice, ElectronicInvoices.get_electronic_invoice_by_invoice_id(id))}
   end
 
   @impl true
@@ -54,11 +59,11 @@ defmodule BillingWeb.InvoiceLive.Show do
          {:ok, signed_xml} <- TaxiDriver.sing_invoice_xml(xml_path, certificate),
          {:ok, _electronic_invoice} <- ElectronicInvoices.update_electronic_invoice(electronic_invoice, :signed),
          {:ok, signed_xml_path} <- save_signed_xml(signed_xml, access_key),
-         {:ok, response_xml} <- TaxiDriver.send_invoice_xml(signed_xml_path),
-         {:ok, _electronic_invoice} <- ElectronicInvoices.update_electronic_invoice(electronic_invoice, :sent),
+         {:ok, body: response_xml, sri_status: sri_status} <- TaxiDriver.send_invoice_xml(signed_xml_path),
+         {:ok, _electronic_invoice} <- ElectronicInvoices.update_electronic_invoice(electronic_invoice, ElectronicInvoice.determinate_status(sri_status)),
          {:ok, _response_xml_path} <- save_response_xml(response_xml, access_key),
          {:ok, body: auth_xml, sri_status: sri_status} <- TaxiDriver.auth_invoice(access_key),
-         {:ok, _electronic_invoice} <- ElectronicInvoices.update_electronic_invoice(electronic_invoice, :auth),
+         {:ok, _electronic_invoice} <- ElectronicInvoices.update_electronic_invoice(electronic_invoice, ElectronicInvoice.determinate_status(sri_status)),
          {:ok, auth_xml_path} <- save_auth_response_xml(auth_xml, access_key),
          {:ok, pdf_content} <- TaxiDriver.pdf_invoice_xml(auth_xml_path),
          {:ok, pdf_file_path} <- save_pdf_file(pdf_content, access_key),
@@ -119,5 +124,24 @@ defmodule BillingWeb.InvoiceLive.Show do
     new_sequence = emission_profile.sequence + 1
 
     EmissionProfiles.update_emission_profile(emission_profile, %{sequence: new_sequence})
+  end
+
+  attr :electronic_invoice, ElectronicInvoice, default: nil
+
+  defp electronic_state(assigns) do
+    assigns = assign_new(assigns, :state, fn ->
+      if assigns.electronic_invoice do
+        %{label: assigns.electronic_invoice.state, css_class: "badge-primary"}
+      else
+        %{label: "Not invoice yet", css_class: "badge-info"}
+      end
+    end)
+
+
+    ~H"""
+    <span class={["badge", @state.css_class]}>
+      {@state.label}
+    </span>
+    """
   end
 end

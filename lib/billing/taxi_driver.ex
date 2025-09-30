@@ -62,8 +62,16 @@ defmodule Billing.TaxiDriver do
     ]
 
     case HTTPoison.post(@send_invoice_url, {:multipart, multipart_body}, @multipart_headers) do
-      {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
-        {:ok, body}
+      {:ok, %HTTPoison.Response{status_code: 201, body: body, headers: headers}} ->
+        {"x-sri-status", sri_status} =
+          Enum.find(headers, fn {key, _value} -> key == "x-sri-status" end)
+
+        IO.inspect "Enviado al SRI------------------------"
+        IO.inspect sri_status
+        IO.inspect "------------------------"
+
+
+        {:ok, body: body, sri_status: sri_status}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
         {:error, %{status_code: status_code, body: body}}

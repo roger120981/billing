@@ -21,4 +21,13 @@ defmodule Billing.ElectronicInvoices do
     |> ElectronicInvoice.changeset(attrs)
     |> Repo.update()
   end
+
+  def get_electronic_invoice_by_invoice_id(invoice_id) do
+    query = from(ei in ElectronicInvoice,
+      where: ei.invoice_id == ^invoice_id,
+      order_by: [desc: ei.inserted_at],
+      limit: 1)
+
+    Repo.one(query)
+  end
 end
