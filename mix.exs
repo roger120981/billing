@@ -67,7 +67,9 @@ defmodule Billing.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:httpoison, "~> 2.2"},
-      {:tidewave, "~> 0.5", only: :dev}
+      {:tidewave, "~> 0.5", only: :dev},
+      {:oban, "~> 2.20"},
+      {:igniter, "~> 0.5", only: [:dev]}
     ]
   end
 

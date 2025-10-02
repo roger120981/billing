@@ -11,6 +11,7 @@ defmodule Billing.Application do
       BillingWeb.Telemetry,
       Billing.Repo,
       {DNSCluster, query: Application.get_env(:billing, :dns_cluster_query) || :ignore},
+      {Oban, Application.fetch_env!(:billing, Oban)},
       {Phoenix.PubSub, name: Billing.PubSub},
       # Start a worker by calling: Billing.Worker.start_link(arg)
       # {Billing.Worker, arg},
