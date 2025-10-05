@@ -106,6 +106,7 @@ defmodule BillingWeb.CertificateLive.Form do
     uploaded_files =
       consume_uploaded_entries(socket, :certificate_file, fn %{path: path}, entry ->
         file_name = entry.uuid
+
         dest =
           Path.join(Billing.get_storage_path(), file_name)
 

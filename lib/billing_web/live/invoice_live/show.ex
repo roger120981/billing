@@ -58,14 +58,14 @@ defmodule BillingWeb.InvoiceLive.Show do
   attr :electronic_invoice, ElectronicInvoice, default: nil
 
   defp electronic_state(assigns) do
-    assigns = assign_new(assigns, :state, fn ->
-      if assigns.electronic_invoice do
-        %{label: assigns.electronic_invoice.state, css_class: "badge-primary"}
-      else
-        %{label: "Not invoice yet", css_class: "badge-info"}
-      end
-    end)
-
+    assigns =
+      assign_new(assigns, :state, fn ->
+        if assigns.electronic_invoice do
+          %{label: assigns.electronic_invoice.state, css_class: "badge-primary"}
+        else
+          %{label: "Not invoice yet", css_class: "badge-info"}
+        end
+      end)
 
     ~H"""
     <span class={["badge", @state.css_class]}>
