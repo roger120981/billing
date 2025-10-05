@@ -69,7 +69,8 @@ defmodule Billing.MixProject do
       {:httpoison, "~> 2.2"},
       {:tidewave, "~> 0.5", only: :dev},
       {:oban, "~> 2.20"},
-      {:igniter, "~> 0.5", only: [:dev]}
+      {:igniter, "~> 0.5", only: [:dev]},
+      {:ecto_erd, "~> 0.6.4", only: [:dev]}
     ]
   end
 
