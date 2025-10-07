@@ -5,6 +5,7 @@ defmodule BillingWeb.InvoiceLive.Show do
   alias Billing.ElectronicInvoices
   alias Billing.Invoices.ElectronicInvoice
   alias Billing.InvoicingWorker
+  alias Phoenix.PubSub
 
   @impl true
   def render(assigns) do
@@ -39,6 +40,8 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
+    PubSub.subscribe(Billing.PubSub, "invoice:#{id}")
+
     {:ok,
      socket
      |> assign(:page_title, "Show Invoice")
@@ -52,7 +55,31 @@ defmodule BillingWeb.InvoiceLive.Show do
     |> InvoicingWorker.new()
     |> Oban.insert()
 
-    {:noreply, put_flash(socket, :info, "Facturacion en proceso")}
+    {:noreply, put_flash(socket, :info, "Facturación en proceso")}
+  end
+
+  @impl true
+  def handle_info({:invoice_update, %{id: invoice_id}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:invoice, Invoices.get_invoice!(invoice_id))
+     |> assign(
+       :electronic_invoice,
+       ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+     )
+     |> put_flash(:info, "Facturación completada")}
+  end
+
+  @impl true
+  def handle_info({:invoice_error, %{id: invoice_id}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:invoice, Invoices.get_invoice!(invoice_id))
+     |> assign(
+       :electronic_invoice,
+       ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+     )
+     |> put_flash(:error, "La facturación no se completo")}
   end
 
   attr :electronic_invoice, ElectronicInvoice, default: nil
