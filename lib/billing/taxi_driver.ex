@@ -12,6 +12,8 @@ defmodule Billing.TaxiDriver do
 
   @multipart_headers [{"Content-Type", "multipart/form-data"}]
 
+  alias Billing.Util.Crypto
+
   def build_invoice_xml(invoice_params) do
     json_body = Jason.encode!(invoice_params)
 
@@ -32,9 +34,10 @@ defmodule Billing.TaxiDriver do
 
   def sing_invoice_xml(xml_path, certificate) do
     p12_path = Path.join(Billing.get_storage_path(), certificate.file)
+    {:ok, p12_password} = Crypto.decrypt("crt", certificate.encrypted_password)
 
     multipart_body = [
-      {"p12_password", certificate.password},
+      {"p12_password", p12_password},
       {:file, p12_path, {"form-data", [name: "p12_file", filename: Path.basename(p12_path)]},
        [{"Content-Type", "text/plain"}]},
       {:file, xml_path, {"form-data", [name: "xml_file", filename: Path.basename(xml_path)]},

@@ -114,18 +114,30 @@ defmodule BillingWeb.CertificateLive.Form do
         {:ok, Path.basename(dest)}
       end)
 
-    [file_name | _tail] = uploaded_files
-    certificate_params = Map.put(certificate_params, "file", file_name)
+    certificate_params =
+      case uploaded_files do
+        [file_name | _tail] ->
+          Map.put(certificate_params, "file", file_name)
 
-    case Certificates.update_certificate(socket.assigns.certificate, certificate_params) do
-      {:ok, certificate} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Certificate updated successfully")
-         |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
+        _ ->
+          certificate_params
+      end
 
+    password = certificate_params["password"]
+
+    with {:ok, certificate} <-
+           Certificates.update_certificate(socket.assigns.certificate, certificate_params),
+         {:ok, certificate} <- Certificates.update_certificate_password(certificate, password) do
+      {:noreply,
+       socket
+       |> put_flash(:info, "Certificate updated successfully")
+       |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
+    else
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
+
+      _error ->
+        {:noreply, put_flash(socket, :error, "Error saving certificate")}
     end
   end
 
@@ -143,17 +155,20 @@ defmodule BillingWeb.CertificateLive.Form do
 
     [file_name | _tail] = uploaded_files
     certificate_params = Map.put(certificate_params, "file", file_name)
+    password = certificate_params["password"]
 
-    case Certificates.create_certificate(certificate_params) do
-      {:ok, certificate} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Certificate created successfully")
-         |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
-
+    with {:ok, certificate} <- Certificates.create_certificate(certificate_params),
+         {:ok, certificate} <- Certificates.update_certificate_password(certificate, password) do
+      {:noreply,
+       socket
+       |> put_flash(:info, "Certificate created successfully")
+       |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
+    else
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         {:noreply, assign(socket, form: to_form(changeset))}
+
+      _error ->
+        {:noreply, put_flash(socket, :error, "Error saving certificate")}
     end
   end
 

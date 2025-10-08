@@ -7,6 +7,7 @@ defmodule Billing.Certificates do
   alias Billing.Repo
 
   alias Billing.Certificates.Certificate
+  alias Billing.Util.Crypto
 
   @doc """
   Returns the list of certificates.
@@ -100,5 +101,16 @@ defmodule Billing.Certificates do
   """
   def change_certificate(%Certificate{} = certificate, attrs \\ %{}) do
     Certificate.changeset(certificate, attrs)
+  end
+
+  def update_certificate_password(%Certificate{} = certificate, new_password) do
+    query = from(c in Certificate, where: c.id == ^certificate.id)
+
+    encrypted_password = Crypto.encrypt("crt", new_password)
+
+    case Repo.update_all(query, set: [encrypted_password: encrypted_password]) do
+      {1, nil} -> {:ok, Repo.get(Certificate, certificate.id)}
+      error -> error
+    end
   end
 end

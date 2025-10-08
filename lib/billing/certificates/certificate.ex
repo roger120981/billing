@@ -7,7 +7,8 @@ defmodule Billing.Certificates.Certificate do
 
     field :name, :string
     field :file, :string
-    field :password, :string
+    field :password, :string, virtual: true
+    field :encrypted_password, :string
 
     timestamps(type: :utc_datetime)
   end
