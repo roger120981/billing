@@ -32,4 +32,20 @@ defmodule Billing.ElectronicInvoices do
 
     Repo.one(query)
   end
+
+  def get_electronic_invoice!(id) do
+    Repo.get!(ElectronicInvoice, id)
+  end
+
+  def list_pending_electronic_invoices do
+    pending_states = [
+      :signed,
+      :sent,
+      :not_found_or_pending
+    ]
+
+    query = from(ei in ElectronicInvoice, where: ei.state in ^pending_states)
+
+    Repo.all(query)
+  end
 end

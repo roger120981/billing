@@ -3,6 +3,7 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   alias Billing.Invoices
   alias Billing.ElectronicInvoices
+  alias Billing.ElectronicInvoice
   alias Billing.Invoices.ElectronicInvoice
   alias Billing.InvoicingWorker
   alias Phoenix.PubSub
@@ -21,9 +22,8 @@ defmodule BillingWeb.InvoiceLive.Show do
           <.button variant="primary" navigate={~p"/invoices/#{@invoice}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> Edit invoice
           </.button>
-          <.button phx-click="create_electronic_invoice">
-            <.icon name="hero-pencil-square" /> Crear Factura
-          </.button>
+
+          <.create_electronic_invoice_button electronic_invoice={@electronic_invoice} />
         </:actions>
       </.header>
 
@@ -59,7 +59,7 @@ defmodule BillingWeb.InvoiceLive.Show do
   end
 
   @impl true
-  def handle_info({:invoice_update, %{id: invoice_id}}, socket) do
+  def handle_info({:update_electronic_invoice, %{invoice_id: invoice_id}}, socket) do
     {:noreply,
      socket
      |> assign(
@@ -70,7 +70,7 @@ defmodule BillingWeb.InvoiceLive.Show do
   end
 
   @impl true
-  def handle_info({:invoice_error, %{id: invoice_id, error: error}}, socket) do
+  def handle_info({:electronic_invoice_error, %{invoice_id: invoice_id, error: error}}, socket) do
     {:noreply,
      socket
      |> assign(
@@ -96,6 +96,47 @@ defmodule BillingWeb.InvoiceLive.Show do
     <span class={["badge", @state.css_class]}>
       {@state.label}
     </span>
+    """
+  end
+
+  attr :electronic_invoice, ElectronicInvoice, default: nil
+
+  def create_electronic_invoice_button(
+        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+      )
+      when state in [:created, :signed, :sent] do
+    ~H"""
+    <span>
+      Procesando
+    </span>
+    """
+  end
+
+  def create_electronic_invoice_button(
+        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+      )
+      when state in [:not_found_or_pending] do
+    ~H"""
+    <.button phx-click="create_electronic_invoice">
+      <.icon name="hero-pencil-square" /> Verificar estado
+    </.button>
+    """
+  end
+
+  def create_electronic_invoice_button(
+        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+      )
+      when state in [:authorized] do
+    ~H"""
+    """
+  end
+
+  # state is nil :back, :error or :unauthorized
+  def create_electronic_invoice_button(assigns) do
+    ~H"""
+    <.button phx-click="create_electronic_invoice">
+      <.icon name="hero-pencil-square" /> Crear Factura
+    </.button>
     """
   end
 end

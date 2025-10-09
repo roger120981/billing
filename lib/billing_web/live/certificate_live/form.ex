@@ -15,7 +15,14 @@ defmodule BillingWeb.CertificateLive.Form do
 
       <.form for={@form} id="certificate-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} label="Name" />
-        <.live_file_input upload={@uploads.certificate_file} />
+        <div class="fieldset mb-2">
+          <label>
+            <span class="label mb-1">P12 File</span>
+            <div>
+              <.live_file_input upload={@uploads.certificate_file} class="file-input" />
+            </div>
+          </label>
+        </div>
 
         <section phx-drop-target={@uploads.certificate_file.ref}>
           <article :for={entry <- @uploads.certificate_file.entries} class="upload-entry">
@@ -41,7 +48,7 @@ defmodule BillingWeb.CertificateLive.Form do
           </p>
         </section>
 
-        <.input field={@form[:password]} type="password" label="Password" />
+        <.input field={@form[:password]} type="password" label="P12 Password" />
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Certificate</.button>
           <.button navigate={return_path(@return_to, @certificate)}>Cancel</.button>

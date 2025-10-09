@@ -84,10 +84,6 @@ defmodule Billing.TaxiDriver do
         {"x-sri-status", sri_status} =
           Enum.find(headers, fn {key, _value} -> key == "x-sri-status" end)
 
-        IO.inspect("Enviado al SRI------------------------")
-        IO.inspect(sri_status)
-        IO.inspect("------------------------")
-
         {:ok, body: body, sri_status: sri_status}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->

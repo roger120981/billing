@@ -13,6 +13,11 @@ config :billing, Oban,
   queues: [default: 10],
   repo: Billing.Repo
 
+# plugins: [
+#   # It runs every 5 minutes
+#   {Oban.Plugins.Cron, crontab: [{"*/5 * * * *", Billing.AuthInvoiceWorkerWorker}]}
+# ]
+
 config :billing,
   ecto_repos: [Billing.Repo],
   generators: [timestamp_type: :utc_datetime]
