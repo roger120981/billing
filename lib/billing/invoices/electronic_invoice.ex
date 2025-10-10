@@ -22,6 +22,17 @@ defmodule Billing.Invoices.ElectronicInvoice do
     "NO ENCONTRADO O PENDIENTE" => :not_found_or_pending
   }
 
+  @label_statuses %{
+    created: "Pendiente",
+    signed: "Firmada",
+    sent: "Enviada",
+    back: "Devuelta",
+    authorized: "Autorizada",
+    unauthorized: "No Autorizada",
+    error: "Error",
+    not_found_or_pending: "No encontrada o pendiente"
+  }
+
   schema "electronic_invoices" do
     belongs_to :invoice, Billing.Invoices.Invoice
 
@@ -48,5 +59,9 @@ defmodule Billing.Invoices.ElectronicInvoice do
 
   def determinate_status(sri_status) do
     @sri_statuses[sri_status]
+  end
+
+  def label_status(state) do
+    @label_statuses[state]
   end
 end
