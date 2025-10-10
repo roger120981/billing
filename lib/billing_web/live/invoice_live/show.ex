@@ -56,7 +56,7 @@ defmodule BillingWeb.InvoiceLive.Show do
     |> InvoicingWorker.new()
     |> Oban.insert()
 
-    {:noreply, put_flash(socket, :info, "Facturación en proceso")}
+    {:noreply, assign(socket, :electronic_invoice, %ElectronicInvoice{state: :created})}
   end
 
   @impl true
@@ -113,9 +113,9 @@ defmodule BillingWeb.InvoiceLive.Show do
       )
       when state in [:created, :signed, :sent] do
     ~H"""
-    <span>
-      <span class="loading loading-spinner loading-md"></span>
-    </span>
+    <.button disabled>
+      <span class="loading loading-spinner"></span>Creando Factura Electrónica
+    </.button>
     """
   end
 
@@ -125,7 +125,7 @@ defmodule BillingWeb.InvoiceLive.Show do
       when state in [:not_found_or_pending] do
     ~H"""
     <.button phx-click="check_electronic_invoice">
-      <.icon name="hero-pencil-square" /> Verificar estado
+      <.icon name="hero-bolt-slash" /> Verificar Factura Electrónica
     </.button>
     """
   end
@@ -135,15 +135,23 @@ defmodule BillingWeb.InvoiceLive.Show do
       )
       when state in [:authorized] do
     ~H"""
-    Dropdown here
+    <.link href={~p"/electronic_invoice/#{@electronic_invoice.id}/pdf"} class="btn btn-ghost">
+      <.icon name="hero-arrow-down-tray" /> PDF
+    </.link>
+
+    <.link href={~p"/electronic_invoice/#{@electronic_invoice.id}/xml"} class="btn btn-ghost">
+      <.icon name="hero-arrow-down-tray" /> XML
+    </.link>
     """
   end
 
-  # state is nil :back, :error or :unauthorized
   def create_electronic_invoice_button(assigns) do
     ~H"""
-    <.button phx-click="create_electronic_invoice">
-      <.icon name="hero-pencil-square" /> Crear Factura
+    <.button
+      phx-click="create_electronic_invoice"
+      data-confirm="¿Estás seguro de crear una factura electrónica?"
+    >
+      <.icon name="hero-bolt" /> Crear Factura Electrónica
     </.button>
     """
   end

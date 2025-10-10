@@ -200,7 +200,7 @@ defmodule Billing.InvoiceHandler do
     "#{Billing.get_storage_path()}/#{access_key}-auth.xml"
   end
 
-  defp pdf_path(access_key) do
+  def pdf_path(access_key) do
     "#{Billing.get_storage_path()}/#{access_key}.pdf"
   end
 

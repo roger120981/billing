@@ -43,6 +43,9 @@ defmodule BillingWeb.Router do
     live "/emission_profiles/new", EmissionProfileLive.Form, :new
     live "/emission_profiles/:id", EmissionProfileLive.Show, :show
     live "/emission_profiles/:id/edit", EmissionProfileLive.Form, :edit
+
+    get "/electronic_invoice/:id/pdf", ElectronicInvoiceController, :pdf
+    get "/electronic_invoice/:id/xml", ElectronicInvoiceController, :xml
   end
 
   # Other scopes may use custom stacks.
