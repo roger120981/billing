@@ -3,12 +3,19 @@ defmodule Billing.ElectronicInvoiceCheckerWorker do
 
   alias Billing.InvoiceHandler
 
+  @sleep_milliseconds 3000
+
   require Logger
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"electronic_invoice_id" => electronic_invoice_id} = _args}) do
+    # Dormimos 3 segundos antes de verificar la autorizacion,
+    # Ya en en entorno de pruebas el SRI suele demorar en pasar
+    # un documento electronico de "Recibido" a "Autorizado"
+    Process.sleep(@sleep_milliseconds)
+
     case InvoiceHandler.handle_auth_invoice(electronic_invoice_id) do
-      {:ok, _emission_profile} ->
+      {:ok, _electronic_invoice} ->
         Logger.info("Facturado!: #{electronic_invoice_id}")
 
         :ok

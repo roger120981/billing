@@ -65,8 +65,7 @@ defmodule BillingWeb.InvoiceLive.Show do
      |> assign(
        :electronic_invoice,
        ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
-     )
-     |> put_flash(:info, "Facturación completada")}
+     )}
   end
 
   @impl true

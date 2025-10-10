@@ -6,12 +6,19 @@ defmodule Billing.InvoiceHandler do
   alias Billing.EmissionProfiles
   alias Billing.Invoices.ElectronicInvoice
   alias Phoenix.PubSub
+  alias Billing.ElectronicInvoiceCheckerWorker
+  alias Billing.ElectronicInvoicePdfWorker
 
   def handle_invoice(invoice_id) do
     invoice = Invoices.get_invoice!(invoice_id)
     certificate = Billing.Invoicing.fetch_certificate(invoice)
 
-    with {:ok, invoice_params} <- Invoicing.build_request_params(invoice),
+    with {:ok, _emission_profile} <-
+           increment_emission_profile_sequence(invoice.emission_profile_id),
+
+         # Build Invoice params
+         {:ok, invoice_params} <- Invoicing.build_request_params(invoice),
+
          # Electronic Invoice :created
          {:ok, electronic_invoice} <- create_electronic_invoice(invoice.id, invoice_params),
          {:ok, _invoice_id} <- broadcast_success(invoice_id),
@@ -24,20 +31,9 @@ defmodule Billing.InvoiceHandler do
          {:ok, electronic_invoice} <- send_invoice(electronic_invoice),
          {:ok, _invoice_id} <- broadcast_success(invoice_id),
 
-         # Electronic Invoice :authorized | :unauthorized | :error | :not_found_or_pending
-         {:ok, electronic_invoice} <- verify_authorization(electronic_invoice),
-         {:ok, _invoice_id} <- broadcast_success(invoice_id),
-
-         # Update Emission profile sequence
-         {:ok, emission_profile} <-
-           increment_emission_profile_sequence(
-             invoice.emission_profile_id,
-             electronic_invoice.state
-           ),
-
-         # Electronic Invoice: PDF
-         {:ok, _pdf_file_path} <- create_pdf(electronic_invoice) do
-      {:ok, emission_profile}
+         # Run authorization checker using oban worker
+         {:ok, _oban_job} <- run_authorization_checker(electronic_invoice.id) do
+      {:ok, electronic_invoice}
     else
       {:error, error} ->
         broadcast_error(invoice_id, error)
@@ -54,16 +50,25 @@ defmodule Billing.InvoiceHandler do
 
     with {:ok, electronic_invoice} <- verify_authorization(electronic_invoice),
          {:ok, _invoice_id} <- broadcast_success(invoice.id),
-         {:ok, emission_profile} <-
-           increment_emission_profile_sequence(
-             invoice.emission_profile_id,
-             electronic_invoice.state
-           ),
-         {:ok, _pdf_file_path} <- create_pdf(electronic_invoice) do
-      {:ok, emission_profile}
+         {:ok, _oban_job} <- run_pdf_worker(electronic_invoice.id) do
+      {:ok, electronic_invoice}
     else
       {:error, error} ->
         broadcast_error(invoice.id, error)
+
+        {:error, error}
+    end
+  end
+
+  def handle_invoice_pdf(electronic_invoice_id) do
+    electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
+
+    case create_pdf(electronic_invoice) do
+      {:ok, pdf_file_path} ->
+        {:ok, pdf_file_path}
+
+      {:error, error} ->
+        broadcast_error(electronic_invoice.invoice_id, error)
 
         {:error, error}
     end
@@ -83,7 +88,7 @@ defmodule Billing.InvoiceHandler do
   # Electronic Invoice :signed
 
   def signed_xml(%ElectronicInvoice{state: :created} = electronic_invoice, certificate) do
-    xml_path = "#{Billing.get_storage_path()}/#{electronic_invoice.access_key}.xml"
+    xml_path = xml_path(electronic_invoice.access_key)
 
     with {:ok, signed_xml} <- TaxiDriver.sign_invoice_xml(xml_path, certificate),
          {:ok, electronic_invoice} <-
@@ -102,10 +107,10 @@ defmodule Billing.InvoiceHandler do
   # Electronic Invoice :send | :back | :error
 
   defp send_invoice(%ElectronicInvoice{state: :signed} = electronic_invoice) do
-    signed_xml_path = "#{Billing.get_storage_path()}/#{electronic_invoice.access_key}-signed.xml"
+    xml_signed_path = xml_signed_path(electronic_invoice.access_key)
 
     with {:ok, body: response_xml, sri_status: sri_status} <-
-           TaxiDriver.send_invoice_xml(signed_xml_path),
+           TaxiDriver.send_invoice_xml(xml_signed_path),
          {:ok, _electronic_invoice} <-
            ElectronicInvoices.update_electronic_invoice(
              electronic_invoice,
@@ -140,13 +145,17 @@ defmodule Billing.InvoiceHandler do
     end
   end
 
+  defp verify_authorization(%ElectronicInvoice{state: :authorized} = electronic_invoice) do
+    {:ok, electronic_invoice}
+  end
+
   defp verify_authorization(_electronic_invoice) do
     {:error, "Factura no autorizada"}
   end
 
   # Update Emission profile sequence
 
-  defp increment_emission_profile_sequence(emission_profile_id, :authorized) do
+  defp increment_emission_profile_sequence(emission_profile_id) do
     emission_profile = EmissionProfiles.get_emission_profile!(emission_profile_id)
 
     new_sequence = emission_profile.sequence + 1
@@ -154,19 +163,17 @@ defmodule Billing.InvoiceHandler do
     EmissionProfiles.update_emission_profile(emission_profile, %{sequence: new_sequence})
   end
 
-  defp increment_emission_profile_sequence(_emission_profile_id, _state) do
-    {:error, "Factura no autorizada"}
-  end
-
   # Electronic Invoice: PDF
 
   defp create_pdf(%ElectronicInvoice{state: :authorized} = electronic_invoice) do
-    auth_xml_path = "#{Billing.get_storage_path()}/#{electronic_invoice.access_key}-auth.xml"
+    xml_auth_path = xml_auth_path(electronic_invoice.access_key)
 
-    with {:ok, pdf_content} <- TaxiDriver.pdf_invoice_xml(auth_xml_path),
-         {:ok, _pdf_file_path} <- save_pdf_file(pdf_content, electronic_invoice.access_key) do
-    else
-      error -> error
+    case TaxiDriver.pdf_invoice_xml(xml_auth_path) do
+      {:ok, pdf_content} ->
+        save_pdf_file(pdf_content, electronic_invoice.access_key)
+
+      error ->
+        error
     end
   end
 
@@ -174,38 +181,60 @@ defmodule Billing.InvoiceHandler do
     {:error, "Factura no autorizada"}
   end
 
+  # Store files paths
+
+  def xml_path(access_key) do
+    "#{Billing.get_storage_path()}/#{access_key}.xml"
+  end
+
+  def xml_signed_path(access_key) do
+    "#{Billing.get_storage_path()}/#{access_key}-signed.xml"
+  end
+
+  def xml_response_path(access_key) do
+    "#{Billing.get_storage_path()}/#{access_key}-response.xml"
+  end
+
+  def xml_auth_path(access_key) do
+    "#{Billing.get_storage_path()}/#{access_key}-auth.xml"
+  end
+
+  defp pdf_path(access_key) do
+    "#{Billing.get_storage_path()}/#{access_key}.pdf"
+  end
+
   # Store files section
 
   defp save_xml(xml, access_key) do
-    path = "#{Billing.get_storage_path()}/#{access_key}.xml"
+    path = xml_path(access_key)
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_signed_xml(xml, access_key) do
-    path = "#{Billing.get_storage_path()}/#{access_key}-signed.xml"
+    path = xml_signed_path(access_key)
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_response_xml(xml, access_key) do
-    path = "#{Billing.get_storage_path()}/#{access_key}-response.xml"
+    path = xml_response_path(access_key)
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_auth_response_xml(xml, access_key) do
-    path = "#{Billing.get_storage_path()}/#{access_key}-auth.xml"
+    path = xml_auth_path(access_key)
     File.write(path, xml)
 
     {:ok, path}
   end
 
   defp save_pdf_file(pdf_content, access_key) do
-    path = "#{Billing.get_storage_path()}/#{access_key}.pdf"
+    path = pdf_path(access_key)
     File.write(path, pdf_content)
 
     {:ok, path}
@@ -231,5 +260,19 @@ defmodule Billing.InvoiceHandler do
     )
 
     {:error, error}
+  end
+
+  # Workers
+
+  def run_authorization_checker(electronic_invoice_id) do
+    %{"electronic_invoice_id" => electronic_invoice_id}
+    |> ElectronicInvoiceCheckerWorker.new()
+    |> Oban.insert()
+  end
+
+  def run_pdf_worker(electronic_invoice_id) do
+    %{"electronic_invoice_id" => electronic_invoice_id}
+    |> ElectronicInvoicePdfWorker.new()
+    |> Oban.insert()
   end
 end
