@@ -32,7 +32,7 @@ defmodule Billing.InvoiceHandler do
          {:ok, _invoice_id} <- broadcast_success(invoice_id),
 
          # Run authorization checker using oban worker
-         {:ok, _oban_job} <- run_authorization_checker(electronic_invoice.id) do
+         {:ok, _oban_job} <- run_authorization_checker(electronic_invoice) do
       {:ok, electronic_invoice}
     else
       {:error, error} ->
@@ -50,7 +50,7 @@ defmodule Billing.InvoiceHandler do
 
     with {:ok, electronic_invoice} <- verify_authorization(electronic_invoice),
          {:ok, _invoice_id} <- broadcast_success(invoice.id),
-         {:ok, _oban_job} <- run_pdf_worker(electronic_invoice.id) do
+         {:ok, _oban_job} <- run_pdf_worker(electronic_invoice) do
       {:ok, electronic_invoice}
     else
       {:error, error} ->
@@ -111,7 +111,7 @@ defmodule Billing.InvoiceHandler do
 
     with {:ok, body: response_xml, sri_status: sri_status} <-
            TaxiDriver.send_invoice_xml(xml_signed_path),
-         {:ok, _electronic_invoice} <-
+         {:ok, electronic_invoice} <-
            ElectronicInvoices.update_electronic_invoice(
              electronic_invoice,
              ElectronicInvoice.determinate_status(sri_status)
@@ -265,15 +265,23 @@ defmodule Billing.InvoiceHandler do
 
   # Workers
 
-  def run_authorization_checker(electronic_invoice_id) do
-    %{"electronic_invoice_id" => electronic_invoice_id}
+  def run_authorization_checker(%ElectronicInvoice{state: :sent} = electronic_invoice) do
+    %{"electronic_invoice_id" => electronic_invoice.id}
     |> ElectronicInvoiceCheckerWorker.new()
     |> Oban.insert()
   end
 
-  def run_pdf_worker(electronic_invoice_id) do
-    %{"electronic_invoice_id" => electronic_invoice_id}
+  def run_authorization_checker(%ElectronicInvoice{state: _state} = electronic_invoice) do
+    {:ok, nil}
+  end
+
+  def run_pdf_worker(%ElectronicInvoice{state: :authorized} = electronic_invoice) do
+    %{"electronic_invoice_id" => electronic_invoice.id}
     |> ElectronicInvoicePdfWorker.new()
     |> Oban.insert()
+  end
+
+  def run_pdf_worker(%ElectronicInvoice{state: _state}) do
+    {:ok, nil}
   end
 end

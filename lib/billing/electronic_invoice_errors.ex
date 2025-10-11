@@ -29,7 +29,7 @@ defmodule Billing.ElectronicInvoiceErrors do
     |> format_errors()
   end
 
-  def list_errors(%ElectronicInvoice{state: _state}) do
+  def list_errors(_electronic_invoice) do
     []
   end
 

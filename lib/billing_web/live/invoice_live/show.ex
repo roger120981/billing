@@ -46,15 +46,11 @@ defmodule BillingWeb.InvoiceLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     PubSub.subscribe(Billing.PubSub, "invoice:#{id}")
 
-    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(id)
-    electronic_invoice_errors = ElectronicInvoiceErrors.list_errors(electronic_invoice)
-
     {:ok,
      socket
      |> assign(:page_title, "Show Invoice")
      |> assign(:invoice, Invoices.get_invoice!(id))
-     |> assign(:electronic_invoice, electronic_invoice)
-     |> assign(:electronic_invoice_errors, electronic_invoice_errors)}
+     |> assign_electronic_invoice()}
   end
 
   @impl true
@@ -74,27 +70,15 @@ defmodule BillingWeb.InvoiceLive.Show do
   end
 
   @impl true
-  def handle_info({:update_electronic_invoice, %{invoice_id: invoice_id}}, socket) do
-    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
-
-    {:noreply,
-     socket
-     |> assign(
-       :electronic_invoice,
-       electronic_invoice
-     )}
+  def handle_info({:update_electronic_invoice, %{invoice_id: _invoice_id}}, socket) do
+    {:noreply, assign_electronic_invoice(socket)}
   end
 
   @impl true
-  def handle_info({:electronic_invoice_error, %{invoice_id: invoice_id, error: error}}, socket) do
-    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
-
+  def handle_info({:electronic_invoice_error, %{invoice_id: _invoice_id, error: error}}, socket) do
     {:noreply,
      socket
-     |> assign(
-       :electronic_invoice,
-       electronic_invoice
-     )
+     |> assign_electronic_invoice()
      |> put_flash(:error, "Error en la facturación: #{error}")}
   end
 
@@ -172,6 +156,11 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   attr :errors, :list, default: []
 
+  defp electronic_invoice_errors(%{errors: []} = assigns) do
+    ~H"""
+    """
+  end
+
   defp electronic_invoice_errors(assigns) do
     ~H"""
     <div role="alert" class="alert alert-error">
@@ -184,5 +173,16 @@ defmodule BillingWeb.InvoiceLive.Show do
       </ul>
     </div>
     """
+  end
+
+  defp assign_electronic_invoice(socket) do
+    electronic_invoice =
+      ElectronicInvoices.get_electronic_invoice_by_invoice_id(socket.assigns.invoice.id)
+
+    electronic_invoice_errors = ElectronicInvoiceErrors.list_errors(electronic_invoice)
+
+    socket
+    |> assign(:electronic_invoice, electronic_invoice)
+    |> assign(:electronic_invoice_errors, electronic_invoice_errors)
   end
 end
