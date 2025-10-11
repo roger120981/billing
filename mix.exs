@@ -70,7 +70,8 @@ defmodule Billing.MixProject do
       {:tidewave, "~> 0.5", only: :dev},
       {:oban, "~> 2.20"},
       {:igniter, "~> 0.5", only: [:dev]},
-      {:ecto_erd, "~> 0.6.4", only: [:dev]}
+      {:ecto_erd, "~> 0.6.4", only: [:dev]},
+      {:sweet_xml, "~> 0.7.5"}
     ]
   end
 

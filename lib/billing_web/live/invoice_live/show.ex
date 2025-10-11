@@ -8,6 +8,7 @@ defmodule BillingWeb.InvoiceLive.Show do
   alias Billing.InvoicingWorker
   alias Phoenix.PubSub
   alias Billing.InvoiceHandler
+  alias Billing.ElectronicInvoiceErrors
 
   @impl true
   def render(assigns) do
@@ -28,6 +29,8 @@ defmodule BillingWeb.InvoiceLive.Show do
         </:actions>
       </.header>
 
+      <.electronic_invoice_errors errors={@electronic_invoice_errors} />
+
       <.list>
         <:item title="Status">
           <.electronic_state electronic_invoice={@electronic_invoice} />
@@ -43,11 +46,15 @@ defmodule BillingWeb.InvoiceLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     PubSub.subscribe(Billing.PubSub, "invoice:#{id}")
 
+    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(id)
+    electronic_invoice_errors = ElectronicInvoiceErrors.list_errors(electronic_invoice)
+
     {:ok,
      socket
      |> assign(:page_title, "Show Invoice")
      |> assign(:invoice, Invoices.get_invoice!(id))
-     |> assign(:electronic_invoice, ElectronicInvoices.get_electronic_invoice_by_invoice_id(id))}
+     |> assign(:electronic_invoice, electronic_invoice)
+     |> assign(:electronic_invoice_errors, electronic_invoice_errors)}
   end
 
   @impl true
@@ -68,21 +75,25 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   @impl true
   def handle_info({:update_electronic_invoice, %{invoice_id: invoice_id}}, socket) do
+    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+
     {:noreply,
      socket
      |> assign(
        :electronic_invoice,
-       ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+       electronic_invoice
      )}
   end
 
   @impl true
   def handle_info({:electronic_invoice_error, %{invoice_id: invoice_id, error: error}}, socket) do
+    electronic_invoice = ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+
     {:noreply,
      socket
      |> assign(
        :electronic_invoice,
-       ElectronicInvoices.get_electronic_invoice_by_invoice_id(invoice_id)
+       electronic_invoice
      )
      |> put_flash(:error, "Error en la facturación: #{error}")}
   end
@@ -111,10 +122,10 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   attr :electronic_invoice, ElectronicInvoice, default: nil
 
-  def create_electronic_invoice_button(
-        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
-      )
-      when state in [:created, :signed, :sent] do
+  defp create_electronic_invoice_button(
+         %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+       )
+       when state in [:created, :signed, :sent] do
     ~H"""
     <.button disabled>
       <span class="loading loading-spinner"></span>Creando Factura Electrónica
@@ -122,10 +133,10 @@ defmodule BillingWeb.InvoiceLive.Show do
     """
   end
 
-  def create_electronic_invoice_button(
-        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
-      )
-      when state in [:not_found_or_pending] do
+  defp create_electronic_invoice_button(
+         %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+       )
+       when state in [:not_found_or_pending] do
     ~H"""
     <.button phx-click="check_electronic_invoice">
       <.icon name="hero-bolt-slash" /> Verificar Factura Electrónica
@@ -133,10 +144,10 @@ defmodule BillingWeb.InvoiceLive.Show do
     """
   end
 
-  def create_electronic_invoice_button(
-        %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
-      )
-      when state in [:authorized] do
+  defp create_electronic_invoice_button(
+         %{electronic_invoice: %ElectronicInvoice{state: state}} = assigns
+       )
+       when state in [:authorized] do
     ~H"""
     <.link href={~p"/electronic_invoice/#{@electronic_invoice.id}/pdf"} class="btn btn-ghost">
       <.icon name="hero-arrow-down-tray" /> PDF
@@ -148,7 +159,7 @@ defmodule BillingWeb.InvoiceLive.Show do
     """
   end
 
-  def create_electronic_invoice_button(assigns) do
+  defp create_electronic_invoice_button(assigns) do
     ~H"""
     <.button
       phx-click="create_electronic_invoice"
@@ -156,6 +167,22 @@ defmodule BillingWeb.InvoiceLive.Show do
     >
       <.icon name="hero-bolt" /> Crear Factura Electrónica
     </.button>
+    """
+  end
+
+  attr :errors, :list, default: []
+
+  defp electronic_invoice_errors(assigns) do
+    ~H"""
+    <div role="alert" class="alert alert-error">
+      <.icon name="hero-x-circle" />
+
+      <ul>
+        <li :for={{key, value} <- @errors}>
+          {key}: {value}
+        </li>
+      </ul>
+    </div>
     """
   end
 end
