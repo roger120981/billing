@@ -271,7 +271,7 @@ defmodule Billing.InvoiceHandler do
     |> Oban.insert()
   end
 
-  def run_authorization_checker(%ElectronicInvoice{state: _state} = electronic_invoice) do
+  def run_authorization_checker(%ElectronicInvoice{state: _state}) do
     {:ok, nil}
   end
 

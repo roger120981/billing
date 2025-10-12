@@ -1,13 +1,13 @@
 defmodule Billing.TaxiDriverTest do
   use ExUnit.Case
 
-  describe "build_invoice_xml/1" do
-    test "call to the Taxideral api to build an xml invoice" do
-      response = Billing.TaxiDriver.build_invoice_xml(fake_invoice_params())
-
-      IO.inspect(response)
-    end
-  end
+  # describe "build_invoice_xml/1" do
+  #   test "call to the Taxideral api to build an xml invoice" do
+  #     response = Billing.TaxiDriver.build_invoice_xml(fake_invoice_params())
+  #
+  #     IO.puts (response)
+  #   end
+  # end
 
   defp fake_invoice_params do
     %{

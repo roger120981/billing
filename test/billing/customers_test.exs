@@ -21,11 +21,18 @@ defmodule Billing.CustomersTest do
     end
 
     test "create_customer/1 with valid data creates a customer" do
-      valid_attrs = %{full_name: "some full_name", email: "some email"}
+      valid_attrs = %{
+        full_name: "Raiden",
+        email: "raiden@example.com",
+        identification_number: "1234567890",
+        identification_type: "cedula",
+        address: "Address",
+        phone_number: "123456789"
+      }
 
       assert {:ok, %Customer{} = customer} = Customers.create_customer(valid_attrs)
-      assert customer.full_name == "some full_name"
-      assert customer.email == "some email"
+      assert customer.full_name == "Raiden"
+      assert customer.email == "raiden@example.com"
     end
 
     test "create_customer/1 with invalid data returns error changeset" do

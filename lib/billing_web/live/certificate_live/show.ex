@@ -21,6 +21,10 @@ defmodule BillingWeb.CertificateLive.Show do
       </.header>
 
       <.list>
+        <:item title="Name">{@certificate.name}</:item>
+      </.list>
+
+      <.list>
         <:item title="File">{@certificate.file}</:item>
       </.list>
     </Layouts.app>

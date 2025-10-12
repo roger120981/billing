@@ -4,8 +4,20 @@ defmodule BillingWeb.CustomerLiveTest do
   import Phoenix.LiveViewTest
   import Billing.CustomersFixtures
 
-  @create_attrs %{full_name: "some full_name", email: "some email"}
-  @update_attrs %{full_name: "some updated full_name", email: "some updated email"}
+  @create_attrs %{
+    full_name: "Raiden",
+    email: "raiden@example.com",
+    identification_number: "1234567890",
+    identification_type: "cedula",
+    address: "Address",
+    phone_number: "123456789"
+  }
+
+  @update_attrs %{
+    full_name: "Johnny Cage",
+    email: "johnny@example.com"
+  }
+
   @invalid_attrs %{full_name: nil, email: nil}
   defp create_customer(_) do
     customer = customer_fixture()
@@ -46,7 +58,7 @@ defmodule BillingWeb.CustomerLiveTest do
 
       html = render(index_live)
       assert html =~ "Customer created successfully"
-      assert html =~ "some full_name"
+      assert html =~ "Raiden"
     end
 
     test "updates customer in listing", %{conn: conn, customer: customer} do
@@ -72,7 +84,7 @@ defmodule BillingWeb.CustomerLiveTest do
 
       html = render(index_live)
       assert html =~ "Customer updated successfully"
-      assert html =~ "some updated full_name"
+      assert html =~ "Johnny Cage"
     end
 
     test "deletes customer in listing", %{conn: conn, customer: customer} do
@@ -116,7 +128,7 @@ defmodule BillingWeb.CustomerLiveTest do
 
       html = render(show_live)
       assert html =~ "Customer updated successfully"
-      assert html =~ "some updated full_name"
+      assert html =~ "Johnny Cage"
     end
   end
 end

@@ -4,6 +4,8 @@ defmodule Billing.CertificatesFixtures do
   entities via the `Billing.Certificates` context.
   """
 
+  alias Billing.Certificates
+
   @doc """
   Generate a certificate.
   """
@@ -11,10 +13,14 @@ defmodule Billing.CertificatesFixtures do
     {:ok, certificate} =
       attrs
       |> Enum.into(%{
-        file: "some file",
-        password: "some password"
+        name: "My P12 file",
+        file: "file.p12",
+        password: "fake-password"
       })
       |> Billing.Certificates.create_certificate()
+
+    {:ok, certificate} =
+      Certificates.update_certificate_password(certificate, "fake-password")
 
     certificate
   end

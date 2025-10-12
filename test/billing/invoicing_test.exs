@@ -36,7 +36,8 @@ defmodule Billing.InvoicingTest do
       emission_profile_fixture(%{
         company_id: company.id,
         certificate_id: certificate.id,
-        name: "Emission Profile Name"
+        name: "Emission Profile Name",
+        sequence: 1
       })
 
     invoice =
@@ -100,7 +101,7 @@ defmodule Billing.InvoicingTest do
                ambiente: 1,
                estab: 1,
                pto_emi: 1,
-               secuencial: 109,
+               secuencial: 1,
                tipo_emision: 1,
                clave: %{
                  ruc: "1792146739001",
@@ -109,7 +110,7 @@ defmodule Billing.InvoicingTest do
                  estab: 1,
                  fecha_emision: "2025-08-21",
                  pto_emi: 1,
-                 secuencial: 109,
+                 secuencial: 1,
                  tipo_comprobante: 1,
                  tipo_emision: 1
                },

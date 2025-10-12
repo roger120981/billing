@@ -1,7 +1,17 @@
 defmodule Billing.EmissionProfilesTest do
   use Billing.DataCase
 
+  import Billing.CertificatesFixtures
+  import Billing.CompaniesFixtures
+
   alias Billing.EmissionProfiles
+
+  setup do
+    certificate = certificate_fixture()
+    company = company_fixture()
+
+    {:ok, certificate: certificate, company: company}
+  end
 
   describe "emission_profiles" do
     alias Billing.EmissionProfiles.EmissionProfile
@@ -20,8 +30,16 @@ defmodule Billing.EmissionProfilesTest do
       assert EmissionProfiles.get_emission_profile!(emission_profile.id) == emission_profile
     end
 
-    test "create_emission_profile/1 with valid data creates a emission_profile" do
-      valid_attrs = %{name: "some name"}
+    test "create_emission_profile/1 with valid data creates a emission_profile", %{
+      certificate: certificate,
+      company: company
+    } do
+      valid_attrs = %{
+        name: "some name",
+        certificate_id: certificate.id,
+        company_id: company.id,
+        sequence: 1
+      }
 
       assert {:ok, %EmissionProfile{} = emission_profile} =
                EmissionProfiles.create_emission_profile(valid_attrs)

@@ -4,13 +4,38 @@ defmodule BillingWeb.CertificateLiveTest do
   import Phoenix.LiveViewTest
   import Billing.CertificatesFixtures
 
-  @create_attrs %{file: "some file", password: "some password"}
-  @update_attrs %{file: "some updated file", password: "some updated password"}
-  @invalid_attrs %{file: nil, password: nil}
+  @create_attrs %{
+    name: "My P12 file",
+    password: "fake-password"
+  }
+
+  @update_attrs %{
+    name: "Signature P12",
+    password: "password-updated"
+  }
+
+  @invalid_attrs %{name: nil}
   defp create_certificate(_) do
     certificate = certificate_fixture()
 
     %{certificate: certificate}
+  end
+
+  setup do
+    file_path = "./test/support/fixtures/fake-p12-file.p12"
+    file_content = File.read!(file_path)
+    %{size: file_size} = File.stat!(file_path)
+
+    certificate_file =
+      %{
+        last_modified: 1_594_171_879_000,
+        name: "file.p12",
+        content: file_content,
+        size: file_size,
+        type: "application/x-pkcs12"
+      }
+
+    {:ok, certificate_file: certificate_file}
   end
 
   describe "Index" do
@@ -23,7 +48,7 @@ defmodule BillingWeb.CertificateLiveTest do
       assert html =~ certificate.file
     end
 
-    test "saves new certificate", %{conn: conn} do
+    test "saves new certificate", %{conn: conn, certificate_file: certificate_file} do
       {:ok, index_live, _html} = live(conn, ~p"/certificates")
 
       assert {:ok, form_live, _} =
@@ -38,6 +63,10 @@ defmodule BillingWeb.CertificateLiveTest do
              |> form("#certificate-form", certificate: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
+      file = file_input(form_live, "#certificate-form", :certificate_file, [certificate_file])
+
+      assert render_upload(file, "file.p12") =~ "100%"
+
       assert {:ok, index_live, _html} =
                form_live
                |> form("#certificate-form", certificate: @create_attrs)
@@ -46,7 +75,7 @@ defmodule BillingWeb.CertificateLiveTest do
 
       html = render(index_live)
       assert html =~ "Certificate created successfully"
-      assert html =~ "some file"
+      assert html =~ "file.p12"
     end
 
     test "updates certificate in listing", %{conn: conn, certificate: certificate} do
@@ -72,7 +101,7 @@ defmodule BillingWeb.CertificateLiveTest do
 
       html = render(index_live)
       assert html =~ "Certificate updated successfully"
-      assert html =~ "some updated file"
+      assert html =~ "Signature P12"
     end
 
     test "deletes certificate in listing", %{conn: conn, certificate: certificate} do
@@ -119,7 +148,7 @@ defmodule BillingWeb.CertificateLiveTest do
 
       html = render(show_live)
       assert html =~ "Certificate updated successfully"
-      assert html =~ "some updated file"
+      assert html =~ "Signature P12"
     end
   end
 end

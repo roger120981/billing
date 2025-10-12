@@ -3,8 +3,18 @@ defmodule BillingWeb.InvoiceLiveTest do
 
   import Phoenix.LiveViewTest
   import Billing.InvoicesFixtures
+  import Billing.CustomersFixtures
+  import Billing.EmissionProfilesFixtures
 
-  @create_attrs %{issued_at: "2025-08-28"}
+  @create_attrs %{
+    issued_at: ~D[2025-08-28],
+    description: "Invoice Test",
+    due_date: ~D[2025-08-28],
+    amount: Decimal.new("10.0"),
+    tax_rate: Decimal.new("15.0"),
+    payment_method: :cash
+  }
+
   @update_attrs %{issued_at: "2025-08-29"}
   @invalid_attrs %{issued_at: nil}
   defp create_invoice(_) do
@@ -13,16 +23,27 @@ defmodule BillingWeb.InvoiceLiveTest do
     %{invoice: invoice}
   end
 
+  setup do
+    customer = customer_fixture()
+    emission_profile = emission_profile_fixture()
+
+    {:ok, customer: customer, emission_profile: emission_profile}
+  end
+
   describe "Index" do
     setup [:create_invoice]
 
     test "lists all invoices", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/invoices")
 
-      assert html =~ "Listing Invoices"
+      assert html =~ "Listado de Facturas"
     end
 
-    test "saves new invoice", %{conn: conn} do
+    test "saves new invoice", %{
+      conn: conn,
+      customer: customer,
+      emission_profile: emission_profile
+    } do
       {:ok, index_live, _html} = live(conn, ~p"/invoices")
 
       assert {:ok, form_live, _} =
@@ -37,9 +58,14 @@ defmodule BillingWeb.InvoiceLiveTest do
              |> form("#invoice-form", invoice: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
+      attrs =
+        @create_attrs
+        |> Map.put(:customer_id, customer.id)
+        |> Map.put(:emission_profile_id, emission_profile.id)
+
       assert {:ok, index_live, _html} =
                form_live
-               |> form("#invoice-form", invoice: @create_attrs)
+               |> form("#invoice-form", invoice: attrs)
                |> render_submit()
                |> follow_redirect(conn, ~p"/invoices")
 

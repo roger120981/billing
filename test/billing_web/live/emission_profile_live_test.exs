@@ -3,14 +3,23 @@ defmodule BillingWeb.EmissionProfileLiveTest do
 
   import Phoenix.LiveViewTest
   import Billing.EmissionProfilesFixtures
+  import Billing.CertificatesFixtures
+  import Billing.CompaniesFixtures
 
-  @create_attrs %{name: "some name"}
+  @create_attrs %{name: "some name", sequence: 1}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
   defp create_emission_profile(_) do
     emission_profile = emission_profile_fixture()
 
     %{emission_profile: emission_profile}
+  end
+
+  setup do
+    certificate = certificate_fixture()
+    company = company_fixture()
+
+    {:ok, certificate: certificate, company: company}
   end
 
   describe "Index" do
@@ -23,7 +32,7 @@ defmodule BillingWeb.EmissionProfileLiveTest do
       assert html =~ emission_profile.name
     end
 
-    test "saves new emission_profile", %{conn: conn} do
+    test "saves new emission_profile", %{conn: conn, certificate: certificate, company: company} do
       {:ok, index_live, _html} = live(conn, ~p"/emission_profiles")
 
       assert {:ok, form_live, _} =
@@ -38,9 +47,14 @@ defmodule BillingWeb.EmissionProfileLiveTest do
              |> form("#emission_profile-form", emission_profile: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
+      attrs =
+        @create_attrs
+        |> Map.put(:company_id, company.id)
+        |> Map.put(:certificate_id, certificate.id)
+
       assert {:ok, index_live, _html} =
                form_live
-               |> form("#emission_profile-form", emission_profile: @create_attrs)
+               |> form("#emission_profile-form", emission_profile: attrs)
                |> render_submit()
                |> follow_redirect(conn, ~p"/emission_profiles")
 

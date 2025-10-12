@@ -11,8 +11,12 @@ defmodule Billing.CustomersFixtures do
     {:ok, customer} =
       attrs
       |> Enum.into(%{
-        email: "some email",
-        full_name: "some full_name"
+        full_name: "Sub Zero",
+        email: "sub.zero@example.com",
+        identification_number: "1234567890",
+        identification_type: :cedula,
+        address: "Arena",
+        phone_number: "123456789"
       })
       |> Billing.Customers.create_customer()
 

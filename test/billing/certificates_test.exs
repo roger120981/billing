@@ -21,7 +21,11 @@ defmodule Billing.CertificatesTest do
     end
 
     test "create_certificate/1 with valid data creates a certificate" do
-      valid_attrs = %{file: "some file", password: "some password"}
+      valid_attrs = %{
+        name: "some name",
+        file: "some file",
+        password: "some password"
+      }
 
       assert {:ok, %Certificate{} = certificate} = Certificates.create_certificate(valid_attrs)
       assert certificate.file == "some file"
