@@ -1,4 +1,4 @@
-defmodule Billing.Ai.Tools.InvoiceFunction do
+defmodule Billing.LLM.InvoiceTool do
   alias LangChain.Function
   alias Billing.Invoices
 

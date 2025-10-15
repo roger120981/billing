@@ -1,4 +1,4 @@
-defmodule Billing.Ai.Models do
+defmodule Billing.LLM do
   alias LangChain.ChatModels.ChatGoogleAI
   alias LangChain.ChatModels.ChatOpenAI
 

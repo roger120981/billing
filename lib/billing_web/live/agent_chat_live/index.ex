@@ -1,7 +1,8 @@
 defmodule BillingWeb.AgentChatLive.Index do
   use BillingWeb, :live_view
 
-  alias Billing.Ai
+  alias Billing.LLM
+  alias Billing.LLM.InvoiceTool
   alias Phoenix.LiveView.AsyncResult
   alias LangChain.LangChainError
   alias LangChain.Message.ContentPart
@@ -135,8 +136,7 @@ defmodule BillingWeb.AgentChatLive.Index do
 
   defp assign_llm_chain(socket) do
     live_view_pid = self()
-
-    llm = Ai.Models.get_default_llm()
+    llm = LLM.get_default_llm()
 
     handlers = %{
       on_llm_new_delta: fn _chain, deltas ->
@@ -157,7 +157,7 @@ defmodule BillingWeb.AgentChatLive.Index do
       %{llm: llm}
       |> LLMChain.new!()
       |> LLMChain.add_callback(handlers)
-      |> LLMChain.add_tools(Ai.Tools.InvoiceFunction.new!())
+      |> LLMChain.add_tools(InvoiceTool.new!())
       |> LLMChain.add_message(Message.new_system!(system_message))
 
     assign(socket, :llm_chain, llm_chain)
@@ -182,7 +182,8 @@ El usuario dice:
       llm_chain
       |> LLMChain.add_message(
         PromptTemplate.to_message!(template, %{
-          today: today |> Calendar.strftime("%A, %Y-%m-%d")
+          today: today |> Calendar.strftime("%A, %Y-%m-%d"),
+          user_text: user_text
         })
       )
 
