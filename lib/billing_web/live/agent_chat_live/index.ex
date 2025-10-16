@@ -10,6 +10,8 @@ defmodule BillingWeb.AgentChatLive.Index do
   alias LangChain.Message
   alias LangChain.PromptTemplate
   alias LangChain.Message
+  alias Billing.ChatMessages
+  alias Billing.ChatMessages.ChatMessage
 
   require Logger
 
@@ -22,8 +24,8 @@ defmodule BillingWeb.AgentChatLive.Index do
         <:subtitle>Use this form to chat with the ai agent.</:subtitle>
       </.header>
 
-      <.form for={@form} phx-submit="save">
-        <.input field={@form[:message]} placeholder="Hola!" />
+      <.form for={@form} phx-change="validate" phx-submit="save">
+        <.input field={@form[:content]} placeholder="Hola!" />
 
         <footer>
           <.button phx-disable-with="Sending..." variant="primary">Send</.button>
@@ -58,21 +60,13 @@ defmodule BillingWeb.AgentChatLive.Index do
      socket
      |> assign(:page_title, "Agent Chat")
      |> assign(:delta_text, nil)
-     |> assign(:display_messages, [])}
+     |> assign_display_messages()}
   end
 
   @impl true
   def handle_params(_params, _uri, socket) do
     socket =
       socket
-      |> assign(:display_messages, [
-        %{
-          role: :assistant,
-          hidden: false,
-          content:
-            "¡Hola! Me llamo Joselo y soy tu asistente tributario personal. ¿Cómo puedo ayudarte?"
-        }
-      ])
       |> reset_message_form()
       |> assign_llm_chain()
       |> assign(:async_result, %AsyncResult{})
@@ -81,20 +75,28 @@ defmodule BillingWeb.AgentChatLive.Index do
   end
 
   @impl true
-  def handle_event("save", %{"message" => text}, socket) do
-    text = String.trim(text)
+  def handle_event("validate", %{"chat_message" => params}, socket) do
+    changeset =
+      %ChatMessage{}
+      |> ChatMessages.change_chat_message(params)
+      |> Map.put(:action, :validate)
 
-    socket =
-      if text != "" do
-        socket
-        |> add_user_message(text)
-        |> reset_message_form()
-        |> run_chain()
-      else
-        socket
-      end
+    {:noreply, assign_form(socket, changeset)}
+  end
 
-    {:noreply, socket}
+  @impl true
+  def handle_event("save", %{"chat_message" => params}, socket) do
+    case ChatMessages.create_chat_message(params) do
+      {:ok, chat_message} ->
+        {:noreply,
+         socket
+         |> add_user_message(chat_message.content)
+         |> reset_message_form()
+         |> run_chain()}
+
+      {:error, changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
   end
 
   @impl true
@@ -145,35 +147,36 @@ defmodule BillingWeb.AgentChatLive.Index do
 
   @impl true
   def handle_info({:message_processed, last_message}, socket) do
-    content =
-      if last_message.content do
-        ContentPart.content_to_string(last_message.content)
-      else
-        ""
-      end
+    content = ContentPart.content_to_string(last_message.content)
 
-    socket =
-      socket
-      |> append_display_message(%{
-        role: last_message.role,
-        content: content,
-        tool_calls: last_message.tool_calls,
-        tool_results: last_message.tool_results
-      })
-      |> assign(:delta_text, nil)
+    chat_message_attrs = %{
+      role: last_message.role,
+      content: content,
+      tool_calls: last_message.tool_calls,
+      tool_results: last_message.tool_results
+    }
 
-    {:noreply, socket}
+    case ChatMessages.create_chat_message(chat_message_attrs) do
+      {:ok, chat_message} ->
+        {:noreply,
+         socket
+         |> append_display_message(chat_message)
+         |> assign(:delta_text, nil)}
+
+      {:error, changeset} ->
+        {:noreply, put_flash(socket, :error, inspect(changeset))}
+    end
   end
 
   def handle_info({:tool_executed, tool_message}, socket) do
-    message = %{
+    chat_message_attrs = %{
       role: tool_message.role,
       hidden: false,
-      content: "Ejecutando herramienta",
+      content: "Herramienta ejecutada",
       tool_results: tool_message.tool_results
     }
 
-    {:noreply, append_display_message(socket, message)}
+    {:noreply, append_display_message(socket, chat_message_attrs)}
   end
 
   defp assign_llm_chain(socket) do
@@ -273,6 +276,24 @@ El usuario dice:
   end
 
   defp reset_message_form(socket) do
-    assign(socket, :form, to_form(%{"message" => ""}))
+    changeset = ChatMessages.change_chat_message(%ChatMessage{})
+    assign_form(socket, changeset)
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
+  end
+
+  defp assign_display_messages(socket) do
+    welcome_message = [
+      %{
+        role: :assistant,
+        hidden: false,
+        content:
+          "¡Hola! Me llamo Joselo y soy tu asistente tributario personal. ¿Cómo puedo ayudarte?"
+      }
+    ]
+
+    assign(socket, :display_messages, welcome_message ++ ChatMessages.list_chat_messages())
   end
 end
