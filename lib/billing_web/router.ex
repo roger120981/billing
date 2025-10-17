@@ -21,10 +21,6 @@ defmodule BillingWeb.Router do
   scope "/", BillingWeb do
     pipe_through :browser
 
-    live_session :init_assings, on_mount: [{CartSession, :mount_session}] do
-      live "/", CatalogLive.Index, :index
-    end
-
     live "/customers", CustomerLive.Index, :index
     live "/customers/new", CustomerLive.Form, :new
     live "/customers/:id", CustomerLive.Show, :show
@@ -59,6 +55,11 @@ defmodule BillingWeb.Router do
     live "/products/:id/edit", ProductLive.Form, :edit
 
     live "/agent_chat", AgentChatLive.Index, :index
+
+    live_session :init_assings, on_mount: [{CartSession, :mount_session}] do
+      live "/", CatalogLive.Index, :index
+      live "/cart", CartLive.Index, :index
+    end
   end
 
   # Other scopes may use custom stacks.

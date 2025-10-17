@@ -2,6 +2,7 @@ defmodule BillingWeb.CatalogLive.Index do
   use BillingWeb, :live_view
 
   alias Billing.Products
+  alias Billing.Carts
 
   @impl true
   def render(assigns) do
@@ -10,8 +11,6 @@ defmodule BillingWeb.CatalogLive.Index do
       <.header>
         Product Catalog
       </.header>
-
-      {inspect(@cart_uuid)}
 
       <.table
         id="products"
@@ -40,8 +39,15 @@ defmodule BillingWeb.CatalogLive.Index do
   @impl true
   def handle_event("add_to_cart", %{"id" => id}, socket) do
     product = Products.get_product!(id)
+    attrs = %{cart_uuid: socket.assigns.cart_uuid, product_id: product.id}
 
-    {:noreply, put_flash(socket, :info, "#{product.name} added to your cart")}
+    case Carts.create_cart(attrs) do
+      {:ok, _cart} ->
+        {:noreply, put_flash(socket, :info, "#{product.name} added to your cart")}
+
+      {:error, changeset} ->
+        {:noreply, put_flash(socket, :error, inspect(changeset))}
+    end
   end
 
   defp list_products() do

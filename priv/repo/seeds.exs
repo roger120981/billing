@@ -78,7 +78,7 @@ Enum.each(1..20, fn _ ->
   Invoices.save_taxes(invoice, amount_with_tax)
 end)
 
-customer =
+_product =
   %Product{
     name: "Mortal Kombat I",
     price: Decimal.new("5.0")
