@@ -8,7 +8,7 @@ defmodule Billing.OrdersTest do
 
     import Billing.OrdersFixtures
 
-    @invalid_attrs %{cart_uuid: nil, full_name: nil, phone_number: nil}
+    @invalid_attrs %{full_name: nil, phone_number: nil}
 
     test "list_orders/0 returns all orders" do
       order = order_fixture()
@@ -22,13 +22,11 @@ defmodule Billing.OrdersTest do
 
     test "create_order/1 with valid data creates a order" do
       valid_attrs = %{
-        cart_uuid: "7488a646-e31f-11e4-aace-600308960662",
         full_name: "some full_name",
         phone_number: "some phone_number"
       }
 
       assert {:ok, %Order{} = order} = Orders.create_order(valid_attrs)
-      assert order.cart_uuid == "7488a646-e31f-11e4-aace-600308960662"
       assert order.full_name == "some full_name"
       assert order.phone_number == "some phone_number"
     end
@@ -41,13 +39,11 @@ defmodule Billing.OrdersTest do
       order = order_fixture()
 
       update_attrs = %{
-        cart_uuid: "7488a646-e31f-11e4-aace-600308960668",
         full_name: "some updated full_name",
         phone_number: "some updated phone_number"
       }
 
       assert {:ok, %Order{} = order} = Orders.update_order(order, update_attrs)
-      assert order.cart_uuid == "7488a646-e31f-11e4-aace-600308960668"
       assert order.full_name == "some updated full_name"
       assert order.phone_number == "some updated phone_number"
     end

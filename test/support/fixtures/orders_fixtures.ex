@@ -11,7 +11,6 @@ defmodule Billing.OrdersFixtures do
     {:ok, order} =
       attrs
       |> Enum.into(%{
-        cart_uuid: "7488a646-e31f-11e4-aace-600308960662",
         full_name: "some full_name",
         phone_number: "some phone_number"
       })
