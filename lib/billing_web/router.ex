@@ -60,6 +60,9 @@ defmodule BillingWeb.Router do
       live "/", CatalogLive.Index, :index
       live "/cart", CartLive.Index, :index
     end
+
+    live "/orders", OrderLive.Index, :index
+    live "/orders/:id", OrderLive.Show, :show
   end
 
   # Other scopes may use custom stacks.

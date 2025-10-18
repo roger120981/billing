@@ -60,6 +60,11 @@ defmodule BillingWeb.Layouts do
             </.link>
           </li>
           <li>
+            <.link navigate={~p"/orders"} class="btn btn-ghost">
+              Orders
+            </.link>
+          </li>
+          <li>
             <.link navigate={~p"/invoices"} class="btn btn-ghost">
               Invoices
             </.link>

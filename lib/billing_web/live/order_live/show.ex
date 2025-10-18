@@ -1,0 +1,35 @@
+defmodule BillingWeb.OrderLive.Show do
+  use BillingWeb, :live_view
+
+  alias Billing.Orders
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <Layouts.app flash={@flash}>
+      <.header>
+        Order {@order.id}
+        <:subtitle>This is a order record from your database.</:subtitle>
+        <:actions>
+          <.button navigate={~p"/orders"}>
+            <.icon name="hero-arrow-left" />
+          </.button>
+        </:actions>
+      </.header>
+
+      <.list>
+        <:item title="Name">{@order.full_name}</:item>
+        <:item title="Price">{@order.phone_number}</:item>
+      </.list>
+    </Layouts.app>
+    """
+  end
+
+  @impl true
+  def mount(%{"id" => id}, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:page_title, "Show Order")
+     |> assign(:order, Orders.get_order!(id))}
+  end
+end
