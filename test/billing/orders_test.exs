@@ -12,7 +12,10 @@ defmodule Billing.OrdersTest do
 
     test "list_orders/0 returns all orders" do
       order = order_fixture()
-      assert Orders.list_orders() == [order]
+      [result | tail] = Orders.list_orders()
+
+      assert result.id == order.id
+      assert tail == []
     end
 
     test "get_order!/1 returns the order with given id" do

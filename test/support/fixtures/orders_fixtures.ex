@@ -12,7 +12,10 @@ defmodule Billing.OrdersFixtures do
       attrs
       |> Enum.into(%{
         full_name: "some full_name",
-        phone_number: "some phone_number"
+        phone_number: "some phone_number",
+        items: [
+          %{name: "Product", price: Decimal.new("5.00")}
+        ]
       })
       |> Billing.Orders.create_order()
 

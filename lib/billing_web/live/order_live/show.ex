@@ -21,6 +21,16 @@ defmodule BillingWeb.OrderLive.Show do
         <:item title="Name">{@order.full_name}</:item>
         <:item title="Price">{@order.phone_number}</:item>
       </.list>
+
+      <h2>Items</h2>
+
+      <.table
+        id="items"
+        rows={@order.items}
+      >
+        <:col :let={item} label="Name">{item.name}</:col>
+        <:col :let={item} label="Price">{item.price}</:col>
+      </.table>
     </Layouts.app>
     """
   end

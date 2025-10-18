@@ -35,7 +35,7 @@ defmodule Billing.Orders do
       ** (Ecto.NoResultsError)
 
   """
-  def get_order!(id), do: Repo.get!(Order, id)
+  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(:items)
 
   @doc """
   Creates a order.
