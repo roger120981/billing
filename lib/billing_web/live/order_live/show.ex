@@ -14,6 +14,9 @@ defmodule BillingWeb.OrderLive.Show do
           <.button navigate={~p"/orders"}>
             <.icon name="hero-arrow-left" />
           </.button>
+          <.button variant="primary" phx-click="create_invoice">
+            <.icon name="hero-pencil-square" /> Create Invoice
+          </.button>
         </:actions>
       </.header>
 
@@ -41,5 +44,10 @@ defmodule BillingWeb.OrderLive.Show do
      socket
      |> assign(:page_title, "Show Order")
      |> assign(:order, Orders.get_order!(id))}
+  end
+
+  @impl true
+  def handle_event("create_invoice", _params, socket) do
+    {:noreply, socket}
   end
 end

@@ -30,8 +30,18 @@ defmodule BillingWeb.CartLive.Index do
       </.table>
 
       <.form for={@form} id="order-form" phx-change="validate" phx-submit="save" autocomplete="off">
-        <.input field={@form[:full_name]} type="text" label="Your Name" />
-        <.input field={@form[:phone_number]} type="text" label="Your Phone Number" />
+        <.input field={@form[:full_name]} type="text" label="Full name" />
+        <.input field={@form[:email]} type="text" label="Email" />
+        <.input field={@form[:identification_number]} type="text" label="Identification Number" />
+        <.input
+          field={@form[:identification_type]}
+          type="select"
+          label="Identification Type"
+          options={@identification_types}
+        />
+        <.input field={@form[:address]} type="text" label="Address" />
+        <.input field={@form[:phone_number]} type="text" label="Phone Number" />
+
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Create order</.button>
         </footer>
@@ -53,12 +63,14 @@ defmodule BillingWeb.CartLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     order = %Order{}
+    identification_types = [{"Cedula", :cedula}, {"Ruc", :ruc}]
 
     {:ok,
      socket
      |> assign(:page_title, "Your Cart")
      |> assign(:order, order)
      |> assign(:form, to_form(Orders.change_order(order)))
+     |> assign(:identification_types, identification_types)
      |> stream(:carts, list_carts(socket.assigns.cart_uuid))}
   end
 

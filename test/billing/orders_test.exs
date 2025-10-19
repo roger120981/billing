@@ -25,8 +25,12 @@ defmodule Billing.OrdersTest do
 
     test "create_order/1 with valid data creates a order" do
       valid_attrs = %{
-        full_name: "some full_name",
-        phone_number: "some phone_number",
+        full_name: "Raiden",
+        email: "raiden@example.com",
+        identification_number: "1234567890",
+        identification_type: "cedula",
+        address: "Address",
+        phone_number: "123456789",
         items: [
           %{
             name: "Product",
@@ -36,8 +40,8 @@ defmodule Billing.OrdersTest do
       }
 
       assert {:ok, %Order{} = order} = Orders.create_order(valid_attrs)
-      assert order.full_name == "some full_name"
-      assert order.phone_number == "some phone_number"
+      assert order.full_name == "Raiden"
+      assert order.phone_number == "123456789"
 
       [item | tail] = order.items
 

@@ -11,8 +11,12 @@ defmodule Billing.OrdersFixtures do
     {:ok, order} =
       attrs
       |> Enum.into(%{
-        full_name: "some full_name",
-        phone_number: "some phone_number",
+        full_name: "Sub Zero",
+        email: "sub.zero@example.com",
+        identification_number: "1234567890",
+        identification_type: :cedula,
+        address: "Arena",
+        phone_number: "123456789",
         items: [
           %{name: "Product", price: Decimal.new("5.00")}
         ]

@@ -6,6 +6,10 @@ defmodule Billing.Orders.Order do
 
   schema "orders" do
     field :full_name, :string
+    field :email, :string
+    field :identification_number, :string
+    field :identification_type, Ecto.Enum, values: [:cedula, :ruc]
+    field :address, :string
     field :phone_number, :string
 
     timestamps(type: :utc_datetime)
@@ -16,8 +20,22 @@ defmodule Billing.Orders.Order do
   @doc false
   def changeset(order, attrs) do
     order
-    |> cast(attrs, [:full_name, :phone_number])
-    |> validate_required([:full_name, :phone_number])
+    |> cast(attrs, [
+      :full_name,
+      :email,
+      :identification_number,
+      :identification_type,
+      :address,
+      :phone_number
+    ])
+    |> validate_required([
+      :full_name,
+      :email,
+      :identification_number,
+      :identification_type,
+      :address,
+      :phone_number
+    ])
     |> cast_assoc(:items)
   end
 end

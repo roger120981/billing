@@ -9,11 +9,6 @@ defmodule BillingWeb.OrderLive.Index do
     <Layouts.app flash={@flash}>
       <.header>
         Listing Orders
-        <:actions>
-          <.button variant="primary" navigate={~p"/orders/new"}>
-            <.icon name="hero-plus" /> New Order
-          </.button>
-        </:actions>
       </.header>
 
       <.table
