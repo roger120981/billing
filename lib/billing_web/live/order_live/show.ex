@@ -2,8 +2,6 @@ defmodule BillingWeb.OrderLive.Show do
   use BillingWeb, :live_view
 
   alias Billing.Orders
-  alias Billing.Customers
-  alias Billing.Customers.Customer
 
   @impl true
   def render(assigns) do
@@ -16,9 +14,9 @@ defmodule BillingWeb.OrderLive.Show do
           <.button navigate={~p"/orders"}>
             <.icon name="hero-arrow-left" />
           </.button>
-          <.button variant="primary" phx-click="create_invoice">
-            <.icon name="hero-pencil-square" /> Create Invoice
-          </.button>
+          <.link navigate={~p"/invoices/new/#{@order.id}"}>
+            <.icon name="hero-pencil-square" /> New Invoice
+          </.link>
         </:actions>
       </.header>
 
@@ -46,21 +44,5 @@ defmodule BillingWeb.OrderLive.Show do
      socket
      |> assign(:page_title, "Show Order")
      |> assign(:order, Orders.get_order!(id))}
-  end
-
-  @impl true
-  def handle_event("create_invoice", _params, socket) do
-    with {:ok, _customer} <- find_or_create_customer(socket.assigns.order) do
-      {:noreply, redirect(socket, to: ~p"/invoices")}
-    else
-      {:error, error} ->
-        {:noreply, put_flash(socket, :error, inspect(error))}
-    end
-  end
-
-  defp find_or_create_customer(order) do
-    order
-    |> Map.take(Customer.list_required_fields())
-    |> Customers.find_or_create_customer()
   end
 end

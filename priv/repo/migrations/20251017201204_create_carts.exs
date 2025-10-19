@@ -10,6 +10,6 @@ defmodule Billing.Repo.Migrations.CreateCarts do
       timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:carts, [:cart_uuid])
+    create unique_index(:carts, [:cart_uuid, :product_name, :product_price])
   end
 end

@@ -78,9 +78,14 @@ Enum.each(1..20, fn _ ->
   Invoices.save_taxes(invoice, amount_with_tax)
 end)
 
-_product =
-  %Product{
-    name: "Mortal Kombat I",
-    price: Decimal.new("5.0")
-  }
-  |> Repo.insert!()
+%Product{
+  name: "Mortal Kombat I",
+  price: Decimal.new("5.0")
+}
+|> Repo.insert!()
+
+%Product{
+  name: "Street Fighter Turbo",
+  price: Decimal.new("10.0")
+}
+|> Repo.insert!()

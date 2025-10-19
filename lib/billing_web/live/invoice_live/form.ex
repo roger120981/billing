@@ -3,6 +3,9 @@ defmodule BillingWeb.InvoiceLive.Form do
 
   alias Billing.Invoices
   alias Billing.Invoices.Invoice
+  alias Billing.Customers
+  alias Billing.Customers.Customer
+  alias Billing.Orders
 
   @impl true
   def render(assigns) do
@@ -75,13 +78,32 @@ defmodule BillingWeb.InvoiceLive.Form do
     |> assign(:form, to_form(Invoices.change_invoice(invoice)))
   end
 
-  defp apply_action(socket, :new, _params) do
-    invoice = %Invoice{}
+  defp apply_action(socket, :new, %{"order_id" => order_id}) do
+    order = Orders.get_order!(order_id)
 
-    socket
-    |> assign(:page_title, "New Invoice")
-    |> assign(:invoice, invoice)
-    |> assign(:form, to_form(Invoices.change_invoice(invoice)))
+    with {:ok, customer} <- find_or_create_customer(order) do
+      order_attrs =
+        Enum.reduce(order.items, %{"description" => "", "amount" => Decimal.new("0.0")}, fn item,
+                                                                                            acc ->
+          acc
+          |> Map.replace(
+            "description",
+            acc["description"] <> item.name <> "\t" <> Decimal.to_string(item.price) <> "\n"
+          )
+          |> Map.replace("amount", Decimal.add(acc["amount"], item.price))
+        end)
+
+      attrs = Map.merge(order_attrs, %{"customer_id" => customer.id})
+
+      assign_new_invoice(socket, attrs)
+    else
+      {:error, error} ->
+        put_flash(socket, :error, inspect(error))
+    end
+  end
+
+  defp apply_action(socket, :new, _params) do
+    assign_new_invoice(socket)
   end
 
   @impl true
@@ -130,5 +152,20 @@ defmodule BillingWeb.InvoiceLive.Form do
   defp save_invoice_taxes(invoice) do
     amount_with_tax = Invoices.calculate_amount_with_tax(invoice)
     Invoices.save_taxes(invoice, amount_with_tax)
+  end
+
+  defp find_or_create_customer(order) do
+    order
+    |> Map.take(Customer.list_required_fields())
+    |> Customers.find_or_create_customer()
+  end
+
+  defp assign_new_invoice(socket, params \\ %{}) do
+    invoice = %Invoice{}
+
+    socket
+    |> assign(:page_title, "New Invoice")
+    |> assign(:invoice, invoice)
+    |> assign(:form, to_form(Invoices.change_invoice(invoice, params)))
   end
 end

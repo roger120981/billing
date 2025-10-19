@@ -27,6 +27,7 @@ defmodule BillingWeb.Router do
     live "/customers/:id/edit", CustomerLive.Form, :edit
 
     live "/invoices", InvoiceLive.Index, :index
+    live "/invoices/new/:order_id", InvoiceLive.Form, :new
     live "/invoices/new", InvoiceLive.Form, :new
     live "/invoices/:id", InvoiceLive.Show, :show
     live "/invoices/:id/edit", InvoiceLive.Form, :edit
