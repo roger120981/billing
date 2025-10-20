@@ -47,13 +47,13 @@ defmodule Billing.InvoicingTest do
         issued_at: ~D[2025-08-21],
         description: "Invoice Description",
         due_date: ~D[2025-09-21],
-        amount: 24.75,
+        amount: 28.46,
         tax_rate: 15.0,
         payment_method: "cash"
       })
 
-    amount_with_tax = Billing.Invoices.calculate_amount_with_tax(invoice)
-    Billing.Invoices.save_taxes(invoice, amount_with_tax)
+    amount_without_tax = Billing.Invoices.calculate_amount_without_tax(invoice)
+    Billing.Invoices.save_taxes(invoice, amount_without_tax)
 
     {:ok, invoice: invoice}
   end
@@ -80,7 +80,7 @@ defmodule Billing.InvoicingTest do
                  %{
                    valor: 3.71,
                    codigo: 2,
-                   base_imponible: 24.75,
+                   base_imponible: 28.46,
                    codigo_porcentaje: 4,
                    descuentoAdicional: 0.0
                  },
@@ -142,7 +142,7 @@ defmodule Billing.InvoicingTest do
                    %{
                      valor: 3.71,
                      codigo: 2,
-                     base_imponible: 24.75,
+                     base_imponible: 28.46,
                      codigo_porcentaje: 4,
                      tarifa: 15.0
                    }

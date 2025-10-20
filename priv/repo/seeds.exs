@@ -74,8 +74,8 @@ Enum.each(1..20, fn _ ->
     }
     |> Repo.insert!()
 
-  amount_with_tax = Invoices.calculate_amount_with_tax(invoice)
-  Invoices.save_taxes(invoice, amount_with_tax)
+  amount_without_tax = Invoices.calculate_amount_without_tax(invoice)
+  Invoices.save_taxes(invoice, amount_without_tax)
 end)
 
 %Product{

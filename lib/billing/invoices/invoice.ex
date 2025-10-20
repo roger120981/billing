@@ -15,7 +15,7 @@ defmodule Billing.Invoices.Invoice do
     field :due_date, :date
     field :amount, :decimal
     field :tax_rate, :decimal, default: 15.0
-    field :amount_with_tax, :decimal
+    field :amount_without_tax, :decimal
     field :payment_method, Ecto.Enum, values: [:cash, :credit_card, :bank_transfer]
 
     timestamps(type: :utc_datetime)

@@ -82,13 +82,16 @@ defmodule BillingWeb.InvoiceLive.Form do
     order = Orders.get_order!(order_id)
 
     with {:ok, customer} <- find_or_create_customer(order) do
+      acc = %{"description" => "", "amount" => Decimal.new("0.0")}
+
       order_attrs =
-        Enum.reduce(order.items, %{"description" => "", "amount" => Decimal.new("0.0")}, fn item,
-                                                                                            acc ->
+        Enum.reduce(order.items, acc, fn item, acc ->
+          price = Decimal.to_string(item.price)
+
           acc
           |> Map.replace(
             "description",
-            acc["description"] <> item.name <> "\t" <> Decimal.to_string(item.price) <> "\n"
+            Enum.join([acc["description"], "#{item.name} (#{price})"], " | ")
           )
           |> Map.replace("amount", Decimal.add(acc["amount"], item.price))
         end)
@@ -150,8 +153,8 @@ defmodule BillingWeb.InvoiceLive.Form do
   defp return_path("show", invoice), do: ~p"/invoices/#{invoice}"
 
   defp save_invoice_taxes(invoice) do
-    amount_with_tax = Invoices.calculate_amount_with_tax(invoice)
-    Invoices.save_taxes(invoice, amount_with_tax)
+    amount_without_tax = Invoices.calculate_amount_without_tax(invoice)
+    Invoices.save_taxes(invoice, amount_without_tax)
   end
 
   defp find_or_create_customer(order) do
