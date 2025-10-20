@@ -44,14 +44,36 @@ defmodule BillingWeb.Layouts do
       </div>
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
+          <!--
+          <li>
+            <.link navigate={~p"/"} class="btn btn-ghost">
+              Catalog
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/cart"} class="btn btn-ghost">
+              Cart
+            </.link>
+          </li>
+          -->
           <li>
             <.link navigate={~p"/agent_chat"} class="btn btn-ghost">
               AI Chat
             </.link>
           </li>
           <li>
+            <.link navigate={~p"/orders"} class="btn btn-ghost">
+              Orders
+            </.link>
+          </li>
+          <li>
             <.link navigate={~p"/invoices"} class="btn btn-ghost">
               Invoices
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/products"} class="btn btn-ghost">
+              Products
             </.link>
           </li>
           <li>

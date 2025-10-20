@@ -1,6 +1,9 @@
 defmodule BillingWeb.Router do
   use BillingWeb, :router
 
+  alias BillingWeb.Plugs.CartPlug
+  alias BillingWeb.LiveSessions.CartSession
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +11,7 @@ defmodule BillingWeb.Router do
     plug :put_root_layout, html: {BillingWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug CartPlug
   end
 
   pipeline :api do
@@ -17,14 +21,13 @@ defmodule BillingWeb.Router do
   scope "/", BillingWeb do
     pipe_through :browser
 
-    live "/", InvoiceLive.Index, :index
-
     live "/customers", CustomerLive.Index, :index
     live "/customers/new", CustomerLive.Form, :new
     live "/customers/:id", CustomerLive.Show, :show
     live "/customers/:id/edit", CustomerLive.Form, :edit
 
     live "/invoices", InvoiceLive.Index, :index
+    live "/invoices/new/:order_id", InvoiceLive.Form, :new
     live "/invoices/new", InvoiceLive.Form, :new
     live "/invoices/:id", InvoiceLive.Show, :show
     live "/invoices/:id/edit", InvoiceLive.Form, :edit
@@ -47,7 +50,20 @@ defmodule BillingWeb.Router do
     get "/electronic_invoice/:id/pdf", ElectronicInvoiceController, :pdf
     get "/electronic_invoice/:id/xml", ElectronicInvoiceController, :xml
 
+    live "/products", ProductLive.Index, :index
+    live "/products/new", ProductLive.Form, :new
+    live "/products/:id", ProductLive.Show, :show
+    live "/products/:id/edit", ProductLive.Form, :edit
+
     live "/agent_chat", AgentChatLive.Index, :index
+
+    live_session :init_assings, on_mount: [{CartSession, :mount_session}] do
+      live "/", CatalogLive.Index, :index
+      live "/cart", CartLive.Index, :index
+    end
+
+    live "/orders", OrderLive.Index, :index
+    live "/orders/:id", OrderLive.Show, :show
   end
 
   # Other scopes may use custom stacks.

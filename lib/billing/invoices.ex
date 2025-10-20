@@ -103,15 +103,15 @@ defmodule Billing.Invoices do
     Invoice.changeset(invoice, attrs)
   end
 
-  def calculate_amount_with_tax(%Invoice{} = invoice) do
-    amount = invoice.amount
+  def calculate_amount_without_tax(%Invoice{} = invoice) do
     tax_rate = Decimal.div(invoice.tax_rate, 100)
-    Decimal.add(amount, Decimal.mult(amount, tax_rate))
+
+    Decimal.div(invoice.amount, Decimal.add(1, tax_rate))
   end
 
-  def save_taxes(%Invoice{} = invoice, %Decimal{} = amount_with_tax) do
+  def save_taxes(%Invoice{} = invoice, %Decimal{} = amount_without_tax) do
     query = from(i in Invoice, where: i.id == ^invoice.id)
 
-    Repo.update_all(query, set: [amount_with_tax: amount_with_tax])
+    Repo.update_all(query, set: [amount_without_tax: amount_without_tax])
   end
 end

@@ -3,6 +3,6 @@ defmodule BillingWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Listado de Facturas"
+    assert html_response(conn, 200) =~ "Catalog"
   end
 end

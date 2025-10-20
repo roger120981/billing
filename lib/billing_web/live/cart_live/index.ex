@@ -1,0 +1,126 @@
+defmodule BillingWeb.CartLive.Index do
+  use BillingWeb, :live_view
+
+  alias Billing.Carts
+  alias Billing.Orders
+  alias Billing.Orders.Order
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <Layouts.app flash={@flash}>
+      <.header>
+        Your Cart
+      </.header>
+
+      <.table
+        id="carts"
+        rows={@streams.carts}
+      >
+        <:col :let={{_id, cart}} label="Name">{cart.product_name}</:col>
+        <:col :let={{_id, cart}} label="Price">{cart.product_price}</:col>
+        <:action :let={{id, cart}}>
+          <.button
+            phx-click={JS.push("delete", value: %{id: cart.id}) |> hide("##{id}")}
+            data-confirm="Are you sure?"
+          >
+            Delete
+          </.button>
+        </:action>
+      </.table>
+
+      <.form for={@form} id="order-form" phx-change="validate" phx-submit="save" autocomplete="off">
+        <.input field={@form[:full_name]} type="text" label="Full name" />
+        <.input field={@form[:email]} type="text" label="Email" />
+        <.input field={@form[:identification_number]} type="text" label="Identification Number" />
+        <.input
+          field={@form[:identification_type]}
+          type="select"
+          label="Identification Type"
+          options={@identification_types}
+        />
+        <.input field={@form[:address]} type="text" label="Address" />
+        <.input field={@form[:phone_number]} type="text" label="Phone Number" />
+
+        <footer>
+          <.button phx-disable-with="Saving..." variant="primary">Create order</.button>
+        </footer>
+      </.form>
+    </Layouts.app>
+    """
+  end
+
+  on_mount {__MODULE__, :default}
+
+  def on_mount(:default, _params, _session, socket) do
+    if Enum.empty?(list_carts(socket.assigns.cart_uuid)) do
+      {:halt, redirect(socket, to: ~p"/")}
+    else
+      {:cont, socket}
+    end
+  end
+
+  @impl true
+  def mount(_params, _session, socket) do
+    order = %Order{}
+    identification_types = [{"Cedula", :cedula}, {"Ruc", :ruc}]
+
+    {:ok,
+     socket
+     |> assign(:page_title, "Your Cart")
+     |> assign(:order, order)
+     |> assign(:form, to_form(Orders.change_order(order)))
+     |> assign(:identification_types, identification_types)
+     |> stream(:carts, list_carts(socket.assigns.cart_uuid))}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    cart = Carts.get_cart!(id)
+    {:ok, _} = Carts.delete_cart(cart)
+
+    {:noreply, stream_delete(socket, :carts, cart)}
+  end
+
+  @impl true
+  def handle_event("validate", %{"order" => order_params}, socket) do
+    changeset = Orders.change_order(socket.assigns.order, order_params)
+    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+  end
+
+  def handle_event("save", %{"order" => order_params}, socket) do
+    carts = list_carts(socket.assigns.cart_uuid)
+
+    if Enum.empty?(carts) do
+      {:noreply, redirect(socket, to: ~p"/")}
+    else
+      save_order(carts, order_params, socket)
+    end
+  end
+
+  defp save_order(carts, order_params, socket) do
+    items =
+      Enum.map(carts, fn cart ->
+        %{name: cart.product_name, price: cart.product_price}
+      end)
+
+    params = Map.put(order_params, "items", items)
+
+    case Orders.create_order(params) do
+      {:ok, _order} ->
+        Carts.clean_cart(socket.assigns.cart_uuid)
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Order created successfully")
+         |> push_navigate(to: ~p"/")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, form: to_form(changeset))}
+    end
+  end
+
+  defp list_carts(cart_uuid) do
+    Carts.list_carts(cart_uuid)
+  end
+end

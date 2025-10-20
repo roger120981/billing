@@ -46,7 +46,7 @@ defmodule Billing.Invoicing do
       contribuyente_especial: nil,
       dir_establecimiento: invoice.emission_profile.company.address,
       identificacion_comprador: invoice.customer.identification_number,
-      importe_total: parse_amount(invoice.amount_with_tax),
+      importe_total: parse_amount(invoice.amount),
       moneda: "DOLAR",
       obligado_contabilidad: "NO",
       pagos: build_payments(invoice),
@@ -55,14 +55,14 @@ defmodule Billing.Invoicing do
       tipo_identificacion_comprador: fetch_customer_type(invoice.customer.identification_type),
       total_con_impuestos: build_invoice_info_taxes(invoice),
       total_descuento: 0.0,
-      total_sin_impuestos: parse_amount(invoice.amount)
+      total_sin_impuestos: parse_amount(invoice.amount_without_tax)
     }
   end
 
   defp build_payments(invoice) do
     [
       %{
-        total: parse_amount(invoice.amount_with_tax),
+        total: parse_amount(invoice.amount),
         forma_pago: fetch_payment_method(invoice.payment_method),
         plazo: 0,
         unidad_tiempo: "Dias"
@@ -87,8 +87,8 @@ defmodule Billing.Invoicing do
 
   defp build_invoice_info_taxes(invoice) do
     value =
-      invoice.amount_with_tax
-      |> Decimal.sub(invoice.amount)
+      invoice.amount
+      |> Decimal.sub(invoice.amount_without_tax)
       |> parse_amount()
 
     [
@@ -185,8 +185,8 @@ defmodule Billing.Invoicing do
 
   defp build_invoice_details(invoice) do
     value =
-      invoice.amount_with_tax
-      |> Decimal.sub(invoice.amount)
+      invoice.amount
+      |> Decimal.sub(invoice.amount_without_tax)
       |> parse_amount()
 
     [
@@ -208,8 +208,8 @@ defmodule Billing.Invoicing do
             tarifa: parse_amount(invoice.tax_rate)
           }
         ],
-        precio_total_sin_impuesto: parse_amount(invoice.amount),
-        precio_unitario: parse_amount(invoice.amount)
+        precio_total_sin_impuesto: parse_amount(invoice.amount_without_tax),
+        precio_unitario: parse_amount(invoice.amount_without_tax)
       }
     ]
   end

@@ -101,4 +101,12 @@ defmodule Billing.Customers do
   def change_customer(%Customer{} = customer, attrs \\ %{}) do
     Customer.changeset(customer, attrs)
   end
+
+  def find_or_create_customer(%{identification_number: identification_number} = attrs) do
+    if user = Repo.get_by(Customer, %{identification_number: identification_number}) do
+      {:ok, user}
+    else
+      create_customer(attrs)
+    end
+  end
 end
