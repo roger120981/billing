@@ -35,69 +35,70 @@ defmodule BillingWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <%= if @current_scope do %>
-          <ul class="flex flex-column px-1 space-x-4 items-center">
-            <li>
-              <.link navigate={~p"/agent_chat"} class="btn btn-ghost">
-                AI Chat
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/orders"} class="btn btn-ghost">
-                Orders
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/invoices"} class="btn btn-ghost">
-                Invoices
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/products"} class="btn btn-ghost">
-                Products
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/customers"} class="btn btn-ghost">
-                Customers
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/certificates"} class="btn btn-ghost">
-                Certificates
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/companies"} class="btn btn-ghost">
-                Companies
-              </.link>
-            </li>
-            <li>
-              <.link navigate={~p"/emission_profiles"} class="btn btn-ghost">
-                Emission Profiles
-              </.link>
-            </li>
-            <li>
-              <.theme_toggle />
-            </li>
-          </ul>
-        <% end %>
-      </div>
-    </header>
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col">
+        <label for="my-drawer-3" class="btn drawer-button lg:hidden">
+          Open drawer
+        </label>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
+        <main>
+          <div class="mx-auto max-w-2xl space-y-4">
+            {render_slot(@inner_block)}
+          </div>
+        </main>
       </div>
-    </main>
+      <div class="drawer-side">
+        <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu bg-base-200 min-h-full w-80 p-4">
+          <li>
+            <.link navigate={~p"/agent_chat"}>
+              AI Chat
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/orders"}>
+              Orders
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/invoices"}>
+              Invoices
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/products"}>
+              Products
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/customers"}>
+              Customers
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/certificates"}>
+              Certificates
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/companies"}>
+              Companies
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/emission_profiles"}>
+              Emission Profiles
+            </.link>
+          </li>
+          <li>
+            <div>
+              <.theme_toggle />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
 
     <.flash_group flash={@flash} />
     """
