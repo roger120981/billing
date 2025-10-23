@@ -51,6 +51,11 @@ defmodule BillingWeb.Layouts do
       <div class="drawer-side">
         <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu bg-base-200 min-h-full w-80 p-4">
+          <li class="menu-title inline-block">
+            <.link navigate={~p"/"}>
+              <img src={~p"/images/logo.svg"} width="36" />
+            </.link>
+          </li>
           <li>
             <.link navigate={~p"/agent_chat"}>
               <.icon name="hero-sparkles" /> AI Chat
