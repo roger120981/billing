@@ -22,9 +22,7 @@ defmodule BillingWeb.InvoiceLive.Show do
             <.icon name="hero-pencil-square" /> Edit invoice
           </.button>
 
-          <.button variant="primary" phx-click="create_electronic_invoice">
-            <.icon name="hero-bolt-slash" /> Create electronic invoice
-          </.button>
+          <.sign_electronic_invoice_button sign_result={@sign_result} />
         </:actions>
       </.header>
 
@@ -44,51 +42,55 @@ defmodule BillingWeb.InvoiceLive.Show do
      socket
      |> assign(:page_title, "Show Invoice")
      |> assign(:invoice, Invoices.get_invoice!(id))
-     |> assign(:electronic_invoice, nil)}
+     |> assign(:sign_result, %AsyncResult{})}
   end
 
   @impl true
-  def handle_event("create_electronic_invoice", _params, socket) do
-    # %{"invoice_id" => socket.assigns.invoice.id}
-    # |> InvoicingWorker.new()
-    # |> Oban.insert()
-    #
-    # {:noreply, assign(socket, :electronic_invoice, %ElectronicInvoice{state: :created})}
+  def handle_event("sign_electronic_invoice", _params, socket) do
     invoice_id = socket.assigns.invoice.id
 
     {:noreply,
      socket
-     |> assign(:electronic_invoice, AsyncResult.loading())
-     |> start_async(:create_electronic_invoice, fn ->
-       InvoiceHandler.build_electronic_invoice(invoice_id)
+     |> assign(:sign_result, AsyncResult.loading())
+     |> start_async(:sign_electronic_invoice, fn ->
+       InvoiceHandler.sign_electronic_invoice(invoice_id)
      end)}
   end
 
   @impl true
-  def handle_async(:create_electronic_invoice, {:ok, electronic_invoice}, socket) do
-    Process.sleep(5000)
+  def handle_async(:sign_electronic_invoice, {:ok, {:ok, electronic_invoice}}, socket) do
+    # %{"electronic_invoice_id" => electronic_invoice.id}
+    # |> InvoicingWorker.new()
+    # |> Oban.insert()
 
     {:noreply,
      socket
-     |> assign(:electronic_invoice, AsyncResult.ok(electronic_invoice))
-     |> put_flash(:info, "Electronic invoice created")}
+     |> assign(:sign_result, AsyncResult.ok(electronic_invoice))
+     |> put_flash(:info, "Electronic invoice signed")}
   end
 
-  def handle_async(:create_electronic_invoice, {:error, error}, socket) do
-    electronic_invoice = socket.assigns.electronic_invoice
-
+  def handle_async(:sign_electronic_invoice, {:ok, {:error, error}}, socket) do
     {:noreply,
      socket
-     |> assign(:electronic_invoice, AsyncResult.failed(electronic_invoice, {:error, error}))
+     |> assign(:sign_result, AsyncResult.failed(%AsyncResult{}, {:error, error}))
      |> put_flash(:error, "Error: #{inspect(error)}")}
   end
 
-  def handle_async(:create_electronic_invoice, {:exit, reason}, socket) do
-    electronic_invoice = socket.assigns.electronic_invoice
-
+  def handle_async(:sign_electronic_invoice, {:exit, reason}, socket) do
     {:noreply,
      socket
-     |> assign(:electronic_invoice, AsyncResult.failed(electronic_invoice, {:exit, reason}))
+     |> assign(:sign_result, AsyncResult.failed(%AsyncResult{}, {:exit, reason}))
      |> put_flash(:error, "Error: #{inspect(reason)}")}
+  end
+
+  attr :sign_result, AsyncResult, required: true
+
+  defp sign_electronic_invoice_button(assigns) do
+    ~H"""
+    <.button variant="primary" phx-click="sign_electronic_invoice" disabled={@sign_result.loading}>
+      <span :if={@sign_result.loading} class="loading loading-spinner loading-md"></span>
+      <.icon :if={!@sign_result.loading} name="hero-finger-print" /> Sign electronic invoice
+    </.button>
+    """
   end
 end

@@ -9,7 +9,7 @@ defmodule Billing.InvoiceHandler do
   alias Billing.ElectronicInvoiceCheckerWorker
   alias Billing.ElectronicInvoicePdfWorker
 
-  def build_electronic_invoice(invoice_id) do
+  def sign_electronic_invoice(invoice_id) do
     invoice = Invoices.get_invoice!(invoice_id)
     certificate = Billing.Invoicing.fetch_certificate(invoice)
 
@@ -31,24 +31,26 @@ defmodule Billing.InvoiceHandler do
     end
   end
 
-  def handle_electronic_invoice(electronic_invoice_id) do
+  def send_electronic_invoice(electronic_invoice_id) do
     electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
     # Electronic Invoice :send | :back | :error
-    with {:ok, electronic_invoice} <- send_invoice(electronic_invoice),
-         {:ok, _invoice_id} <- broadcast_success(electronic_invoice.id),
+    send_invoice(electronic_invoice)
 
-         # Run authorization checker using oban worker
-         {:ok, _oban_job} <- run_authorization_checker(electronic_invoice) do
-      {:ok, electronic_invoice}
-    else
-      {:error, error} ->
-        # broadcast_error(invoice_id, error)
-
-        {:error, error}
-    end
+    # with {:ok, electronic_invoice} <- send_invoice(electronic_invoice),
+    #      {:ok, _invoice_id} <- broadcast_success(electronic_invoice.id),
+    #
+    #      # Run authorization checker using oban worker
+    #      {:ok, _oban_job} <- run_authorization_checker(electronic_invoice) do
+    #   {:ok, electronic_invoice}
+    # else
+    #   {:error, error} ->
+    #     broadcast_error(electronic_invoice_id, error)
+    #
+    #     {:error, error}
+    # end
   end
 
-  def handle_auth_invoice(electronic_invoice_id) do
+  def handle_auth_electronic_invoice(electronic_invoice_id) do
     electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
     invoice = Invoices.get_invoice!(electronic_invoice.invoice_id)
 
@@ -66,7 +68,7 @@ defmodule Billing.InvoiceHandler do
     end
   end
 
-  def handle_invoice_pdf(electronic_invoice_id) do
+  def handle_electronic_invoice_pdf(electronic_invoice_id) do
     electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
 
     case create_pdf(electronic_invoice) do

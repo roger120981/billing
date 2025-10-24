@@ -7,6 +7,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
   alias Phoenix.PubSub
   alias Billing.InvoiceHandler
   alias Billing.ElectronicInvoiceErrors
+  alias Phoenix.LiveView.AsyncResult
 
   @impl true
   def render(assigns) do
@@ -19,6 +20,8 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
           <.button navigate={~p"/electronic_invoices"}>
             <.icon name="hero-arrow-left" />
           </.button>
+
+          <.send_electronic_invoice_button send_result={@send_result} />
         </:actions>
       </.header>
 
@@ -46,36 +49,71 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Show Electronic Invoice")
-     |> assign(:electronic_invoice, ElectronicInvoices.get_electronic_invoice!(id))
-     |> assign_electronic_invoice()}
+     |> assign(:send_result, %AsyncResult{})
+     |> assign_electronic_invoice(id)}
   end
 
   @impl true
-  def handle_event("check_electronic_invoice", _params, socket) do
-    InvoiceHandler.run_authorization_checker(socket.assigns.electronic_invoice.id)
+  def handle_event("send_electronic_invoice", _params, socket) do
+    electronic_invoice_id = socket.assigns.electronic_invoice.id
 
-    {:noreply, put_flash(socket, :info, "Verifición en proceso")}
-  end
-
-  @impl true
-  def handle_info(
-        {:update_electronic_invoice, %{electronic_invoice_id: _electronic_invoice_id}},
-        socket
-      ) do
-    {:noreply, assign_electronic_invoice(socket)}
-  end
-
-  @impl true
-  def handle_info(
-        {:electronic_invoice_error,
-         %{electronic_invoice_id: _electronic_invoice_id, error: error}},
-        socket
-      ) do
     {:noreply,
      socket
-     |> assign_electronic_invoice()
-     |> put_flash(:error, "Error en la facturación: #{error}")}
+     |> assign(:send_result, AsyncResult.loading())
+     |> start_async(:send_electronic_invoice, fn ->
+       InvoiceHandler.send_electronic_invoice(electronic_invoice_id)
+     end)}
   end
+
+  @impl true
+  def handle_async(:send_electronic_invoice, {:ok, {:ok, electronic_invoice}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:send_result, AsyncResult.ok(%AsyncResult{}))
+     |> assign_electronic_invoice(electronic_invoice.id)
+     |> put_flash(:info, "Electronic sent")}
+  end
+
+  def handle_async(:send_electronic_invoice, {:ok, {:error, error}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:send_result, AsyncResult.failed(%AsyncResult{}, {:error, error}))
+     |> put_flash(:error, "Error: #{inspect(error)}")}
+  end
+
+  def handle_async(:send_electronic_invoice, {:exit, reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(:send_result, AsyncResult.failed(%AsyncResult{}, {:exit, reason}))
+     |> put_flash(:error, "Error: #{inspect(reason)}")}
+  end
+
+  # @impl true
+  # def handle_event("check_electronic_invoice", _params, socket) do
+  #   InvoiceHandler.run_authorization_checker(socket.assigns.electronic_invoice.id)
+  #
+  #   {:noreply, put_flash(socket, :info, "Verifición en proceso")}
+  # end
+  #
+  # @impl true
+  # def handle_info(
+  #       {:update_electronic_invoice, %{electronic_invoice_id: electronic_invoice_id}},
+  #       socket
+  #     ) do
+  #   {:noreply, assign_electronic_invoice(socket, electronic_invoice_id)}
+  # end
+  #
+  # @impl true
+  # def handle_info(
+  #       {:electronic_invoice_error,
+  #        %{electronic_invoice_id: electronic_invoice_id, error: error}},
+  #       socket
+  #     ) do
+  #   {:noreply,
+  #    socket
+  #    |> assign_electronic_invoice(electronic_invoice_id)
+  #    |> put_flash(:error, "Error en la facturación: #{error}")}
+  # end
 
   attr :electronic_invoice, ElectronicInvoice, default: nil
 
@@ -120,14 +158,25 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
     """
   end
 
-  defp assign_electronic_invoice(socket) do
+  defp assign_electronic_invoice(socket, electronic_invoice_id) do
     electronic_invoice =
-      ElectronicInvoices.get_electronic_invoice!(socket.assigns.electronic_invoice.id)
+      ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
 
     electronic_invoice_errors = ElectronicInvoiceErrors.list_errors(electronic_invoice)
 
     socket
     |> assign(:electronic_invoice, electronic_invoice)
     |> assign(:electronic_invoice_errors, electronic_invoice_errors)
+  end
+
+  attr :send_result, AsyncResult, required: true
+
+  defp send_electronic_invoice_button(assigns) do
+    ~H"""
+    <.button variant="primary" phx-click="send_electronic_invoice" disabled={@send_result.loading}>
+      <span :if={@send_result.loading} class="loading loading-spinner loading-md"></span>
+      <.icon :if={!@send_result.loading} name="hero-paper-airplane" /> Send electronic invoice
+    </.button>
+    """
   end
 end

@@ -7,7 +7,7 @@ defmodule Billing.InvoicingWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"electronic_invoice_id" => electronic_invoice_id} = _args}) do
-    case InvoiceHandler.handle_electronic_invoice(electronic_invoice_id) do
+    case InvoiceHandler.send_electronic_invoice(electronic_invoice_id) do
       {:ok, _electronic_invoice} ->
         Logger.info("Factura enviada al SRI: #{inspect(electronic_invoice_id)}")
 
