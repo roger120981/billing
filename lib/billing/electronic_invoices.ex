@@ -48,4 +48,8 @@ defmodule Billing.ElectronicInvoices do
 
     Repo.all(query)
   end
+
+  def list_electronic_invoices do
+    Repo.all(ElectronicInvoice)
+  end
 end
