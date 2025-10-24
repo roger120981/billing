@@ -13,7 +13,10 @@ defmodule Billing.InvoiceHandler do
     invoice = Invoices.get_invoice!(invoice_id)
     certificate = Billing.Invoicing.fetch_certificate(invoice)
 
-    with {:ok, _emission_profile} <-
+    with {:ok, _p12_path} <- p12_file_exists?(certificate.file),
+
+         # Increment the emoission profile sequence
+         {:ok, _emission_profile} <-
            increment_emission_profile_sequence(invoice.emission_profile_id),
 
          # Build Invoice params
@@ -283,5 +286,15 @@ defmodule Billing.InvoiceHandler do
 
   def run_pdf_worker(%ElectronicInvoice{state: _state}) do
     {:ok, nil}
+  end
+
+  defp p12_file_exists?(p12_file_path) do
+    p12_path = Path.join(Billing.get_storage_path(), p12_file_path)
+
+    if File.exists?(p12_path) do
+      {:ok, p12_path}
+    else
+      {:error, "El certificado para firmar la factura no existe"}
+    end
   end
 end
