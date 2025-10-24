@@ -42,9 +42,15 @@ defmodule BillingWeb.Layouts do
           Open drawer
         </label>
 
-        <main class="px-4 py-20 sm:px-6 lg:px-8">
+        <main class="px-4 py-4 sm:px-6 lg:px-8">
           <div class="mx-auto max-w-2xl space-y-4">
-            {render_slot(@inner_block)}
+            <div class="flex justify-end">
+              <.theme_toggle />
+            </div>
+
+            <div class="py-20">
+              {render_slot(@inner_block)}
+            </div>
           </div>
         </main>
       </div>
@@ -106,11 +112,6 @@ defmodule BillingWeb.Layouts do
               <.icon name="hero-arrow-left-start-on-rectangle" /> Log out
             </.link>
           </li>
-          <li>
-            <div>
-              <.theme_toggle />
-            </div>
-          </li>
         </ul>
       </div>
     </div>
@@ -145,15 +146,27 @@ defmodule BillingWeb.Layouts do
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8">
       <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
+        <.link navigate={~p"/"} class="flex-1 flex w-fit items-center gap-2">
           <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
+        </.link>
       </div>
-      <div class="flex-none">
+      <div class="flex justify-end items-center space-x-2">
         <%= if @current_scope do %>
-          <.link navigate={~p"/invoices"}>Dashboard</.link>
+          <.link navigate={~p"/invoices"} class="btn btn-ghost">
+            <.icon name="hero-cog-6-tooth" /> Manager
+          </.link>
+          <.link href={~p"/users/log-out"} method="delete" class="btn btn-ghost">
+            <.icon name="hero-arrow-left-start-on-rectangle" /> Log out
+          </.link>
+        <% else %>
+          <.link href={~p"/users/log-in"} class="btn btn-ghost">
+            <.icon name="hero-arrow-right-start-on-rectangle" /> Log in
+          </.link>
         <% end %>
+
+        <div class="flex justify-end">
+          <.theme_toggle />
+        </div>
       </div>
     </header>
 
