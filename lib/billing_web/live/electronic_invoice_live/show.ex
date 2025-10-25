@@ -22,6 +22,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
           </.button>
 
           <.send_electronic_invoice_button send_result={@send_result} />
+          <.auth_electronic_invoice_button auth_result={@auth_result} />
         </:actions>
       </.header>
 
@@ -50,6 +51,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
      socket
      |> assign(:page_title, "Show Electronic Invoice")
      |> assign(:send_result, %AsyncResult{})
+     |> assign(:auth_result, %AsyncResult{})
      |> assign_electronic_invoice(id)}
   end
 
@@ -62,6 +64,18 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
      |> assign(:send_result, AsyncResult.loading())
      |> start_async(:send_electronic_invoice, fn ->
        InvoiceHandler.send_electronic_invoice(electronic_invoice_id)
+     end)}
+  end
+
+  @impl true
+  def handle_event("auth_electronic_invoice", _params, socket) do
+    electronic_invoice_id = socket.assigns.electronic_invoice.id
+
+    {:noreply,
+     socket
+     |> assign(:auth_result, AsyncResult.loading())
+     |> start_async(:auth_electronic_invoice, fn ->
+       InvoiceHandler.auth_electronic_invoice(electronic_invoice_id)
      end)}
   end
 
@@ -85,6 +99,29 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
     {:noreply,
      socket
      |> assign(:send_result, AsyncResult.failed(%AsyncResult{}, {:exit, reason}))
+     |> put_flash(:error, "Error: #{inspect(reason)}")}
+  end
+
+  @impl true
+  def handle_async(:auth_electronic_invoice, {:ok, {:ok, electronic_invoice}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:auth_result, AsyncResult.ok(%AsyncResult{}))
+     |> assign_electronic_invoice(electronic_invoice.id)
+     |> put_flash(:info, "Electronic auth")}
+  end
+
+  def handle_async(:auth_electronic_invoice, {:ok, {:error, error}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:auth_result, AsyncResult.failed(%AsyncResult{}, {:error, error}))
+     |> put_flash(:error, "Error: #{inspect(error)}")}
+  end
+
+  def handle_async(:auth_electronic_invoice, {:exit, reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(:auth_result, AsyncResult.failed(%AsyncResult{}, {:exit, reason}))
      |> put_flash(:error, "Error: #{inspect(reason)}")}
   end
 
@@ -176,6 +213,17 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
     <.button variant="primary" phx-click="send_electronic_invoice" disabled={@send_result.loading}>
       <span :if={@send_result.loading} class="loading loading-spinner loading-md"></span>
       <.icon :if={!@send_result.loading} name="hero-paper-airplane" /> Send electronic invoice
+    </.button>
+    """
+  end
+
+  attr :auth_result, AsyncResult, required: true
+
+  defp auth_electronic_invoice_button(assigns) do
+    ~H"""
+    <.button variant="primary" phx-click="auth_electronic_invoice" disabled={@auth_result.loading}>
+      <span :if={@auth_result.loading} class="loading loading-spinner loading-md"></span>
+      <.icon :if={!@auth_result.loading} name="hero-check-badge" /> Auth electronic invoice
     </.button>
     """
   end

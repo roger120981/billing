@@ -154,8 +154,8 @@ defmodule Billing.InvoiceHandler do
     end
   end
 
-  defp verify_authorization(%ElectronicInvoice{state: :authorized} = electronic_invoice) do
-    {:ok, electronic_invoice}
+  defp verify_authorization(%ElectronicInvoice{state: :authorized} = _electronic_invoice) do
+    {:error, "La Factura ya fue autorizada"}
   end
 
   defp verify_authorization(_electronic_invoice) do
