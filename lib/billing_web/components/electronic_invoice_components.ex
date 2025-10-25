@@ -4,17 +4,26 @@ defmodule BillingWeb.ElectronicInvoiceComponents do
 
   alias Billing.Invoices.ElectronicInvoice
 
+  @statuses_css_class %{
+    created: "badge-primary",
+    signed: "badge-info",
+    sent: "badge-accent",
+    back: "badge-secondary",
+    authorized: "badge-success",
+    unauthorized: "badge-warning",
+    error: "badge-error",
+    not_found_or_pending: "badge-primary"
+  }
+
+  attr :electronic_invoice, ElectronicInvoice, required: true
+
   def state(assigns) do
     assigns =
       assign_new(assigns, :state, fn ->
-        if assigns.electronic_invoice do
-          %{
-            label: ElectronicInvoice.label_status(assigns.electronic_invoice.state),
-            css_class: "badge-primary"
-          }
-        else
-          %{label: "Not invoice yet", css_class: "badge-info"}
-        end
+        %{
+          label: ElectronicInvoice.label_status(assigns.electronic_invoice.state),
+          css_class: @statuses_css_class[assigns.electronic_invoice.state]
+        }
       end)
 
     ~H"""
