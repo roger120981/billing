@@ -23,8 +23,11 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
             <.icon name="hero-arrow-left" />
           </.button>
 
-          <.send_electronic_invoice_button send_result={@send_result} />
-          <.auth_electronic_invoice_button auth_result={@auth_result} />
+          <.send_button :if={allow_send(@electronic_invoice.state)} send_result={@send_result} />
+          <.auth_button
+            :if={allow_verify_authorization(@electronic_invoice.state)}
+            auth_result={@auth_result}
+          />
         </:actions>
       </.header>
 
@@ -129,32 +132,25 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
      |> put_flash(:error, "Error: #{inspect(reason)}")}
   end
 
-  # @impl true
-  # def handle_event("check_electronic_invoice", _params, socket) do
-  #   InvoiceHandler.run_authorization_checker(socket.assigns.electronic_invoice.id)
-  #
-  #   {:noreply, put_flash(socket, :info, "Verifición en proceso")}
-  # end
-  #
-  # @impl true
-  # def handle_info(
-  #       {:update_electronic_invoice, %{electronic_invoice_id: electronic_invoice_id}},
-  #       socket
-  #     ) do
-  #   {:noreply, assign_electronic_invoice(socket, electronic_invoice_id)}
-  # end
-  #
-  # @impl true
-  # def handle_info(
-  #       {:electronic_invoice_error,
-  #        %{electronic_invoice_id: electronic_invoice_id, error: error}},
-  #       socket
-  #     ) do
-  #   {:noreply,
-  #    socket
-  #    |> assign_electronic_invoice(electronic_invoice_id)
-  #    |> put_flash(:error, "Error en la facturación: #{error}")}
-  # end
+  @impl true
+  def handle_info(
+        {:electronic_invoice_updated, %{electronic_invoice_id: electronic_invoice_id}},
+        socket
+      ) do
+    {:noreply, assign_electronic_invoice(socket, electronic_invoice_id)}
+  end
+
+  @impl true
+  def handle_info(
+        {:electronic_invoice_error,
+         %{electronic_invoice_id: electronic_invoice_id, error: error}},
+        socket
+      ) do
+    {:noreply,
+     socket
+     |> assign_electronic_invoice(electronic_invoice_id)
+     |> put_flash(:error, "Error en la facturación: #{error}")}
+  end
 
   attr :electronic_invoice, ElectronicInvoice, default: nil
 
@@ -216,7 +212,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
 
   attr :send_result, AsyncResult, required: true
 
-  defp send_electronic_invoice_button(assigns) do
+  defp send_button(assigns) do
     ~H"""
     <.button variant="primary" phx-click="send_electronic_invoice" disabled={@send_result.loading}>
       <span :if={@send_result.loading} class="loading loading-spinner loading-md"></span>
@@ -227,12 +223,20 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
 
   attr :auth_result, AsyncResult, required: true
 
-  defp auth_electronic_invoice_button(assigns) do
+  defp auth_button(assigns) do
     ~H"""
     <.button variant="primary" phx-click="auth_electronic_invoice" disabled={@auth_result.loading}>
       <span :if={@auth_result.loading} class="loading loading-spinner loading-md"></span>
       <.icon :if={!@auth_result.loading} name="hero-check-badge" /> Auth electronic invoice
     </.button>
     """
+  end
+
+  defp allow_verify_authorization(state) do
+    ElectronicInvoice.allow_verify_authorization(state)
+  end
+
+  defp allow_send(state) do
+    ElectronicInvoice.allow_send(state)
   end
 end

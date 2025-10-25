@@ -64,4 +64,12 @@ defmodule Billing.Invoices.ElectronicInvoice do
   def label_status(state) do
     @label_statuses[state]
   end
+
+  def allow_send(current_state) do
+    current_state == :signed
+  end
+
+  def allow_verify_authorization(current_state) do
+    current_state == :not_found_or_pending
+  end
 end

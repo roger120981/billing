@@ -87,9 +87,7 @@ defmodule BillingWeb.InvoiceLive.Show do
 
   @impl true
   def handle_async(:sign_electronic_invoice, {:ok, {:ok, electronic_invoice}}, socket) do
-    # %{"electronic_invoice_id" => electronic_invoice.id}
-    # |> InvoicingWorker.new()
-    # |> Oban.insert()
+    InvoiceHandler.start_send_worker(electronic_invoice)
 
     {:noreply,
      socket

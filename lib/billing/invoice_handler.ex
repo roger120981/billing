@@ -8,6 +8,7 @@ defmodule Billing.InvoiceHandler do
   alias Phoenix.PubSub
   alias Billing.ElectronicInvoiceCheckerWorker
   alias Billing.ElectronicInvoicePdfWorker
+  alias Billing.InvoicingWorker
 
   def sign_electronic_invoice(invoice_id) do
     invoice = Invoices.get_invoice!(invoice_id)
@@ -34,22 +35,35 @@ defmodule Billing.InvoiceHandler do
   # Electronic Invoice :send | :back | :error
   def send_electronic_invoice(electronic_invoice_id) do
     electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
-    send_invoice(electronic_invoice)
+
+    # Electronic Invoice :send | :back | :error
+
+    with {:ok, electronic_invoice} <- send_invoice(electronic_invoice),
+         {:ok, _electronic_invoice_id} <- broadcast_success(electronic_invoice_id),
+
+         # Run authorization checker using oban worker
+         {:ok, _oban_job} <- start_authorization_checker(electronic_invoice) do
+      {:ok, electronic_invoice}
+    else
+      {:error, error} ->
+        broadcast_error(electronic_invoice_id, error)
+
+        {:error, error}
+    end
   end
 
   def auth_electronic_invoice(electronic_invoice_id) do
     electronic_invoice = ElectronicInvoices.get_electronic_invoice!(electronic_invoice_id)
-    invoice = Invoices.get_invoice!(electronic_invoice.invoice_id)
 
     # Electronic Invoice :authorized | :unauthorized | :error | :not_found_or_pending
 
     with {:ok, electronic_invoice} <- verify_authorization(electronic_invoice),
-         {:ok, _invoice_id} <- broadcast_success(invoice.id),
+         {:ok, _invoice_id} <- broadcast_success(electronic_invoice_id),
          {:ok, _oban_job} <- run_pdf_worker(electronic_invoice) do
       {:ok, electronic_invoice}
     else
       {:error, error} ->
-        broadcast_error(electronic_invoice.id, error)
+        broadcast_error(electronic_invoice_id, error)
 
         {:error, error}
     end
@@ -63,7 +77,7 @@ defmodule Billing.InvoiceHandler do
         {:ok, pdf_file_path}
 
       {:error, error} ->
-        broadcast_error(electronic_invoice.id, error)
+        broadcast_error(electronic_invoice_id, error)
 
         {:error, error}
     end
@@ -242,7 +256,7 @@ defmodule Billing.InvoiceHandler do
     PubSub.broadcast(
       Billing.PubSub,
       "electronic_invoice:#{electronic_invoice_id}",
-      {:update_electronic_invoice, %{electronic_invoice_id: electronic_invoice_id}}
+      {:electronic_invoice_updated, %{electronic_invoice_id: electronic_invoice_id}}
     )
 
     {:ok, electronic_invoice_id}
@@ -261,13 +275,23 @@ defmodule Billing.InvoiceHandler do
 
   # Workers
 
-  def run_authorization_checker(%ElectronicInvoice{state: :sent} = electronic_invoice) do
+  def start_authorization_checker(%ElectronicInvoice{state: :sent} = electronic_invoice) do
     %{"electronic_invoice_id" => electronic_invoice.id}
     |> ElectronicInvoiceCheckerWorker.new()
     |> Oban.insert()
   end
 
-  def run_authorization_checker(%ElectronicInvoice{state: _state}) do
+  def start_authorization_checker(%ElectronicInvoice{state: _state}) do
+    {:ok, nil}
+  end
+
+  def start_send_worker(%ElectronicInvoice{state: :signed} = electronic_invoice) do
+    %{"electronic_invoice_id" => electronic_invoice.id}
+    |> InvoicingWorker.new()
+    |> Oban.insert()
+  end
+
+  def start_send_worker(%ElectronicInvoice{state: _state}) do
     {:ok, nil}
   end
 
