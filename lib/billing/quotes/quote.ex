@@ -2,7 +2,7 @@ defmodule Billing.Quotes.Quote do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Billing.Quote.QuoteItem
+  alias Billing.Quotes.QuoteItem
 
   @derive {Jason.Encoder, only: [:amount]}
 

@@ -7,6 +7,7 @@ defmodule Billing.Quotes do
   alias Billing.Repo
 
   alias Billing.Quotes.Quote
+  alias Billing.Quotes.QuoteItem
 
   @doc """
   Returns the list of quotes.
@@ -37,7 +38,7 @@ defmodule Billing.Quotes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_quote!(id), do: Repo.get!(Quote, id) |> Repo.preload(:customer)
+  def get_quote!(id), do: Repo.get!(Quote, id) |> Repo.preload([:customer, :items])
 
   @doc """
   Creates a quote.
@@ -114,5 +115,9 @@ defmodule Billing.Quotes do
     query = from(i in Quote, where: i.id == ^quote.id)
 
     Repo.update_all(query, set: [amount_without_tax: amount_without_tax])
+  end
+
+  def change_quote_item(%QuoteItem{} = quote_item, attrs \\ %{}) do
+    QuoteItem.changeset(quote_item, attrs)
   end
 end

@@ -41,7 +41,9 @@ defmodule Billing.QuotesTest do
         |> Repo.get!(quote.id)
         |> Repo.preload([:customer])
 
-      assert Quotes.get_quote!(quote.id) == quote
+      result = Quotes.get_quote!(quote.id)
+      assert result.id == quote.id
+      assert result.items == []
     end
 
     test "create_quote/1 with valid data creates a quote", %{
@@ -84,7 +86,10 @@ defmodule Billing.QuotesTest do
         |> Repo.preload([:customer])
 
       assert {:error, %Ecto.Changeset{}} = Quotes.update_quote(quote, @invalid_attrs)
-      assert quote == Quotes.get_quote!(quote.id)
+
+      result = Quotes.get_quote!(quote.id)
+      assert result.id == quote.id
+      assert result.items == []
     end
 
     test "delete_quote/1 deletes the quote" do

@@ -6,6 +6,7 @@ defmodule BillingWeb.QuoteLive.Form do
   alias Billing.Customers
   alias Billing.Customers.Customer
   alias Billing.Orders
+  alias Billing.Quotes.QuoteItem
 
   @impl true
   def render(assigns) do
@@ -35,6 +36,18 @@ defmodule BillingWeb.QuoteLive.Form do
           options={@payment_methods}
           label="Payment Method"
         />
+
+        <.inputs_for :let={f} field={@form[:items]}>
+          <div class="grid grid-cols-2">
+            <.input field={f[:name]} type="text" />
+            <.input field={f[:amount]} type="text" />
+          </div>
+        </.inputs_for>
+
+        <.button type="button" class="btn btn-secondary" phx-click="add_item">
+          {gettext("Add Item")}
+        </.button>
+
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Invoice</.button>
           <.button navigate={return_path(@return_to, @quote)}>Cancel</.button>
@@ -98,7 +111,7 @@ defmodule BillingWeb.QuoteLive.Form do
 
       socket
       |> assign_customers()
-      |> assign_new_invoice(attrs)
+      |> assign_new_quote(attrs)
     else
       {:error, error} ->
         put_flash(socket, :error, inspect(error))
@@ -106,7 +119,7 @@ defmodule BillingWeb.QuoteLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    assign_new_invoice(socket)
+    assign_new_quote(socket)
   end
 
   @impl true
@@ -117,6 +130,16 @@ defmodule BillingWeb.QuoteLive.Form do
 
   def handle_event("save", %{"quote" => invoice_params}, socket) do
     save_invoice(socket, socket.assigns.live_action, invoice_params)
+  end
+
+  def handle_event("add_item", _params, socket) do
+    items =
+      Ecto.Changeset.get_change(socket.assigns.form.source, :items, socket.assigns.quote.items)
+
+    items_updated = items ++ [Quotes.change_quote_item(%QuoteItem{})]
+    changeset = Ecto.Changeset.put_assoc(socket.assigns.form.source, :items, items_updated)
+
+    {:noreply, assign(socket, form: to_form(changeset))}
   end
 
   defp save_invoice(socket, :edit, invoice_params) do
@@ -163,8 +186,8 @@ defmodule BillingWeb.QuoteLive.Form do
     |> Customers.find_or_create_customer()
   end
 
-  defp assign_new_invoice(socket, params \\ %{}) do
-    quote = %Quote{}
+  defp assign_new_quote(socket, params \\ %{}) do
+    quote = %Quote{items: []}
 
     socket
     |> assign(:page_title, "New Invoice")
@@ -177,4 +200,39 @@ defmodule BillingWeb.QuoteLive.Form do
 
     assign(socket, :customers, customers)
   end
+
+  # defp build_item(changeset, quote_items) do
+  #   items = Ecto.Changeset.get_field(changeset, :items, [])
+  #
+  #   items =
+  #     Enum.map(
+  #       quote_items,
+  #       &map_item(&1, items)
+  #     )
+  #
+  #   Ecto.Changeset.put_assoc(changeset, :items, items)
+  # end
+  #
+  # defp map_item(quote, items) do
+  #   case Enum.find(items, &item_exist?(&1, quote.id)) do
+  #     %QuoteItem{} = quote_item ->
+  #       QuoteItem.changeset(quote_item, %{})
+  #
+  #     _ ->
+  #       QuoteItem.changeset(%QuoteItem{}, %{quote_id: quote.id})
+  #   end
+  # end
+  #
+  # defp item_exist?(%{quote_id: quote_id}, quote_id), do: true
+  # defp item_exist?(%{quote_id: _quote_id}, _id), do: false
+
+  # defp build_items(changeset, items) do
+  #   fulfilled_order_items = Enum.map(items, &build_fulfilled_order_item(&1))
+  #
+  #   Ecto.Changeset.put_assoc(changeset, :fulfilled_order_items, fulfilled_order_items)
+  # end
+  #
+  # defp build_fulfilled_order_item(%OrderItem{} = order_item) do
+  #   FulfilledOrderItem.changeset(%FulfilledOrderItem{order_item_id: order_item.id})
+  # end
 end
