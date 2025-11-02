@@ -11,9 +11,14 @@ defmodule BillingWeb.QuoteLiveTest do
     issued_at: ~D[2025-08-28],
     description: "Invoice Test",
     due_date: ~D[2025-08-28],
-    amount: Decimal.new("10.0"),
-    tax_rate: Decimal.new("15.0"),
-    payment_method: :cash
+    payment_method: :cash,
+    items: %{
+      "0" => %{
+        description: "Invoice Test",
+        amount: Decimal.new("10.0"),
+        tax_rate: Decimal.new("15.0")
+      }
+    }
   }
 
   @update_attrs %{issued_at: "2025-08-29"}
@@ -59,6 +64,10 @@ defmodule BillingWeb.QuoteLiveTest do
       assert form_live
              |> form("#quote-form", quote: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
+
+      assert form_live
+             |> element("button", "Add Item")
+             |> render_click()
 
       attrs =
         @create_attrs

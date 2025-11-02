@@ -62,7 +62,14 @@ defmodule Billing.QuotesTest do
         due_date: ~D[2025-08-28],
         amount: Decimal.new("10.0"),
         tax_rate: Decimal.new("15.0"),
-        payment_method: :cash
+        payment_method: :cash,
+        items: [
+          %{
+            description: "Invoice Test",
+            amount: Decimal.new("10.0"),
+            tax_rate: Decimal.new("15.0")
+          }
+        ]
       }
 
       assert {:ok, %Quote{} = quote} = Quotes.create_quote(valid_attrs)
@@ -87,7 +94,7 @@ defmodule Billing.QuotesTest do
       quote =
         Quote
         |> Repo.get!(quote.id)
-        |> Repo.preload([:customer])
+        |> Repo.preload([:customer, :items])
 
       assert {:error, %Ecto.Changeset{}} = Quotes.update_quote(quote, @invalid_attrs)
 

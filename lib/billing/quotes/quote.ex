@@ -33,8 +33,6 @@ defmodule Billing.Quotes.Quote do
       :issued_at,
       :description,
       :due_date,
-      :amount,
-      :tax_rate,
       :payment_method
     ])
     |> validate_required([
@@ -43,10 +41,27 @@ defmodule Billing.Quotes.Quote do
       :issued_at,
       :description,
       :due_date,
-      :amount,
-      :tax_rate,
       :payment_method
     ])
     |> cast_assoc(:items)
+    |> validate_has_items()
+  end
+
+  defp validate_has_items(changeset) do
+    items = get_field(changeset, :items, [])
+
+    valid_items =
+      Enum.reject(items, fn item ->
+        case item do
+          %Ecto.Changeset{action: :delete} -> true
+          _ -> false
+        end
+      end)
+
+    if Enum.empty?(valid_items) do
+      add_error(changeset, :items, "debe tener al menos un item")
+    else
+      changeset
+    end
   end
 end

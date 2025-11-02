@@ -28,8 +28,6 @@ defmodule BillingWeb.QuoteLive.Form do
         <.input field={@form[:issued_at]} type="date" label="Issued at" />
         <.input field={@form[:due_date]} type="date" label="Due Date" />
         <.input field={@form[:description]} type="textarea" label="Description" />
-        <.input field={@form[:amount]} type="number" label="Amount" />
-        <.input field={@form[:tax_rate]} type="number" label="Tax Rate" />
         <.input
           field={@form[:payment_method]}
           type="select"
@@ -41,6 +39,7 @@ defmodule BillingWeb.QuoteLive.Form do
           <div class="grid grid-cols-3">
             <.input field={f[:description]} type="text" />
             <.input field={f[:amount]} type="text" />
+            <.input field={f[:tax_rate]} type="text" />
             <.input field={f[:marked_for_deletion]} type="checkbox" />
 
             <.button
@@ -57,6 +56,10 @@ defmodule BillingWeb.QuoteLive.Form do
         <.button type="button" class="btn btn-secondary" phx-click="add_item">
           {gettext("Add Item")}
         </.button>
+
+        <.error :for={msg <- Enum.map(@form[:items].errors, &translate_error(&1))}>
+          {msg}
+        </.error>
 
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Invoice</.button>
