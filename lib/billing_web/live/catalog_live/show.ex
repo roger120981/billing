@@ -10,6 +10,8 @@ defmodule BillingWeb.CatalogLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.public flash={@flash} current_scope={@current_scope}>
+      <SharedComponents.cart_status cart_size={@cart_size} />
+
       <.header>
         {@product.name}
         <:subtitle>{@product.price}</:subtitle>
@@ -22,10 +24,6 @@ defmodule BillingWeb.CatalogLive.Show do
           <.button phx-click={JS.push("add_to_cart", value: %{id: @product.id})}>
             <.icon name="hero-plus" /> Add to Cart
           </.button>
-
-          <.link :if={@cart_size > 0} navigate={~p"/cart"} class="btn btn-primary">
-            <.icon name="hero-shopping-cart" /> {@cart_size}
-          </.link>
         </:actions>
       </.header>
 
