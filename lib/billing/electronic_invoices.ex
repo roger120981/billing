@@ -5,11 +5,12 @@ defmodule Billing.ElectronicInvoices do
   alias Billing.Repo
 
   alias Billing.Quotes.ElectronicInvoice
+  alias Billing.Quotes.Quote
 
-  def create_electronic_invoice(quote_id, access_key) do
-    attrs = %{quote_id: quote_id, access_key: access_key}
+  def create_electronic_invoice(%Quote{} = quote, access_key) do
+    attrs = %{access_key: access_key}
 
-    %ElectronicInvoice{}
+    %ElectronicInvoice{quote_id: quote.id, amount: quote.amount}
     |> ElectronicInvoice.changeset(attrs)
     |> Repo.insert()
   end

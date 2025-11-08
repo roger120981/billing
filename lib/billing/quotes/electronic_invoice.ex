@@ -38,6 +38,7 @@ defmodule Billing.Quotes.ElectronicInvoice do
 
     field :access_key, :string
     field :state, Ecto.Enum, values: @statuses, default: :created
+    field :amount, :decimal
 
     timestamps(type: :utc_datetime)
   end
@@ -46,12 +47,10 @@ defmodule Billing.Quotes.ElectronicInvoice do
   def changeset(electronic_invoice, attrs) do
     electronic_invoice
     |> cast(attrs, [
-      :quote_id,
       :access_key,
       :state
     ])
     |> validate_required([
-      :quote_id,
       :access_key,
       :state
     ])
