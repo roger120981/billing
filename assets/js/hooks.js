@@ -1,9 +1,9 @@
 let Hooks = {};
 
-Hooks.Gallery = {
+import * as echarts from "../vendor/echarts.min"
+
+Hooks.Echart = {
   mounted() {
-    console.log("gallery")
-    // const json = JSON.parse(this.el.dataset.content);
   },
 
   destroyed() {
