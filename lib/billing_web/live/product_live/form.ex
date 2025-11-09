@@ -10,17 +10,16 @@ defmodule BillingWeb.ProductLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage product records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="product-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:price]} type="number" label="Price" step="any" />
-        <.input field={@form[:content]} type="textarea" label="Content" />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} />
+        <.input field={@form[:price]} type="number" label={gettext("Price")} step="any" />
+        <.input field={@form[:content]} type="textarea" label={gettext("Description")} />
 
         <div class="fieldset mb-2">
           <label>
-            <span class="label mb-1">Imagenes</span>
+            <span class="label mb-1">{gettext("Pictures")}</span>
 
             <div>
               <.live_file_input upload={@uploads.files} class="file-input" />
@@ -31,8 +30,8 @@ defmodule BillingWeb.ProductLive.Form do
         <.uploads_section uploads={@uploads} />
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Product</.button>
-          <.button navigate={return_path(@return_to, @product)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">{gettext("Save Product")}</.button>
+          <.button navigate={return_path(@return_to, @product)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -55,7 +54,7 @@ defmodule BillingWeb.ProductLive.Form do
     product = Products.get_product!(id)
 
     socket
-    |> assign(:page_title, "Edit Product")
+    |> assign(:page_title, gettext("Edit Product"))
     |> assign(:product, product)
     |> assign(:form, to_form(Products.change_product(product)))
   end
@@ -64,7 +63,7 @@ defmodule BillingWeb.ProductLive.Form do
     product = %Product{}
 
     socket
-    |> assign(:page_title, "New Product")
+    |> assign(:page_title, gettext("New Product"))
     |> assign(:product, product)
     |> assign(:form, to_form(Products.change_product(product)))
   end
@@ -90,7 +89,7 @@ defmodule BillingWeb.ProductLive.Form do
       {:ok, product} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Product updated successfully")
+         |> put_flash(:info, gettext("Product updated successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, product))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -105,7 +104,7 @@ defmodule BillingWeb.ProductLive.Form do
       {:ok, product} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Product created successfully")
+         |> put_flash(:info, gettext("Product created successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, product))}
 
       {:error, %Ecto.Changeset{} = changeset} ->

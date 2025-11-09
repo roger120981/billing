@@ -22,7 +22,7 @@ defmodule BillingWeb.CatalogLive.Show do
           </.button>
 
           <.button phx-click={JS.push("add_to_cart", value: %{id: @product.id})} variant="primary">
-            <.icon name="hero-plus" /> Add to Cart
+            <.icon name="hero-plus" /> {gettext("Add to Cart")}
           </.button>
         </:actions>
       </.header>
@@ -58,7 +58,10 @@ defmodule BillingWeb.CatalogLive.Show do
         {:noreply,
          socket
          |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
-         |> put_flash(:info, "#{product.name} added to your cart")}
+         |> put_flash(
+           :info,
+           gettext("%{product_name} added to your cart", product_name: product.name)
+         )}
 
       {:error, changeset} ->
         {:noreply, put_flash(socket, :error, inspect(changeset))}

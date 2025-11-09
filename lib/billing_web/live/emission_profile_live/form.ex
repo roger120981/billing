@@ -10,22 +10,28 @@ defmodule BillingWeb.EmissionProfileLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage emission_profile records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="emission_profile-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:company_id]} type="select" label="Company" options={@companies} />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} />
+        <.input
+          field={@form[:company_id]}
+          type="select"
+          label={gettext("Company")}
+          options={@companies}
+        />
         <.input
           field={@form[:certificate_id]}
           type="select"
-          label="Certificate"
+          label={gettext("Certificate")}
           options={@certificates}
         />
-        <.input field={@form[:sequence]} type="number" step="1" label="Sequence" />
+        <.input field={@form[:sequence]} type="number" step="1" label={gettext("Sequence")} />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Emission profile</.button>
-          <.button navigate={return_path(@return_to, @emission_profile)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">
+            {gettext("Save Emission profile")}
+          </.button>
+          <.button navigate={return_path(@return_to, @emission_profile)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -52,7 +58,7 @@ defmodule BillingWeb.EmissionProfileLive.Form do
     emission_profile = EmissionProfiles.get_emission_profile!(id)
 
     socket
-    |> assign(:page_title, "Edit Emission profile")
+    |> assign(:page_title, gettext("Edit Emission profile"))
     |> assign(:emission_profile, emission_profile)
     |> assign(:form, to_form(EmissionProfiles.change_emission_profile(emission_profile)))
   end
@@ -61,7 +67,7 @@ defmodule BillingWeb.EmissionProfileLive.Form do
     emission_profile = %EmissionProfile{}
 
     socket
-    |> assign(:page_title, "New Emission profile")
+    |> assign(:page_title, gettext("New Emission profile"))
     |> assign(:emission_profile, emission_profile)
     |> assign(:form, to_form(EmissionProfiles.change_emission_profile(emission_profile)))
   end
@@ -89,7 +95,7 @@ defmodule BillingWeb.EmissionProfileLive.Form do
       {:ok, emission_profile} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Emission profile updated successfully")
+         |> put_flash(:info, gettext("Emission profile updated successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, emission_profile))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -102,7 +108,7 @@ defmodule BillingWeb.EmissionProfileLive.Form do
       {:ok, emission_profile} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Emission profile created successfully")
+         |> put_flash(:info, gettext("Emission profile created successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, emission_profile))}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -20,7 +20,7 @@ defmodule BillingWeb.DashboardLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Dashboard")}
+     |> assign(:page_title, gettext("Your sales trend"))}
   end
 
   @impl true

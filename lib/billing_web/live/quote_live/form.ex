@@ -14,64 +14,75 @@ defmodule BillingWeb.QuoteLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage quote records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="quote-form" phx-change="validate" phx-submit="save" autocomplete="off">
         <.input field={@form[:customer_id]} type="select" options={@customers} label="Customer" />
-        <.input
-          field={@form[:emission_profile_id]}
-          type="select"
-          options={@emission_profiles}
-          label="Emission Profile"
-        />
-        <.input field={@form[:issued_at]} type="date" label="Issued at" />
-        <.input field={@form[:due_date]} type="date" label="Due Date" />
-        <.input field={@form[:description]} type="textarea" label="Description" />
-        <.input
-          field={@form[:payment_method]}
-          type="select"
-          options={@payment_methods}
-          label="Payment Method"
-        />
 
-        <.inputs_for :let={f} field={@form[:items]}>
-          <div class={[
-            "flex space-x-2",
-            Ecto.Changeset.get_field(f.source, :marked_for_deletion) && "hidden"
-          ]}>
-            <div class="grid grid-cols-3 gap-x-2 flex-1">
-              <.input field={f[:description]} type="textarea" label={gettext("Description")} />
-              <.input field={f[:amount]} type="text" label={gettext("Amount")} />
-              <.input field={f[:tax_rate]} type="text" label={gettext("Tax Rate")} />
+        <div class="grid grid-cols-2 gap-4">
+          <.input field={@form[:issued_at]} type="date" label={gettext("Issued at")} />
+          <.input field={@form[:due_date]} type="date" label={gettext("Due Date")} />
+        </div>
+
+        <.input field={@form[:description]} type="textarea" label={gettext("Description")} />
+
+        <div class="grid grid-cols-2 gap-4">
+          <.input
+            field={@form[:payment_method]}
+            type="select"
+            options={@payment_methods}
+            label={gettext("Payment Method")}
+          />
+
+          <.input
+            field={@form[:emission_profile_id]}
+            type="select"
+            options={@emission_profiles}
+            label={gettext("Emission Profile")}
+          />
+        </div>
+
+        <div class="divider">{gettext("Items")}</div>
+
+        <div class="space-y-4 mb-8">
+          <.inputs_for :let={f} field={@form[:items]}>
+            <div class={[
+              "flex space-x-2",
+              Ecto.Changeset.get_field(f.source, :marked_for_deletion) && "hidden"
+            ]}>
+              <div class="grid grid-cols-3 gap-x-2 flex-1">
+                <.input field={f[:description]} type="textarea" label={gettext("Description")} />
+                <.input field={f[:price]} type="text" label={gettext("Price")} />
+                <.input field={f[:tax_rate]} type="text" label={gettext("Tax Rate")} />
+              </div>
+
+              <div class="flex justify-end mt-6">
+                <.button
+                  type="button"
+                  class="btn btn-error btn-soft"
+                  phx-click="remove_item"
+                  phx-value-index={f.index}
+                >
+                  {gettext("Remove")}
+                </.button>
+
+                <.input field={f[:marked_for_deletion]} type="checkbox" class="hidden" />
+              </div>
             </div>
+          </.inputs_for>
 
-            <div class="flex justify-end">
-              <.button
-                type="button"
-                class="btn btn-neutral"
-                phx-click="remove_item"
-                phx-value-index={f.index}
-              >
-                {gettext("Remove")}
-              </.button>
+          <.button type="button" phx-click="add_item">
+            {gettext("Add Item")}
+          </.button>
 
-              <.input field={f[:marked_for_deletion]} type="checkbox" class="hidden" />
-            </div>
-          </div>
-        </.inputs_for>
-
-        <.button type="button" class="btn btn-secondary" phx-click="add_item">
-          {gettext("Add Item")}
-        </.button>
-
-        <.error :for={msg <- Enum.map(@form[:items].errors, &translate_error(&1))}>
-          {msg}
-        </.error>
+          <.error :for={msg <- Enum.map(@form[:items].errors, &translate_error(&1))}>
+            {msg}
+          </.error>
+        </div>
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Invoice</.button>
-          <.button navigate={return_path(@return_to, @quote)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">{gettext("Save Quote")}</.button>
+          <.button navigate={return_path(@return_to, @quote)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -84,9 +95,9 @@ defmodule BillingWeb.QuoteLive.Form do
       Billing.EmissionProfiles.list_emission_profiles() |> Enum.map(&{&1.name, &1.id})
 
     payment_methods = [
-      {"Credit Card", :credit_card},
-      {"Cash", :cash},
-      {"Bank Transfer", :bank_transfer}
+      {gettext("Credit Card"), :credit_card},
+      {gettext("Cash"), :cash},
+      {gettext("Bank Transfer"), :bank_transfer}
     ]
 
     {:ok,
@@ -105,7 +116,7 @@ defmodule BillingWeb.QuoteLive.Form do
     quote = Quotes.get_quote!(id)
 
     socket
-    |> assign(:page_title, "Edit Invoice")
+    |> assign(:page_title, "Edit Quote")
     |> assign(:quote, quote)
     |> assign(:form, to_form(Quotes.change_quote(quote)))
   end
@@ -114,7 +125,7 @@ defmodule BillingWeb.QuoteLive.Form do
     order = Orders.get_order!(order_id)
 
     with {:ok, customer} <- find_or_create_customer(order) do
-      items = Enum.map(order.items, &%{"description" => &1.name, "amount" => &1.price})
+      items = Enum.map(order.items, &%{"description" => &1.name, "price" => &1.price})
       due_date = DateTime.add(order.inserted_at, 15, :day)
 
       attrs = %{
@@ -189,7 +200,7 @@ defmodule BillingWeb.QuoteLive.Form do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Invoice updated successfully")
+         |> put_flash(:info, gettext("Quote updated successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, quote))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -206,7 +217,7 @@ defmodule BillingWeb.QuoteLive.Form do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Invoice created successfully")
+         |> put_flash(:info, gettext("Quote created successfully"))
          |> push_navigate(to: return_path("show", quote))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -231,7 +242,7 @@ defmodule BillingWeb.QuoteLive.Form do
     quote = %Quote{items: []}
 
     socket
-    |> assign(:page_title, "New Invoice")
+    |> assign(:page_title, "New Quote")
     |> assign(:quote, quote)
     |> assign(:form, to_form(Quotes.change_quote(quote, params)))
   end

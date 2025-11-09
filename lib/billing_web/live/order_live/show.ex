@@ -8,31 +8,34 @@ defmodule BillingWeb.OrderLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Order {@order.id}
-        <:subtitle>This is a order record from your database.</:subtitle>
+        {gettext("Order #%{order_id}", order_id: @order.id)}
+        <:subtitle>{@order.inserted_at}</:subtitle>
         <:actions>
           <.button navigate={~p"/orders"}>
             <.icon name="hero-arrow-left" />
           </.button>
           <.link navigate={~p"/quotes/new/#{@order.id}"} class="btn btn-primary">
-            <.icon name="hero-plus" /> New Invoice
+            <.icon name="hero-plus" /> {gettext("New Quote")}
           </.link>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@order.full_name}</:item>
-        <:item title="Price">{@order.phone_number}</:item>
+        <:item title={gettext("Customer")}>{@order.full_name}</:item>
+        <:item title={gettext("Price")}>{@order.phone_number}</:item>
+        <:item title={gettext("Amount")}>{@order.amount}</:item>
       </.list>
 
-      <h2>Items</h2>
+      <div class="divider">{gettext("Items")}</div>
 
       <.table
         id="items"
         rows={@order.items}
       >
-        <:col :let={item} label="Name">{item.name}</:col>
-        <:col :let={item} label="Price">{item.price}</:col>
+        <:col :let={item} label={gettext("Product")}>{item.name}</:col>
+        <:col :let={item} label={gettext("Price")}>{item.price}</:col>
+        <:col :let={item} label={gettext("Quantity")}>{item.quantity}</:col>
+        <:col :let={item} label={gettext("Amount")}>{item.amount}</:col>
       </.table>
     </Layouts.app>
     """

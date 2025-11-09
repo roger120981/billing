@@ -11,6 +11,7 @@ defmodule Billing.Orders.Order do
     field :identification_type, Ecto.Enum, values: [:cedula, :ruc]
     field :address, :string
     field :phone_number, :string
+    field :amount, :decimal
 
     timestamps(type: :utc_datetime)
 

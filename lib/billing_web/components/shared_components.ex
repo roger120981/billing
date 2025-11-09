@@ -1,6 +1,6 @@
 defmodule BillingWeb.SharedComponents do
   use Phoenix.Component
-  use Gettext, backend: BotWeb.Gettext
+  use Gettext, backend: BillingWeb.Gettext
   use BillingWeb, :verified_routes
 
   alias BillingWeb.CoreComponents
@@ -42,11 +42,13 @@ defmodule BillingWeb.SharedComponents do
     ]}>
       <div class="card-body">
         <div class="flex justify-between">
-          <h2 class="card-title">{@cart_size} productos en tu carrito</h2>
+          <h2 class="card-title">
+            {ngettext("One product in your cart", "%{count} products in your cart", @cart_size)}
+          </h2>
 
           <div class="card-actions justify-end">
             <.link :if={@cart_size > 0} navigate={~p"/cart"} class="btn btn-neutral">
-              <CoreComponents.icon name="hero-shopping-cart" /> Ver Carrito
+              <CoreComponents.icon name="hero-shopping-cart" /> {gettext("View Cart")}
             </.link>
           </div>
         </div>

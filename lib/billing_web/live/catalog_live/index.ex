@@ -13,8 +13,7 @@ defmodule BillingWeb.CatalogLive.Index do
       <SharedComponents.cart_status cart_size={@cart_size} />
 
       <.header>
-        Welcome
-        <:subtitle>Products</:subtitle>
+        {gettext("Welcome to our product catalog.")}
       </.header>
 
       <ul id="products" class="list" phx-update="stream">
@@ -31,7 +30,7 @@ defmodule BillingWeb.CatalogLive.Index do
             <div class="uppercase font-semibold text-lg">{product.price}</div>
 
             <.button phx-click={JS.push("add_to_cart", value: %{id: product.id})} variant="primary">
-              <.icon name="hero-plus" /> Add to Cart
+              <.icon name="hero-plus" /> {gettext("Add to Cart")}
             </.button>
           </div>
         </li>
@@ -44,7 +43,7 @@ defmodule BillingWeb.CatalogLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Products")
+     |> assign(:page_title, gettext("Listing Products"))
      |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
      |> stream(:products, list_products())}
   end
@@ -64,7 +63,10 @@ defmodule BillingWeb.CatalogLive.Index do
         {:noreply,
          socket
          |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
-         |> put_flash(:info, "#{product.name} added to your cart")}
+         |> put_flash(
+           :info,
+           gettext("%{product_name} added to your cart", product_name: product.name)
+         )}
 
       {:error, changeset} ->
         {:noreply, put_flash(socket, :error, inspect(changeset))}

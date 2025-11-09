@@ -10,14 +10,13 @@ defmodule BillingWeb.CertificateLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage certificate records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="certificate-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} label="Name" />
+        <.input field={@form[:name]} label={gettext("Name")} />
         <div class="fieldset mb-2">
           <label>
-            <span class="label mb-1">P12 File</span>
+            <span class="label mb-1">{gettext("P12 File")}</span>
             <div>
               <.live_file_input upload={@uploads.certificate_file} class="file-input" />
             </div>
@@ -48,10 +47,12 @@ defmodule BillingWeb.CertificateLive.Form do
           </p>
         </section>
 
-        <.input field={@form[:password]} type="password" label="P12 Password" />
+        <.input field={@form[:password]} type="password" label={gettext("P12 Password")} />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Certificate</.button>
-          <.button navigate={return_path(@return_to, @certificate)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">
+            {gettext("Save Certificate")}
+          </.button>
+          <.button navigate={return_path(@return_to, @certificate)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -75,7 +76,7 @@ defmodule BillingWeb.CertificateLive.Form do
     certificate = Certificates.get_certificate!(id)
 
     socket
-    |> assign(:page_title, "Edit Certificate")
+    |> assign(:page_title, gettext("Edit Certificate"))
     |> assign(:certificate, certificate)
     |> assign(:form, to_form(Certificates.change_certificate(certificate)))
   end
@@ -84,7 +85,7 @@ defmodule BillingWeb.CertificateLive.Form do
     certificate = %Certificate{}
 
     socket
-    |> assign(:page_title, "New Certificate")
+    |> assign(:page_title, gettext("New Certificate"))
     |> assign(:certificate, certificate)
     |> assign(:form, to_form(Certificates.change_certificate(certificate)))
   end
@@ -118,14 +119,14 @@ defmodule BillingWeb.CertificateLive.Form do
          {:ok, certificate} <- Certificates.update_certificate_password(certificate, password) do
       {:noreply,
        socket
-       |> put_flash(:info, "Certificate updated successfully")
+       |> put_flash(:info, gettext("Certificate updated successfully"))
        |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
 
       _error ->
-        {:noreply, put_flash(socket, :error, "Error saving certificate")}
+        {:noreply, put_flash(socket, :error, gettext("Error saving certificate"))}
     end
   end
 
@@ -137,22 +138,22 @@ defmodule BillingWeb.CertificateLive.Form do
          {:ok, certificate} <- Certificates.update_certificate_password(certificate, password) do
       {:noreply,
        socket
-       |> put_flash(:info, "Certificate created successfully")
+       |> put_flash(:info, gettext("Certificate created successfully"))
        |> push_navigate(to: return_path(socket.assigns.return_to, certificate))}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
 
       _error ->
-        {:noreply, put_flash(socket, :error, "Error saving certificate")}
+        {:noreply, put_flash(socket, :error, gettext("Error saving certificate"))}
     end
   end
 
   defp return_path("index", _certificate), do: ~p"/certificates"
   defp return_path("show", certificate), do: ~p"/certificates/#{certificate}"
 
-  defp error_to_string(:too_large), do: "Too large"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: gettext("Too large")
+  defp error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   defp set_uploads_to_params(socket, params) do
     uploaded_files =

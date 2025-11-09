@@ -8,21 +8,21 @@ defmodule BillingWeb.CustomerLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Customer {@customer.id}
-        <:subtitle>This is a customer record from your database.</:subtitle>
+        {gettext("Customer #%{customer_id}", customer_id: @customer.id)}
+        <:subtitle>{@customer.inserted_at}</:subtitle>
         <:actions>
           <.button navigate={~p"/customers"}>
             <.icon name="hero-arrow-left" />
           </.button>
           <.button variant="primary" navigate={~p"/customers/#{@customer}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit customer
+            <.icon name="hero-pencil-square" /> {gettext("Edit customer")}
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Full name">{@customer.full_name}</:item>
-        <:item title="Email">{@customer.email}</:item>
+        <:item title={gettext("Full name")}>{@customer.full_name}</:item>
+        <:item title={gettext("Email")}>{@customer.email}</:item>
       </.list>
     </Layouts.app>
     """
@@ -32,7 +32,7 @@ defmodule BillingWeb.CustomerLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Show Customer")
+     |> assign(:page_title, gettext("Customer #%{customer_id}", customer_id: id))
      |> assign(:customer, Customers.get_customer!(id))}
   end
 end

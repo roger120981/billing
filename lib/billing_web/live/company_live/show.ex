@@ -8,22 +8,22 @@ defmodule BillingWeb.CompanyLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Company {@company.id}
-        <:subtitle>This is a company record from your database.</:subtitle>
+        {gettext("Company #%{company_id}", company_id: @company.id)}
+        <:subtitle>{@company.inserted_at}</:subtitle>
         <:actions>
           <.button navigate={~p"/companies"}>
             <.icon name="hero-arrow-left" />
           </.button>
           <.button variant="primary" navigate={~p"/companies/#{@company}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit company
+            <.icon name="hero-pencil-square" /> {gettext("Edit company")}
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Identification number">{@company.identification_number}</:item>
-        <:item title="Address">{@company.address}</:item>
-        <:item title="Name">{@company.name}</:item>
+        <:item title={gettext("Identification number")}>{@company.identification_number}</:item>
+        <:item title={gettext("Address")}>{@company.address}</:item>
+        <:item title={gettext("Name")}>{@company.name}</:item>
       </.list>
     </Layouts.app>
     """
@@ -33,7 +33,7 @@ defmodule BillingWeb.CompanyLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Show Company")
+     |> assign(:page_title, gettext("Company #%{company_id}", company_id: id))
      |> assign(:company, Companies.get_company!(id))}
   end
 end

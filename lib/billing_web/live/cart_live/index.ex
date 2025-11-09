@@ -10,7 +10,7 @@ defmodule BillingWeb.CartLive.Index do
     ~H"""
     <Layouts.public flash={@flash} current_scope={@current_scope}>
       <.header>
-        Your Cart
+        {gettext("Your Cart")}
         <:actions>
           <.button navigate={~p"/"}>
             <.icon name="hero-arrow-left" />
@@ -22,34 +22,38 @@ defmodule BillingWeb.CartLive.Index do
         id="carts"
         rows={@streams.carts}
       >
-        <:col :let={{_id, cart}} label="Name">{cart.product_name}</:col>
-        <:col :let={{_id, cart}} label="Price">{cart.product_price}</:col>
+        <:col :let={{_id, cart}} label={gettext("Product")}>{cart.product_name}</:col>
+        <:col :let={{_id, cart}} label={gettext("Price")}>{cart.product_price}</:col>
         <:action :let={{id, cart}}>
           <.button
             phx-click={JS.push("delete", value: %{id: cart.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm={gettext("Are you sure?")}
             class="btn btn-error btn-soft"
           >
-            Delete
+            {gettext("Remove")}
           </.button>
         </:action>
       </.table>
 
       <.form for={@form} id="order-form" phx-change="validate" phx-submit="save" autocomplete="off">
-        <.input field={@form[:full_name]} type="text" label="Full name" />
-        <.input field={@form[:email]} type="text" label="Email" />
-        <.input field={@form[:identification_number]} type="text" label="Identification Number" />
+        <.input field={@form[:full_name]} type="text" label={gettext("Full name")} />
+        <.input field={@form[:email]} type="text" label={gettext("Email")} />
         <.input
           field={@form[:identification_type]}
           type="select"
-          label="Identification Type"
+          label={gettext("Identification Type")}
           options={@identification_types}
         />
-        <.input field={@form[:address]} type="text" label="Address" />
-        <.input field={@form[:phone_number]} type="text" label="Phone Number" />
+        <.input
+          field={@form[:identification_number]}
+          type="text"
+          label={gettext("Identification Number")}
+        />
+        <.input field={@form[:address]} type="text" label={gettext("Address")} />
+        <.input field={@form[:phone_number]} type="text" label={gettext("Phone Number")} />
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Create order</.button>
+          <.button phx-disable-with="Saving..." variant="primary">{gettext("Place order")}</.button>
         </footer>
       </.form>
     </Layouts.public>
@@ -73,7 +77,7 @@ defmodule BillingWeb.CartLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Your Cart")
+     |> assign(:page_title, gettext("Your Cart"))
      |> assign(:order, order)
      |> assign(:form, to_form(Orders.change_order(order)))
      |> assign(:identification_types, identification_types)
@@ -113,12 +117,13 @@ defmodule BillingWeb.CartLive.Index do
     params = Map.put(order_params, "items", items)
 
     case Orders.create_order(params) do
-      {:ok, _order} ->
+      {:ok, order} ->
         Carts.clean_cart(socket.assigns.cart_uuid)
+        Orders.save_order_amounts(order)
 
         {:noreply,
          socket
-         |> put_flash(:info, "Order created successfully")
+         |> put_flash(:info, gettext("Order created successfully"))
          |> push_navigate(to: ~p"/")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -8,10 +8,10 @@ defmodule BillingWeb.CustomerLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Customers
+        {gettext("Customers")}
         <:actions>
           <.button variant="primary" navigate={~p"/customers/new"}>
-            <.icon name="hero-plus" /> New Customer
+            <.icon name="hero-plus" /> {gettext("New Customer")}
           </.button>
         </:actions>
       </.header>
@@ -21,20 +21,21 @@ defmodule BillingWeb.CustomerLive.Index do
         rows={@streams.customers}
         row_click={fn {_id, customer} -> JS.navigate(~p"/customers/#{customer}") end}
       >
-        <:col :let={{_id, customer}} label="Full name">{customer.full_name}</:col>
-        <:col :let={{_id, customer}} label="Email">{customer.email}</:col>
+        <:col :let={{_id, customer}} label={gettext("Id")}>{customer.id}</:col>
+        <:col :let={{_id, customer}} label={gettext("Full name")}>{customer.full_name}</:col>
+        <:col :let={{_id, customer}} label={gettext("Email")}>{customer.email}</:col>
         <:action :let={{_id, customer}}>
           <div class="sr-only">
-            <.link navigate={~p"/customers/#{customer}"}>Show</.link>
+            <.link navigate={~p"/customers/#{customer}"}>{gettext("Show")}</.link>
           </div>
-          <.link navigate={~p"/customers/#{customer}/edit"}>Edit</.link>
+          <.link navigate={~p"/customers/#{customer}/edit"}>{gettext("Edit")}</.link>
         </:action>
         <:action :let={{id, customer}}>
           <.link
             phx-click={JS.push("delete", value: %{id: customer.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm={gettext("Are you sure?")}
           >
-            Delete
+            {gettext("Delete")}
           </.link>
         </:action>
       </.table>
@@ -46,7 +47,7 @@ defmodule BillingWeb.CustomerLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Customers")
+     |> assign(:page_title, gettext("Customers"))
      |> stream(:customers, Customers.list_customers())}
   end
 

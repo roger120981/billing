@@ -16,8 +16,10 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Electronic Invoice {@electronic_invoice.id}
-        <:subtitle>This is a electronic quote record from your database.</:subtitle>
+        {gettext("Electronic Invoice %{electronic_invoice_id}",
+          electronic_invoice_id: @electronic_invoice.id
+        )}
+        <:subtitle>{@electronic_invoice.inserted_at}</:subtitle>
         <:actions>
           <.button navigate={~p"/electronic_invoices"}>
             <.icon name="hero-arrow-left" />
@@ -37,15 +39,18 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
         <:item title="Status">
           <ElectronicInvoiceComponents.state electronic_invoice={@electronic_invoice} />
         </:item>
-        <:item title="Date">{@electronic_invoice.inserted_at}</:item>
-        <:item title="Amount">{@electronic_invoice.amount}</:item>
-        <:item title="Access Key">{@electronic_invoice.access_key}</:item>
-        <:item title="Quote">
+        <:item title={gettext("Date")}>{@electronic_invoice.inserted_at}</:item>
+        <:item title={gettext("Amount")}>{@electronic_invoice.amount}</:item>
+        <:item title={gettext("Access Key")}>{@electronic_invoice.access_key}</:item>
+        <:item title={gettext("Quote Id")}>
           <.link navigate={~p"/quotes/#{@quote.id}"} class="link">
             {@quote.id}
           </.link>
         </:item>
-        <:item :if={ElectronicInvoice.authorized?(@electronic_invoice.state)} title="Documents">
+        <:item
+          :if={ElectronicInvoice.authorized?(@electronic_invoice.state)}
+          title={gettext("Documents")}
+        >
           <.link href={~p"/electronic_invoice/#{@electronic_invoice.id}/xml"} class="btn btn-ghost">
             <.icon name="hero-arrow-down-tray" /> XML
           </.link>
@@ -67,7 +72,10 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Electronic Invoice")
+     |> assign(
+       :page_title,
+       gettext("Electronic Invoice %{electronic_invoice_id}", electronic_invoice_id: id)
+     )
      |> assign(:send_result, %AsyncResult{})
      |> assign(:auth_result, %AsyncResult{})
      |> assign_invoice()}

@@ -68,62 +68,62 @@ defmodule BillingWeb.Layouts do
           </li>
           <li>
             <.link navigate={~p"/dashboard"}>
-              <.icon name="hero-presentation-chart-bar" /> Dashboard
+              <.icon name="hero-presentation-chart-bar" /> {gettext("Dashboard")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/agent_chat"}>
-              <.icon name="hero-sparkles" /> AI Chat
+              <.icon name="hero-sparkles" /> {gettext("AI Chat")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/orders"}>
-              <.icon name="hero-inbox" /> Orders
+              <.icon name="hero-inbox" /> {gettext("Orders")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/quotes"}>
-              <.icon name="hero-currency-dollar" /> Quotes
+              <.icon name="hero-currency-dollar" /> {gettext("Quotes")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/electronic_invoices"}>
-              <.icon name="hero-at-symbol" /> Electronic Quotes
+              <.icon name="hero-at-symbol" /> {gettext("E-Invoices")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/products"}>
-              <.icon name="hero-tag" /> Products
+              <.icon name="hero-tag" /> {gettext("Products")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/customers"}>
-              <.icon name="hero-users" /> Customers
+              <.icon name="hero-users" /> {gettext("Customers")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/certificates"}>
-              <.icon name="hero-key" /> Certificates
+              <.icon name="hero-key" /> {gettext("Certificates")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/companies"}>
-              <.icon name="hero-building-office" /> Companies
+              <.icon name="hero-building-office" /> {gettext("Companies")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/emission_profiles"}>
-              <.icon name="hero-finger-print" /> Emission Profiles
+              <.icon name="hero-finger-print" /> {gettext("Emission Profiles")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/users/settings"}>
-              <.icon name="hero-user-circle" /> Your Account
+              <.icon name="hero-user-circle" /> {gettext("Your Account")}
             </.link>
           </li>
           <li>
             <.link href={~p"/users/log-out"} method="delete">
-              <.icon name="hero-arrow-left-start-on-rectangle" /> Log out
+              <.icon name="hero-arrow-left-start-on-rectangle" /> {gettext("Log out")}
             </.link>
           </li>
         </ul>

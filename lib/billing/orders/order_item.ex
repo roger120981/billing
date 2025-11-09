@@ -9,6 +9,8 @@ defmodule Billing.Orders.OrderItem do
 
     field :name, :string
     field :price, :decimal
+    field :quantity, :decimal, default: 1.0
+    field :amount, :decimal
 
     timestamps(type: :utc_datetime)
   end

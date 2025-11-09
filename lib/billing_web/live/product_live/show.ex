@@ -9,21 +9,21 @@ defmodule BillingWeb.ProductLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Product {@product.id}
-        <:subtitle>This is a product record from your database.</:subtitle>
+        {gettext("Product #%{product_id}", product_id: @product.id)}
+        <:subtitle>{@product.inserted_at}</:subtitle>
         <:actions>
           <.button navigate={~p"/products"}>
             <.icon name="hero-arrow-left" />
           </.button>
           <.button variant="primary" navigate={~p"/products/#{@product}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit product
+            <.icon name="hero-pencil-square" /> {gettext("Edit product")}
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@product.name}</:item>
-        <:item title="Price">{@product.price}</:item>
+        <:item title={gettext("Name")}>{@product.name}</:item>
+        <:item title={gettext("Price")}>{@product.price}</:item>
       </.list>
 
       <SharedComponents.markdown text={@product.content} />
@@ -39,7 +39,7 @@ defmodule BillingWeb.ProductLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Show Product")
+     |> assign(:page_title, gettext("Product #%{product_id}", product_id: id))
      |> assign(:product, Products.get_product!(id))}
   end
 end

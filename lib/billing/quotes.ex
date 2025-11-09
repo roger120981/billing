@@ -117,9 +117,12 @@ defmodule Billing.Quotes do
     multi =
       Enum.reduce(items, Multi.new(), fn item, acc ->
         divisor = Decimal.add(Decimal.new(1), Decimal.div(item.tax_rate, Decimal.new(100)))
-        amount_without_tax = Decimal.div(item.amount, divisor)
+        amount = Decimal.mult(item.price, item.quantity)
+        amount_without_tax = Decimal.div(amount, divisor)
 
-        changeset = Ecto.Changeset.change(item, amount_without_tax: amount_without_tax)
+        changeset =
+          Ecto.Changeset.change(item, amount: amount, amount_without_tax: amount_without_tax)
+
         Multi.update(acc, :"update_item_#{item.id}", changeset)
       end)
       |> Multi.run(:calculate_totals, fn _repo, changes ->

@@ -10,24 +10,27 @@ defmodule BillingWeb.CustomerLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage customer records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="customer-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:full_name]} type="text" label="Full name" />
-        <.input field={@form[:email]} type="text" label="Email" />
-        <.input field={@form[:identification_number]} type="text" label="Identification Number" />
+        <.input field={@form[:full_name]} type="text" label={gettext("Full name")} />
+        <.input field={@form[:email]} type="text" label={gettext("Email")} />
         <.input
           field={@form[:identification_type]}
           type="select"
-          label="Identification Type"
+          label={gettext("Identification Type")}
           options={@identification_types}
         />
-        <.input field={@form[:address]} type="text" label="Address" />
-        <.input field={@form[:phone_number]} type="text" label="Phone Number" />
+        <.input
+          field={@form[:identification_number]}
+          type="text"
+          label={gettext("Identification Number")}
+        />
+        <.input field={@form[:address]} type="text" label={gettext("Address")} />
+        <.input field={@form[:phone_number]} type="text" label={gettext("Phone Number")} />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Customer</.button>
-          <.button navigate={return_path(@return_to, @customer)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">{gettext("Save Customer")}</.button>
+          <.button navigate={return_path(@return_to, @customer)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -81,7 +84,7 @@ defmodule BillingWeb.CustomerLive.Form do
       {:ok, customer} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Customer updated successfully")
+         |> put_flash(:info, gettext("Customer updated successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, customer))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -94,7 +97,7 @@ defmodule BillingWeb.CustomerLive.Form do
       {:ok, customer} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Customer created successfully")
+         |> put_flash(:info, gettext("Customer created successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, customer))}
 
       {:error, %Ecto.Changeset{} = changeset} ->

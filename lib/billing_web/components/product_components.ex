@@ -2,6 +2,8 @@ defmodule BillingWeb.ProductComponents do
   use Phoenix.Component
   use Gettext, backend: BillingWeb.Gettext
 
+  alias BillingWeb.CoreComponents
+
   attr :images, :list, required: true
   attr :title, :string, required: true
 
@@ -38,7 +40,7 @@ defmodule BillingWeb.ProductComponents do
       :if={!@image}
       class="w-32 h-32 flex items-center justify-center bg-base-200 text-base-content border border-dashed border-neutral rounded"
     >
-      <span class="text-sm">Sin imagen</span>
+      <CoreComponents.icon name="hero-photo" />
     </div>
     """
   end
