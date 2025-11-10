@@ -92,6 +92,11 @@ config :billing,
   storage_path: "./storage",
   crypto_key_base: "Ek/ZCeyFk1/yXXsEtjunrVHBHxqLPndOMgIIaoQEqW0qntrhBXoHtYS/RqA4bcdN"
 
+config :billing,
+       BillingWeb.Gettext,
+       default_locale: "es",
+       locales: ~w(en es)
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
