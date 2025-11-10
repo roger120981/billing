@@ -31,6 +31,8 @@ defmodule BillingWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :return_to, :string, default: nil
+
   slot :inner_block, required: true
 
   def app(assigns) do
@@ -40,11 +42,15 @@ defmodule BillingWeb.Layouts do
       <div class="drawer-content flex flex-col">
         <main class="px-4 py-4 sm:px-6 lg:px-8">
           <div class="mx-auto max-w-2xl space-y-4">
-            <div class="flex">
+            <div class="flex items-center">
               <div class="flex-1">
                 <label for="my-drawer-3" class="btn drawer-button lg:hidden">
                   <.icon name="hero-bars-3" />
                 </label>
+
+                <.button :if={@return_to} navigate={@return_to} class="btn">
+                  <.icon name="hero-arrow-left" />
+                </.button>
               </div>
 
               <div class="flex justify-end">
@@ -154,6 +160,8 @@ defmodule BillingWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :return_to, :string, default: nil
+
   slot :inner_block, required: true
 
   def public(assigns) do
@@ -166,7 +174,7 @@ defmodule BillingWeb.Layouts do
       </div>
       <div class="flex justify-end items-center space-x-2">
         <%= if @current_scope do %>
-          <.link navigate={~p"/quotes"} class="btn btn-ghost">
+          <.link navigate={~p"/dashboard"} class="btn btn-ghost">
             <.icon name="hero-cog-6-tooth" /> {gettext("Manager")}
           </.link>
           <.link href={~p"/users/log-out"} method="delete" class="btn btn-ghost">
@@ -186,6 +194,10 @@ defmodule BillingWeb.Layouts do
 
     <main class="px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl space-y-4">
+        <.button :if={@return_to} navigate={@return_to} class="btn">
+          <.icon name="hero-arrow-left" />
+        </.button>
+
         {render_slot(@inner_block)}
       </div>
     </main>

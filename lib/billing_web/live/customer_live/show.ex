@@ -6,14 +6,11 @@ defmodule BillingWeb.CustomerLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/customers"}>
       <.header>
         {gettext("Customer #%{customer_id}", customer_id: @customer.id)}
         <:subtitle>{@customer.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/customers"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.button variant="primary" navigate={~p"/customers/#{@customer}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> {gettext("Edit customer")}
           </.button>

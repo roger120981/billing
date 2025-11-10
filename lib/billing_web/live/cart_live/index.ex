@@ -8,14 +8,9 @@ defmodule BillingWeb.CartLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.public flash={@flash} current_scope={@current_scope}>
+    <Layouts.public flash={@flash} current_scope={@current_scope} return_to={~p"/"}>
       <.header>
         {gettext("Your Cart")}
-        <:actions>
-          <.button navigate={~p"/"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
-        </:actions>
       </.header>
 
       <.table

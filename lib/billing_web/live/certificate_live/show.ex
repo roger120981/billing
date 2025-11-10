@@ -6,14 +6,11 @@ defmodule BillingWeb.CertificateLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/certificates"}>
       <.header>
         {gettext("Certificates #%{certificate_id}", certificate_id: @certificate.id)}
         <:subtitle>{@certificate.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/certificates"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.button variant="primary" navigate={~p"/certificates/#{@certificate}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> {gettext("Edit certificate")}
           </.button>

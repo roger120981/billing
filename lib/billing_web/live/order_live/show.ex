@@ -6,14 +6,11 @@ defmodule BillingWeb.OrderLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/orders"}>
       <.header>
         {gettext("Order #%{order_id}", order_id: @order.id)}
         <:subtitle>{@order.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/orders"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.link navigate={~p"/quotes/new/#{@order.id}"} class="btn btn-primary">
             <.icon name="hero-plus" /> {gettext("New Quote")}
           </.link>
