@@ -9,7 +9,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Electronic Quotes
+        {gettext("Electronic Invoices")}
       </.header>
 
       <.table
@@ -21,11 +21,16 @@ defmodule BillingWeb.ElectronicInvoiceLive.Index do
           end
         }
       >
-        <:col :let={{_id, electronic_invoice}} label="State">
+        <:col :let={{_id, electronic_invoice}} label={gettext("Id")}>{electronic_invoice.id}</:col>
+        <:col :let={{_id, electronic_invoice}} label={gettext("State")}>
           <ElectronicInvoiceComponents.state electronic_invoice={electronic_invoice} />
         </:col>
-        <:col :let={{_id, electronic_invoice}} label="Date">{electronic_invoice.inserted_at}</:col>
-        <:col :let={{_id, electronic_invoice}} label="Amount">{electronic_invoice.amount}</:col>
+        <:col :let={{_id, electronic_invoice}} label={gettext("Date")}>
+          {electronic_invoice.inserted_at}
+        </:col>
+        <:col :let={{_id, electronic_invoice}} label={gettext("Amount")}>
+          {electronic_invoice.amount}
+        </:col>
       </.table>
     </Layouts.app>
     """
@@ -35,7 +40,7 @@ defmodule BillingWeb.ElectronicInvoiceLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Electronic Quotes")
+     |> assign(:page_title, gettext("Electronic Invoices"))
      |> stream(:electronic_invoices, list_electronic_invoices())}
   end
 

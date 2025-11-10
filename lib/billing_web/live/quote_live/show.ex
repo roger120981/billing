@@ -2,7 +2,6 @@ defmodule BillingWeb.QuoteLive.Show do
   use BillingWeb, :live_view
 
   alias Billing.Quotes
-  # alias Billing.InvoicingWorker
   alias Phoenix.PubSub
   alias Billing.InvoiceHandler
   alias Phoenix.LiveView.AsyncResult
@@ -12,16 +11,13 @@ defmodule BillingWeb.QuoteLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/quotes"}>
       <.header>
-        Invoice {@quote.id}
-        <:subtitle>This is a quote record from your database.</:subtitle>
+        {gettext("Quote #%{quote_id}", quote_id: @quote.id)}
+        <:subtitle>{@quote.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/quotes"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.button variant="primary" navigate={~p"/quotes/#{@quote}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit quote
+            <.icon name="hero-pencil-square" /> {gettext("Edit quote")}
           </.button>
 
           <.sign_electronic_invoice_button sign_result={@sign_result} />
@@ -114,7 +110,7 @@ defmodule BillingWeb.QuoteLive.Show do
      socket
      |> assign(:sign_result, AsyncResult.failed(%AsyncResult{}, {:error, error}))
      |> assign_electronic_invoices()
-     |> put_flash(:error, "Error: #{inspect(error)}")}
+     |> put_flash(:error, gettext("Error: %{error}", inspect(error)))}
   end
 
   def handle_async(:sign_electronic_invoice, {:exit, reason}, socket) do
@@ -122,7 +118,7 @@ defmodule BillingWeb.QuoteLive.Show do
      socket
      |> assign(:sign_result, AsyncResult.failed(%AsyncResult{}, {:exit, reason}))
      |> assign_electronic_invoices()
-     |> put_flash(:error, "Error: #{inspect(reason)}")}
+     |> put_flash(:error, gettext("Error: %{error}", error: inspect(reason)))}
   end
 
   @impl true
@@ -151,7 +147,7 @@ defmodule BillingWeb.QuoteLive.Show do
     ~H"""
     <.button variant="primary" phx-click="sign_electronic_invoice" disabled={@sign_result.loading}>
       <span :if={@sign_result.loading} class="loading loading-spinner loading-md"></span>
-      <.icon :if={!@sign_result.loading} name="hero-finger-print" /> Sign electronic quote
+      <.icon :if={!@sign_result.loading} name="hero-finger-print" /> {gettext("Create E-Invoice")}
     </.button>
     """
   end

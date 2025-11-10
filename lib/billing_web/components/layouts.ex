@@ -31,6 +31,8 @@ defmodule BillingWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :return_to, :string, default: nil
+
   slot :inner_block, required: true
 
   def app(assigns) do
@@ -40,11 +42,15 @@ defmodule BillingWeb.Layouts do
       <div class="drawer-content flex flex-col">
         <main class="px-4 py-4 sm:px-6 lg:px-8">
           <div class="mx-auto max-w-2xl space-y-4">
-            <div class="flex">
+            <div class="flex items-center">
               <div class="flex-1">
                 <label for="my-drawer-3" class="btn drawer-button lg:hidden">
                   <.icon name="hero-bars-3" />
                 </label>
+
+                <.button :if={@return_to} navigate={@return_to} class="btn">
+                  <.icon name="hero-arrow-left" />
+                </.button>
               </div>
 
               <div class="flex justify-end">
@@ -68,62 +74,62 @@ defmodule BillingWeb.Layouts do
           </li>
           <li>
             <.link navigate={~p"/dashboard"}>
-              <.icon name="hero-presentation-chart-bar" /> Dashboard
+              <.icon name="hero-presentation-chart-bar" /> {gettext("Dashboard")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/agent_chat"}>
-              <.icon name="hero-sparkles" /> AI Chat
+              <.icon name="hero-sparkles" /> {gettext("AI Chat")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/orders"}>
-              <.icon name="hero-inbox" /> Orders
+              <.icon name="hero-inbox" /> {gettext("Orders")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/quotes"}>
-              <.icon name="hero-currency-dollar" /> Quotes
+              <.icon name="hero-currency-dollar" /> {gettext("Quotes")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/electronic_invoices"}>
-              <.icon name="hero-at-symbol" /> Electronic Quotes
+              <.icon name="hero-at-symbol" /> {gettext("E-Invoices")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/products"}>
-              <.icon name="hero-tag" /> Products
+              <.icon name="hero-tag" /> {gettext("Products")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/customers"}>
-              <.icon name="hero-users" /> Customers
+              <.icon name="hero-users" /> {gettext("Customers")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/certificates"}>
-              <.icon name="hero-key" /> Certificates
+              <.icon name="hero-key" /> {gettext("Certificates")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/companies"}>
-              <.icon name="hero-building-office" /> Companies
+              <.icon name="hero-building-office" /> {gettext("Companies")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/emission_profiles"}>
-              <.icon name="hero-finger-print" /> Emission Profiles
+              <.icon name="hero-finger-print" /> {gettext("Emission Profiles")}
             </.link>
           </li>
           <li>
             <.link navigate={~p"/users/settings"}>
-              <.icon name="hero-user-circle" /> Your Account
+              <.icon name="hero-user-circle" /> {gettext("Your Account")}
             </.link>
           </li>
           <li>
             <.link href={~p"/users/log-out"} method="delete">
-              <.icon name="hero-arrow-left-start-on-rectangle" /> Log out
+              <.icon name="hero-arrow-left-start-on-rectangle" /> {gettext("Log out")}
             </.link>
           </li>
         </ul>
@@ -154,29 +160,49 @@ defmodule BillingWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :return_to, :string, default: nil
+
   slot :inner_block, required: true
 
   def public(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar mx-auto max-w-2xl">
       <div class="flex-1">
         <.link navigate={~p"/"} class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
+          <img src={~p"/images/logo.svg"} width="48" />
         </.link>
       </div>
       <div class="flex justify-end items-center space-x-2">
-        <%= if @current_scope do %>
-          <.link navigate={~p"/quotes"} class="btn btn-ghost">
-            <.icon name="hero-cog-6-tooth" /> Manager
-          </.link>
-          <.link href={~p"/users/log-out"} method="delete" class="btn btn-ghost">
-            <.icon name="hero-arrow-left-start-on-rectangle" /> Log out
-          </.link>
-        <% else %>
-          <.link href={~p"/users/log-in"} class="btn btn-ghost">
-            <.icon name="hero-arrow-right-start-on-rectangle" /> Log in
-          </.link>
-        <% end %>
+        <ul class="menu menu-horizontal">
+          <%= if @current_scope do %>
+            <li>
+              <.link navigate={~p"/dashboard"} class="rounded-full">
+                <.icon name="hero-inbox-arrow-down" /> {gettext("Manager")}
+              </.link>
+            </li>
+
+            <li>
+              <.link
+                href={~p"/users/log-out"}
+                method="delete"
+                class="tooltip tooltip-bottom rounded-full"
+                data-tip={gettext("Log out")}
+              >
+                <.icon name="hero-arrow-left-start-on-rectangle" />
+              </.link>
+            </li>
+          <% else %>
+            <li>
+              <.link
+                href={~p"/users/log-in"}
+                class="tooltip tooltip-bottom rounded-full"
+                data-tip={gettext("Log in")}
+              >
+                <.icon name="hero-power" />
+              </.link>
+            </li>
+          <% end %>
+        </ul>
 
         <div class="flex justify-end">
           <.theme_toggle />
@@ -186,6 +212,10 @@ defmodule BillingWeb.Layouts do
 
     <main class="px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl space-y-4">
+        <.button :if={@return_to} navigate={@return_to} class="btn">
+          <.icon name="hero-arrow-left" />
+        </.button>
+
         {render_slot(@inner_block)}
       </div>
     </main>

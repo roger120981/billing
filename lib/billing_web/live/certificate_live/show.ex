@@ -6,16 +6,13 @@ defmodule BillingWeb.CertificateLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/certificates"}>
       <.header>
-        Certificate {@certificate.id}
-        <:subtitle>This is a certificate record from your database.</:subtitle>
+        {gettext("Certificates #%{certificate_id}", certificate_id: @certificate.id)}
+        <:subtitle>{@certificate.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/certificates"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.button variant="primary" navigate={~p"/certificates/#{@certificate}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit certificate
+            <.icon name="hero-pencil-square" /> {gettext("Edit certificate")}
           </.button>
         </:actions>
       </.header>
@@ -35,7 +32,7 @@ defmodule BillingWeb.CertificateLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Show Certificate")
+     |> assign(:page_title, gettext("Certificate #%{certificate_id}", certificate_id: id))
      |> assign(:certificate, Certificates.get_certificate!(id))}
   end
 end

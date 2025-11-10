@@ -1,0 +1,774 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/billing_web/live/catalog_live/index.ex:68
+#: lib/billing_web/live/catalog_live/show.ex:59
+#, elixir-autogen, elixir-format
+msgid "%{product_name} added to your cart"
+msgstr "%{product_name} agregado a tu carrito"
+
+#: lib/billing_web/components/layouts.ex:82
+#, elixir-autogen, elixir-format
+msgid "AI Chat"
+msgstr "Chat IA"
+
+#: lib/billing_web/live/electronic_invoice_live/show.ex:40
+#, elixir-autogen, elixir-format
+msgid "Access Key"
+msgstr "Clave de Acceso"
+
+#: lib/billing_web/components/core_components.ex:342
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr "Acciones"
+
+#: lib/billing_web/live/quote_live/form.ex:75
+#, elixir-autogen, elixir-format
+msgid "Add Item"
+msgstr "Agregar Artículo"
+
+#: lib/billing_web/live/catalog_live/index.ex:33
+#: lib/billing_web/live/catalog_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Add to Cart"
+msgstr "Agregar al Carrito"
+
+#: lib/billing_web/live/cart_live/index.ex:47
+#: lib/billing_web/live/company_live/form.ex:21
+#: lib/billing_web/live/company_live/index.ex:28
+#: lib/billing_web/live/company_live/show.ex:22
+#: lib/billing_web/live/customer_live/form.ex:29
+#, elixir-autogen, elixir-format
+msgid "Address"
+msgstr "Dirección"
+
+#: lib/billing_web/live/electronic_invoice_live/index.ex:31
+#: lib/billing_web/live/electronic_invoice_live/show.ex:39
+#: lib/billing_web/live/order_live/index.ex:22
+#: lib/billing_web/live/order_live/show.ex:23
+#: lib/billing_web/live/order_live/show.ex:35
+#: lib/billing_web/live/quote_live/index.ex:28
+#, elixir-autogen, elixir-format
+msgid "Amount"
+msgstr "Monto"
+
+#: lib/billing_web/live/cart_live/index.ex:25
+#: lib/billing_web/live/certificate_live/index.ex:35
+#: lib/billing_web/live/company_live/index.ex:39
+#: lib/billing_web/live/customer_live/index.ex:36
+#: lib/billing_web/live/emission_profile_live/index.ex:37
+#: lib/billing_web/live/product_live/index.ex:36
+#: lib/billing_web/live/quote_live/index.ex:38
+#, elixir-autogen, elixir-format
+msgid "Are you sure?"
+msgstr "¿Estás seguro?"
+
+#: lib/billing_web/components/layouts.ex:233
+#: lib/billing_web/components/layouts.ex:245
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr "Intentando reconectar"
+
+#: lib/billing_web/live/quote_live/form.ex:100
+#, elixir-autogen, elixir-format
+msgid "Bank Transfer"
+msgstr "Transferencia Bancaria"
+
+#: lib/billing_web/live/certificate_live/form.ex:55
+#: lib/billing_web/live/company_live/form.ex:25
+#: lib/billing_web/live/customer_live/form.ex:33
+#: lib/billing_web/live/emission_profile_live/form.ex:34
+#: lib/billing_web/live/product_live/form.ex:34
+#: lib/billing_web/live/quote_live/form.ex:85
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: lib/billing_web/live/quote_live/form.ex:99
+#, elixir-autogen, elixir-format
+msgid "Cash"
+msgstr "Efectivo"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:26
+#, elixir-autogen, elixir-format
+msgid "Certificate"
+msgstr "Certificado"
+
+#: lib/billing_web/live/certificate_live/show.ex:35
+#, elixir-autogen, elixir-format
+msgid "Certificate #%{certificate_id}"
+msgstr "Certificado #%{certificate_id}"
+
+#: lib/billing_web/live/certificate_live/form.ex:141
+#, elixir-autogen, elixir-format
+msgid "Certificate created successfully"
+msgstr "Certificado creado exitosamente"
+
+#: lib/billing_web/live/certificate_live/form.ex:122
+#, elixir-autogen, elixir-format
+msgid "Certificate updated successfully"
+msgstr "Certificado actualizado exitosamente"
+
+#: lib/billing_web/components/layouts.ex:112
+#: lib/billing_web/live/certificate_live/index.ex:11
+#: lib/billing_web/live/certificate_live/index.ex:49
+#, elixir-autogen, elixir-format
+msgid "Certificates"
+msgstr "Certificados"
+
+#: lib/billing_web/live/certificate_live/show.ex:11
+#, elixir-autogen, elixir-format
+msgid "Certificates #%{certificate_id}"
+msgstr "Certificados #%{certificate_id}"
+
+#: lib/billing_web/components/layouts.ex:117
+#: lib/billing_web/live/company_live/index.ex:11
+#: lib/billing_web/live/company_live/index.ex:53
+#, elixir-autogen, elixir-format
+msgid "Companies"
+msgstr "Empresas"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:20
+#, elixir-autogen, elixir-format
+msgid "Company"
+msgstr "Empresa"
+
+#: lib/billing_web/live/company_live/show.ex:11
+#: lib/billing_web/live/company_live/show.ex:33
+#, elixir-autogen, elixir-format
+msgid "Company #%{company_id}"
+msgstr "Empresa #%{company_id}"
+
+#: lib/billing_web/live/company_live/form.ex:89
+#, elixir-autogen, elixir-format
+msgid "Company created successfully"
+msgstr "Empresa creada exitosamente"
+
+#: lib/billing_web/live/company_live/form.ex:76
+#, elixir-autogen, elixir-format
+msgid "Company updated successfully"
+msgstr "Empresa actualizada exitosamente"
+
+#: lib/billing_web/live/quote_live/show.ex:150
+#, elixir-autogen, elixir-format
+msgid "Create E-Invoice"
+msgstr "Crear Factura Electrónica"
+
+#: lib/billing_web/live/quote_live/form.ex:98
+#, elixir-autogen, elixir-format
+msgid "Credit Card"
+msgstr "Tarjeta de Crédito"
+
+#: lib/billing_web/live/order_live/index.ex:21
+#: lib/billing_web/live/order_live/show.ex:21
+#: lib/billing_web/live/quote_live/index.ex:27
+#, elixir-autogen, elixir-format
+msgid "Customer"
+msgstr "Cliente"
+
+#: lib/billing_web/live/customer_live/show.ex:11
+#: lib/billing_web/live/customer_live/show.ex:32
+#, elixir-autogen, elixir-format
+msgid "Customer #%{customer_id}"
+msgstr "Cliente #%{customer_id}"
+
+#: lib/billing_web/live/customer_live/form.ex:100
+#, elixir-autogen, elixir-format
+msgid "Customer created successfully"
+msgstr "Cliente creado exitosamente"
+
+#: lib/billing_web/live/customer_live/form.ex:87
+#, elixir-autogen, elixir-format
+msgid "Customer updated successfully"
+msgstr "Cliente actualizado exitosamente"
+
+#: lib/billing_web/components/layouts.ex:107
+#: lib/billing_web/live/customer_live/index.ex:11
+#: lib/billing_web/live/customer_live/index.ex:50
+#, elixir-autogen, elixir-format
+msgid "Customers"
+msgstr "Clientes"
+
+#: lib/billing_web/components/layouts.ex:77
+#, elixir-autogen, elixir-format
+msgid "Dashboard"
+msgstr "Panel de Control"
+
+#: lib/billing_web/live/electronic_invoice_live/index.ex:28
+#: lib/billing_web/live/electronic_invoice_live/show.ex:38
+#: lib/billing_web/live/order_live/index.ex:20
+#, elixir-autogen, elixir-format
+msgid "Date"
+msgstr "Fecha"
+
+#: lib/billing_web/live/certificate_live/index.ex:37
+#: lib/billing_web/live/company_live/index.ex:41
+#: lib/billing_web/live/customer_live/index.ex:38
+#: lib/billing_web/live/emission_profile_live/index.ex:39
+#: lib/billing_web/live/product_live/index.ex:38
+#: lib/billing_web/live/quote_live/index.ex:40
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr "Eliminar"
+
+#: lib/billing_web/live/product_live/form.ex:18
+#: lib/billing_web/live/quote_live/form.ex:27
+#: lib/billing_web/live/quote_live/form.ex:54
+#, elixir-autogen, elixir-format
+msgid "Description"
+msgstr "Descripción"
+
+#: lib/billing_web/live/electronic_invoice_live/show.ex:48
+#, elixir-autogen, elixir-format
+msgid "Documents"
+msgstr "Documentos"
+
+#: lib/billing_web/live/quote_live/form.ex:24
+#, elixir-autogen, elixir-format
+msgid "Due Date"
+msgstr "Fecha de Vencimiento"
+
+#: lib/billing_web/live/quote_live/index.ex:26
+#, elixir-autogen, elixir-format
+msgid "Due date"
+msgstr "Fecha de vencimiento"
+
+#: lib/billing_web/components/layouts.ex:97
+#, elixir-autogen, elixir-format
+msgid "E-Invoices"
+msgstr "Facturas Electrónicas"
+
+#: lib/billing_web/live/certificate_live/index.ex:30
+#: lib/billing_web/live/company_live/index.ex:34
+#: lib/billing_web/live/customer_live/index.ex:31
+#: lib/billing_web/live/emission_profile_live/index.ex:32
+#: lib/billing_web/live/product_live/index.ex:31
+#: lib/billing_web/live/quote_live/index.ex:33
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr "Editar"
+
+#: lib/billing_web/live/certificate_live/form.ex:79
+#, elixir-autogen, elixir-format
+msgid "Edit Certificate"
+msgstr "Editar Certificado"
+
+#: lib/billing_web/live/company_live/form.ex:47
+#, elixir-autogen, elixir-format
+msgid "Edit Company"
+msgstr "Editar Empresa"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:61
+#, elixir-autogen, elixir-format
+msgid "Edit Emission profile"
+msgstr "Editar Perfil de Emisión"
+
+#: lib/billing_web/live/product_live/form.ex:57
+#, elixir-autogen, elixir-format
+msgid "Edit Product"
+msgstr "Editar Producto"
+
+#: lib/billing_web/live/certificate_live/show.ex:15
+#, elixir-autogen, elixir-format
+msgid "Edit certificate"
+msgstr "Editar certificado"
+
+#: lib/billing_web/live/company_live/show.ex:15
+#, elixir-autogen, elixir-format
+msgid "Edit company"
+msgstr "Editar empresa"
+
+#: lib/billing_web/live/customer_live/show.ex:15
+#, elixir-autogen, elixir-format
+msgid "Edit customer"
+msgstr "Editar cliente"
+
+#: lib/billing_web/live/emission_profile_live/show.ex:20
+#, elixir-autogen, elixir-format
+msgid "Edit emission profile"
+msgstr "Editar perfil de emisión"
+
+#: lib/billing_web/live/product_live/show.ex:16
+#, elixir-autogen, elixir-format
+msgid "Edit product"
+msgstr "Editar producto"
+
+#: lib/billing_web/live/quote_live/show.ex:20
+#, elixir-autogen, elixir-format
+msgid "Edit quote"
+msgstr "Editar cotización"
+
+#: lib/billing_web/live/electronic_invoice_live/show.ex:19
+#: lib/billing_web/live/electronic_invoice_live/show.ex:73
+#, elixir-autogen, elixir-format
+msgid "Electronic Invoice %{electronic_invoice_id}"
+msgstr "Factura Electrónica %{electronic_invoice_id}"
+
+#: lib/billing_web/live/electronic_invoice_live/index.ex:12
+#: lib/billing_web/live/electronic_invoice_live/index.ex:43
+#, elixir-autogen, elixir-format
+msgid "Electronic Invoices"
+msgstr "Facturas Electrónicas"
+
+#: lib/billing_web/live/cart_live/index.ex:35
+#: lib/billing_web/live/customer_live/form.ex:17
+#: lib/billing_web/live/customer_live/index.ex:26
+#: lib/billing_web/live/customer_live/show.ex:22
+#: lib/billing_web/live/user_live/login.ex:43
+#: lib/billing_web/live/user_live/login.ex:67
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "Correo Electrónico"
+
+#: lib/billing_web/live/quote_live/form.ex:41
+#, elixir-autogen, elixir-format
+msgid "Emission Profile"
+msgstr "Perfil de Emisión"
+
+#: lib/billing_web/components/layouts.ex:122
+#, elixir-autogen, elixir-format
+msgid "Emission Profiles"
+msgstr "Perfiles de Emisión"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:111
+#, elixir-autogen, elixir-format
+msgid "Emission profile created successfully"
+msgstr "Perfil de emisión creado exitosamente"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:98
+#, elixir-autogen, elixir-format
+msgid "Emission profile updated successfully"
+msgstr "Perfil de emisión actualizado exitosamente"
+
+#: lib/billing_web/live/emission_profile_live/index.ex:11
+#: lib/billing_web/live/emission_profile_live/index.ex:51
+#, elixir-autogen, elixir-format
+msgid "Emission profiles"
+msgstr "Perfiles de emisión"
+
+#: lib/billing_web/live/emission_profile_live/show.ex:38
+#, elixir-autogen, elixir-format
+msgid "Emission profiles #%{emission_profile_id}"
+msgstr "Perfiles de emisión #%{emission_profile_id}"
+
+#: lib/billing_web/live/certificate_live/form.ex:129
+#: lib/billing_web/live/certificate_live/form.ex:148
+#, elixir-autogen, elixir-format
+msgid "Error saving certificate"
+msgstr "Error al guardar el certificado"
+
+#: lib/billing_web/live/quote_live/show.ex:113
+#: lib/billing_web/live/quote_live/show.ex:121
+#, elixir-autogen, elixir-format
+msgid "Error: %{error}"
+msgstr "Error: %{error}"
+
+#: lib/billing_web/live/cart_live/index.ex:34
+#: lib/billing_web/live/customer_live/form.ex:16
+#: lib/billing_web/live/customer_live/index.ex:25
+#: lib/billing_web/live/customer_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Full name"
+msgstr "Nombre completo"
+
+#: lib/billing_web/live/certificate_live/index.ex:24
+#: lib/billing_web/live/company_live/index.ex:24
+#: lib/billing_web/live/customer_live/index.ex:24
+#: lib/billing_web/live/electronic_invoice_live/index.ex:24
+#: lib/billing_web/live/emission_profile_live/index.ex:26
+#: lib/billing_web/live/order_live/index.ex:19
+#: lib/billing_web/live/product_live/index.ex:24
+#: lib/billing_web/live/quote_live/index.ex:24
+#, elixir-autogen, elixir-format
+msgid "Id"
+msgstr "Id"
+
+#: lib/billing_web/live/cart_live/index.ex:45
+#: lib/billing_web/live/customer_live/form.ex:27
+#, elixir-autogen, elixir-format
+msgid "Identification Number"
+msgstr "Número de Identificación"
+
+#: lib/billing_web/live/cart_live/index.ex:39
+#: lib/billing_web/live/customer_live/form.ex:21
+#, elixir-autogen, elixir-format
+msgid "Identification Type"
+msgstr "Tipo de Identificación"
+
+#: lib/billing_web/live/company_live/form.ex:19
+#: lib/billing_web/live/company_live/index.ex:25
+#: lib/billing_web/live/company_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Identification number"
+msgstr "Número de identificación"
+
+#: lib/billing_web/live/quote_live/form.ex:23
+#: lib/billing_web/live/quote_live/index.ex:25
+#, elixir-autogen, elixir-format
+msgid "Issued at"
+msgstr "Emitido el"
+
+#: lib/billing_web/live/order_live/show.ex:26
+#: lib/billing_web/live/quote_live/form.ex:45
+#, elixir-autogen, elixir-format
+msgid "Items"
+msgstr "Artículos"
+
+#: lib/billing_web/live/catalog_live/index.ex:46
+#, elixir-autogen, elixir-format
+msgid "Listing Products"
+msgstr "Listado de Productos"
+
+#: lib/billing_web/components/layouts.ex:132
+#: lib/billing_web/components/layouts.ex:181
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr "Cerrar sesión"
+
+#: lib/billing_web/live/certificate_live/form.ex:16
+#: lib/billing_web/live/certificate_live/index.ex:25
+#: lib/billing_web/live/company_live/form.ex:22
+#: lib/billing_web/live/company_live/index.ex:29
+#: lib/billing_web/live/company_live/show.ex:23
+#: lib/billing_web/live/emission_profile_live/form.ex:16
+#: lib/billing_web/live/emission_profile_live/index.ex:27
+#: lib/billing_web/live/emission_profile_live/show.ex:26
+#: lib/billing_web/live/product_live/form.ex:16
+#: lib/billing_web/live/product_live/index.ex:25
+#: lib/billing_web/live/product_live/show.ex:22
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Nombre"
+
+#: lib/billing_web/live/certificate_live/form.ex:88
+#: lib/billing_web/live/certificate_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Certificate"
+msgstr "Nuevo Certificado"
+
+#: lib/billing_web/live/company_live/form.ex:56
+#: lib/billing_web/live/company_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Company"
+msgstr "Nueva Empresa"
+
+#: lib/billing_web/live/customer_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Customer"
+msgstr "Nuevo Cliente"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:70
+#: lib/billing_web/live/emission_profile_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Emission profile"
+msgstr "Nuevo Perfil de Emisión"
+
+#: lib/billing_web/live/product_live/form.ex:66
+#: lib/billing_web/live/product_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Product"
+msgstr "Nuevo Producto"
+
+#: lib/billing_web/live/order_live/show.ex:15
+#: lib/billing_web/live/quote_live/index.ex:14
+#, elixir-autogen, elixir-format
+msgid "New Quote"
+msgstr "Nueva Cotización"
+
+#: lib/billing_web/components/shared_components.ex:46
+#, elixir-autogen, elixir-format
+msgid "One product in your cart"
+msgid_plural "%{count} products in your cart"
+msgstr[0] "Un producto en tu carrito"
+msgstr[1] "%{count} productos en tu carrito"
+
+#: lib/billing_web/live/order_live/show.ex:11
+#, elixir-autogen, elixir-format
+msgid "Order #%{order_id}"
+msgstr "Pedido #%{order_id}"
+
+#: lib/billing_web/live/cart_live/index.ex:121
+#, elixir-autogen, elixir-format
+msgid "Order created successfully"
+msgstr "Pedido creado exitosamente"
+
+#: lib/billing_web/components/layouts.ex:87
+#: lib/billing_web/live/order_live/index.ex:11
+#, elixir-autogen, elixir-format
+msgid "Orders"
+msgstr "Pedidos"
+
+#: lib/billing_web/live/certificate_live/form.ex:19
+#, elixir-autogen, elixir-format
+msgid "P12 File"
+msgstr "Archivo P12"
+
+#: lib/billing_web/live/certificate_live/form.ex:50
+#, elixir-autogen, elixir-format
+msgid "P12 Password"
+msgstr "Contraseña P12"
+
+#: lib/billing_web/live/quote_live/form.ex:34
+#, elixir-autogen, elixir-format
+msgid "Payment Method"
+msgstr "Método de Pago"
+
+#: lib/billing_web/live/cart_live/index.ex:48
+#: lib/billing_web/live/customer_live/form.ex:30
+#, elixir-autogen, elixir-format
+msgid "Phone Number"
+msgstr "Número de Teléfono"
+
+#: lib/billing_web/live/product_live/form.ex:22
+#, elixir-autogen, elixir-format
+msgid "Pictures"
+msgstr "Imágenes"
+
+#: lib/billing_web/live/cart_live/index.ex:51
+#, elixir-autogen, elixir-format
+msgid "Place order"
+msgstr "Realizar pedido"
+
+#: lib/billing_web/live/cart_live/index.ex:21
+#: lib/billing_web/live/order_live/show.ex:22
+#: lib/billing_web/live/order_live/show.ex:33
+#: lib/billing_web/live/product_live/form.ex:17
+#: lib/billing_web/live/product_live/index.ex:26
+#: lib/billing_web/live/product_live/show.ex:23
+#: lib/billing_web/live/quote_live/form.ex:55
+#, elixir-autogen, elixir-format
+msgid "Price"
+msgstr "Precio"
+
+#: lib/billing_web/live/cart_live/index.ex:20
+#: lib/billing_web/live/order_live/show.ex:32
+#, elixir-autogen, elixir-format
+msgid "Product"
+msgstr "Producto"
+
+#: lib/billing_web/live/product_live/show.ex:12
+#: lib/billing_web/live/product_live/show.ex:39
+#, elixir-autogen, elixir-format
+msgid "Product #%{product_id}"
+msgstr "Producto #%{product_id}"
+
+#: lib/billing_web/live/product_live/form.ex:107
+#, elixir-autogen, elixir-format
+msgid "Product created successfully"
+msgstr "Producto creado exitosamente"
+
+#: lib/billing_web/live/product_live/form.ex:92
+#, elixir-autogen, elixir-format
+msgid "Product updated successfully"
+msgstr "Producto actualizado exitosamente"
+
+#: lib/billing_web/components/layouts.ex:102
+#: lib/billing_web/live/product_live/index.ex:11
+#, elixir-autogen, elixir-format
+msgid "Products"
+msgstr "Productos"
+
+#: lib/billing_web/live/order_live/show.ex:34
+#, elixir-autogen, elixir-format
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: lib/billing_web/live/quote_live/show.ex:16
+#, elixir-autogen, elixir-format
+msgid "Quote #%{quote_id}"
+msgstr "Cotización #%{quote_id}"
+
+#: lib/billing_web/live/electronic_invoice_live/show.ex:41
+#, elixir-autogen, elixir-format
+msgid "Quote Id"
+msgstr "Id de Cotización"
+
+#: lib/billing_web/live/quote_live/form.ex:220
+#, elixir-autogen, elixir-format
+msgid "Quote created successfully"
+msgstr "Cotización creada exitosamente"
+
+#: lib/billing_web/live/quote_live/form.ex:203
+#, elixir-autogen, elixir-format
+msgid "Quote updated successfully"
+msgstr "Cotización actualizada exitosamente"
+
+#: lib/billing_web/components/layouts.ex:92
+#: lib/billing_web/live/quote_live/index.ex:11
+#: lib/billing_web/live/quote_live/index.ex:52
+#, elixir-autogen, elixir-format
+msgid "Quotes"
+msgstr "Cotizaciones"
+
+#: lib/billing_web/live/cart_live/index.ex:28
+#: lib/billing_web/live/quote_live/form.ex:66
+#, elixir-autogen, elixir-format
+msgid "Remove"
+msgstr "Eliminar"
+
+#: lib/billing_web/live/certificate_live/form.ex:53
+#, elixir-autogen, elixir-format
+msgid "Save Certificate"
+msgstr "Guardar Certificado"
+
+#: lib/billing_web/live/company_live/form.ex:24
+#, elixir-autogen, elixir-format
+msgid "Save Company"
+msgstr "Guardar Empresa"
+
+#: lib/billing_web/live/customer_live/form.ex:32
+#, elixir-autogen, elixir-format
+msgid "Save Customer"
+msgstr "Guardar Cliente"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:32
+#, elixir-autogen, elixir-format
+msgid "Save Emission profile"
+msgstr "Guardar Perfil de Emisión"
+
+#: lib/billing_web/live/product_live/form.ex:33
+#, elixir-autogen, elixir-format
+msgid "Save Product"
+msgstr "Guardar Producto"
+
+#: lib/billing_web/live/quote_live/form.ex:84
+#, elixir-autogen, elixir-format
+msgid "Save Quote"
+msgstr "Guardar Cotización"
+
+#: lib/billing_web/live/emission_profile_live/form.ex:29
+#, elixir-autogen, elixir-format
+msgid "Sequence"
+msgstr "Secuencia"
+
+#: lib/billing_web/live/certificate_live/index.ex:28
+#: lib/billing_web/live/company_live/index.ex:32
+#: lib/billing_web/live/customer_live/index.ex:29
+#: lib/billing_web/live/emission_profile_live/index.ex:30
+#: lib/billing_web/live/product_live/index.ex:29
+#: lib/billing_web/live/quote_live/index.ex:31
+#, elixir-autogen, elixir-format
+msgid "Show"
+msgstr "Mostrar"
+
+#: lib/billing_web/components/layouts.ex:240
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr "¡Algo salió mal!"
+
+#: lib/billing_web/live/electronic_invoice_live/index.ex:25
+#, elixir-autogen, elixir-format
+msgid "State"
+msgstr "Estado"
+
+#: lib/billing_web/live/quote_live/form.ex:56
+#, elixir-autogen, elixir-format
+msgid "Tax Rate"
+msgstr "Tasa de Impuesto"
+
+#: lib/billing_web/live/certificate_live/form.ex:155
+#, elixir-autogen, elixir-format
+msgid "Too large"
+msgstr "Demasiado grande"
+
+#: lib/billing_web/components/shared_components.ex:51
+#, elixir-autogen, elixir-format
+msgid "View Cart"
+msgstr "Ver Carrito"
+
+#: lib/billing_web/components/layouts.ex:228
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr "No podemos encontrar internet"
+
+#: lib/billing_web/live/catalog_live/index.ex:16
+#, elixir-autogen, elixir-format
+msgid "Welcome to our product catalog."
+msgstr "Bienvenido a nuestro catálogo de productos."
+
+#: lib/billing_web/live/certificate_live/form.ex:156
+#, elixir-autogen, elixir-format
+msgid "You have selected an unacceptable file type"
+msgstr "Has seleccionado un tipo de archivo no aceptable"
+
+#: lib/billing_web/components/layouts.ex:127
+#, elixir-autogen, elixir-format
+msgid "Your Account"
+msgstr "Tu Cuenta"
+
+#: lib/billing_web/live/cart_live/index.ex:13
+#: lib/billing_web/live/cart_live/index.ex:75
+#, elixir-autogen, elixir-format
+msgid "Your Cart"
+msgstr "Tu Carrito"
+
+#: lib/billing_web/live/dashboard_live/index.ex:23
+#, elixir-autogen, elixir-format
+msgid "Your sales trend"
+msgstr "Tendencia de tus ventas"
+
+#: lib/billing_web/components/core_components.ex:74
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr "cerrar"
+
+#: lib/billing_web/components/layouts.ex:185
+#: lib/billing_web/live/user_live/login.ex:13
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Ingresar"
+
+#: lib/billing_web/components/layouts.ex:178
+#, elixir-autogen, elixir-format
+msgid "Manager"
+msgstr "Administración"
+
+#: lib/billing_web/live/user_live/login.ex:27
+#, elixir-autogen, elixir-format
+msgid "To see sent emails, visit"
+msgstr "Para ver los correos electrónicos enviados, visite"
+
+#: lib/billing_web/live/user_live/login.ex:25
+#, elixir-autogen, elixir-format
+msgid "You are running the local mail adapter."
+msgstr "Estás utilizando el adaptador de correo local."
+
+#: lib/billing_web/live/user_live/login.ex:27
+#, elixir-autogen, elixir-format
+msgid "the mailbox page"
+msgstr "la página del buzón"
+
+#: lib/billing_web/live/user_live/login.ex:78
+#, elixir-autogen, elixir-format
+msgid "Log in and stay logged in"
+msgstr "Inicia sesión y permanece conectado"
+
+#: lib/billing_web/live/user_live/login.ex:81
+#, elixir-autogen, elixir-format
+msgid "Log in only this time"
+msgstr "Inicia sesión solo esta vez"
+
+#: lib/billing_web/live/user_live/login.ex:49
+#, elixir-autogen, elixir-format
+msgid "Log in with email"
+msgstr "Inicia sesión con tu correo electrónico"
+
+#: lib/billing_web/live/user_live/login.ex:74
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Password"
+msgstr "Contraseña"
+
+#: lib/billing_web/live/emission_profile_live/show.ex:11
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Emission profile #%{emission_profile_id}"
+msgstr "Perfiles de emisión #%{emission_profile_id}"

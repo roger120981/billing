@@ -8,8 +8,10 @@ defmodule Billing.Quotes.QuoteItem do
     belongs_to :quote, Quote
 
     field :description, :string
-    field :amount, :decimal
+    field :amount, :decimal, default: 0.0
     field :tax_rate, :decimal, default: 15.0
+    field :price, :decimal
+    field :quantity, :decimal, default: 1.0
     field :amount_without_tax, :decimal
 
     field :marked_for_deletion, :boolean, virtual: true, default: false
@@ -20,7 +22,7 @@ defmodule Billing.Quotes.QuoteItem do
   @doc false
   def changeset(quote_item, attrs) do
     quote_item
-    |> cast(attrs, [:description, :amount, :tax_rate, :marked_for_deletion])
-    |> validate_required([:description, :amount, :tax_rate])
+    |> cast(attrs, [:description, :price, :quantity, :tax_rate, :marked_for_deletion])
+    |> validate_required([:description, :price, :quantity, :tax_rate])
   end
 end

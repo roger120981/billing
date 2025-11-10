@@ -6,25 +6,24 @@ defmodule BillingWeb.EmissionProfileLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/emission_profiles"}>
       <.header>
-        Emission profile {@emission_profile.id}
-        <:subtitle>This is a emission_profile record from your database.</:subtitle>
+        {gettext("Emission profile #%{emission_profile_id}",
+          emission_profile_id: @emission_profile.id
+        )}
+        <:subtitle>{@emission_profile.inserted_at}</:subtitle>
         <:actions>
-          <.button navigate={~p"/emission_profiles"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <.button
             variant="primary"
             navigate={~p"/emission_profiles/#{@emission_profile}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Edit emission_profile
+            <.icon name="hero-pencil-square" /> {gettext("Edit emission profile")}
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@emission_profile.name}</:item>
+        <:item title={gettext("Name")}>{@emission_profile.name}</:item>
       </.list>
     </Layouts.app>
     """
@@ -34,7 +33,10 @@ defmodule BillingWeb.EmissionProfileLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Show Emission profile")
+     |> assign(
+       :page_title,
+       gettext("Emission profiles #%{emission_profile_id}", emission_profile_id: id)
+     )
      |> assign(:emission_profile, EmissionProfiles.get_emission_profile!(id))}
   end
 end

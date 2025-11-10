@@ -10,16 +10,19 @@ defmodule BillingWeb.CompanyLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage company records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="company-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:identification_number]} type="text" label="Identification number" />
-        <.input field={@form[:address]} type="text" label="Address" />
-        <.input field={@form[:name]} type="text" label="Name" />
+        <.input
+          field={@form[:identification_number]}
+          type="text"
+          label={gettext("Identification number")}
+        />
+        <.input field={@form[:address]} type="text" label={gettext("Address")} />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Company</.button>
-          <.button navigate={return_path(@return_to, @company)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">{gettext("Save Company")}</.button>
+          <.button navigate={return_path(@return_to, @company)}>{gettext("Cancel")}</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -41,7 +44,7 @@ defmodule BillingWeb.CompanyLive.Form do
     company = Companies.get_company!(id)
 
     socket
-    |> assign(:page_title, "Edit Company")
+    |> assign(:page_title, gettext("Edit Company"))
     |> assign(:company, company)
     |> assign(:form, to_form(Companies.change_company(company)))
   end
@@ -50,7 +53,7 @@ defmodule BillingWeb.CompanyLive.Form do
     company = %Company{}
 
     socket
-    |> assign(:page_title, "New Company")
+    |> assign(:page_title, gettext("New Company"))
     |> assign(:company, company)
     |> assign(:form, to_form(Companies.change_company(company)))
   end
@@ -70,7 +73,7 @@ defmodule BillingWeb.CompanyLive.Form do
       {:ok, company} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Company updated successfully")
+         |> put_flash(:info, gettext("Company updated successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, company))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -83,7 +86,7 @@ defmodule BillingWeb.CompanyLive.Form do
       {:ok, company} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Company created successfully")
+         |> put_flash(:info, gettext("Company created successfully"))
          |> push_navigate(to: return_path(socket.assigns.return_to, company))}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -9,7 +9,7 @@ defmodule BillingWeb.CatalogLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.public flash={@flash} current_scope={@current_scope}>
+    <Layouts.public flash={@flash} current_scope={@current_scope} return_to={~p"/"}>
       <SharedComponents.cart_status cart_size={@cart_size} />
 
       <.header>
@@ -17,12 +17,8 @@ defmodule BillingWeb.CatalogLive.Show do
         <:subtitle>{@product.price}</:subtitle>
 
         <:actions>
-          <.button navigate={~p"/"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
-
           <.button phx-click={JS.push("add_to_cart", value: %{id: @product.id})} variant="primary">
-            <.icon name="hero-plus" /> Add to Cart
+            <.icon name="hero-plus" /> {gettext("Add to Cart")}
           </.button>
         </:actions>
       </.header>
@@ -58,7 +54,10 @@ defmodule BillingWeb.CatalogLive.Show do
         {:noreply,
          socket
          |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
-         |> put_flash(:info, "#{product.name} added to your cart")}
+         |> put_flash(
+           :info,
+           gettext("%{product_name} added to your cart", product_name: product.name)
+         )}
 
       {:error, changeset} ->
         {:noreply, put_flash(socket, :error, inspect(changeset))}

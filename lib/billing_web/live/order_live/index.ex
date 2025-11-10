@@ -8,7 +8,7 @@ defmodule BillingWeb.OrderLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Orders
+        {gettext("Orders")}
       </.header>
 
       <.table
@@ -16,8 +16,10 @@ defmodule BillingWeb.OrderLive.Index do
         rows={@streams.orders}
         row_click={fn {_id, order} -> JS.navigate(~p"/orders/#{order}") end}
       >
-        <:col :let={{_id, order}} label="Name">{order.full_name}</:col>
-        <:col :let={{_id, order}} label="Price">{order.phone_number}</:col>
+        <:col :let={{_id, order}} label={gettext("Id")}>{order.id}</:col>
+        <:col :let={{_id, order}} label={gettext("Date")}>{order.inserted_at}</:col>
+        <:col :let={{_id, order}} label={gettext("Customer")}>{order.full_name}</:col>
+        <:col :let={{_id, order}} label={gettext("Amount")}>{order.amount}</:col>
         <:action :let={{_id, order}}>
           <div class="sr-only">
             <.link navigate={~p"/orders/#{order}"}>Show</.link>

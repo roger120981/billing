@@ -8,10 +8,10 @@ defmodule BillingWeb.EmissionProfileLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Emission profiles
+        {gettext("Emission profiles")}
         <:actions>
           <.button variant="primary" navigate={~p"/emission_profiles/new"}>
-            <.icon name="hero-plus" /> New Emission profile
+            <.icon name="hero-plus" /> {gettext("New Emission profile")}
           </.button>
         </:actions>
       </.header>
@@ -23,19 +23,20 @@ defmodule BillingWeb.EmissionProfileLive.Index do
           fn {_id, emission_profile} -> JS.navigate(~p"/emission_profiles/#{emission_profile}") end
         }
       >
-        <:col :let={{_id, emission_profile}} label="Name">{emission_profile.name}</:col>
+        <:col :let={{_id, emission_profile}} label={gettext("Id")}>{emission_profile.id}</:col>
+        <:col :let={{_id, emission_profile}} label={gettext("Name")}>{emission_profile.name}</:col>
         <:action :let={{_id, emission_profile}}>
           <div class="sr-only">
-            <.link navigate={~p"/emission_profiles/#{emission_profile}"}>Show</.link>
+            <.link navigate={~p"/emission_profiles/#{emission_profile}"}>{gettext("Show")}</.link>
           </div>
-          <.link navigate={~p"/emission_profiles/#{emission_profile}/edit"}>Edit</.link>
+          <.link navigate={~p"/emission_profiles/#{emission_profile}/edit"}>{gettext("Edit")}</.link>
         </:action>
         <:action :let={{id, emission_profile}}>
           <.link
             phx-click={JS.push("delete", value: %{id: emission_profile.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm={gettext("Are you sure?")}
           >
-            Delete
+            {gettext("Delete")}
           </.link>
         </:action>
       </.table>
@@ -47,7 +48,7 @@ defmodule BillingWeb.EmissionProfileLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Emission profiles")
+     |> assign(:page_title, gettext("Emission profiles"))
      |> stream(:emission_profiles, EmissionProfiles.list_emission_profiles())}
   end
 

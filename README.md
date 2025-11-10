@@ -38,6 +38,9 @@ Si todo ha ido correctamente visita: http://localhost:4000/
 
 El proyecto usa el API de facturación [api.taxideral.com](https://api.taxideral.com/).
 
+## Actualiar traducciones
+
+    mix gettext.extract --merge
 ## Diagrama ERB
 
 ![Diagrama ERD](erd.png)

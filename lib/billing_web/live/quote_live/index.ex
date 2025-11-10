@@ -8,10 +8,10 @@ defmodule BillingWeb.QuoteLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listado de Facturas
+        {gettext("Quotes")}
         <:actions>
           <.button variant="primary" navigate={~p"/quotes/new"}>
-            <.icon name="hero-plus" /> New Invoice
+            <.icon name="hero-plus" /> {gettext("New Quote")}
           </.button>
         </:actions>
       </.header>
@@ -21,23 +21,23 @@ defmodule BillingWeb.QuoteLive.Index do
         rows={@streams.quotes}
         row_click={fn {_id, quote} -> JS.navigate(~p"/quotes/#{quote}") end}
       >
-        <:col :let={{_id, quote}} label="Id">{quote.id}</:col>
-        <:col :let={{_id, quote}} label="Issued at">{quote.issued_at}</:col>
-        <:col :let={{_id, quote}} label="Due date">{quote.due_date}</:col>
-        <:col :let={{_id, quote}} label="Customer">{quote.customer.full_name}</:col>
-        <:col :let={{_id, quote}} label="Amount">{quote.amount}</:col>
+        <:col :let={{_id, quote}} label={gettext("Id")}>{quote.id}</:col>
+        <:col :let={{_id, quote}} label={gettext("Issued at")}>{quote.issued_at}</:col>
+        <:col :let={{_id, quote}} label={gettext("Due date")}>{quote.due_date}</:col>
+        <:col :let={{_id, quote}} label={gettext("Customer")}>{quote.customer.full_name}</:col>
+        <:col :let={{_id, quote}} label={gettext("Amount")}>{quote.amount}</:col>
         <:action :let={{_id, quote}}>
           <div class="sr-only">
-            <.link navigate={~p"/quotes/#{quote}"}>Show</.link>
+            <.link navigate={~p"/quotes/#{quote}"}>{gettext("Show")}</.link>
           </div>
-          <.link navigate={~p"/quotes/#{quote}/edit"}>Edit</.link>
+          <.link navigate={~p"/quotes/#{quote}/edit"}>{gettext("Edit")}</.link>
         </:action>
         <:action :let={{id, quote}}>
           <.link
             phx-click={JS.push("delete", value: %{id: quote.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm={gettext("Are you sure?")}
           >
-            Delete
+            {gettext("Delete")}
           </.link>
         </:action>
       </.table>
@@ -49,7 +49,7 @@ defmodule BillingWeb.QuoteLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listado de Facturas")
+     |> assign(:page_title, gettext("Quotes"))
      |> stream(:quotes, Quotes.list_quotes())}
   end
 
