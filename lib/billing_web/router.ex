@@ -6,7 +6,6 @@ defmodule BillingWeb.Router do
   alias BillingWeb.Plugs.CartPlug
   alias BillingWeb.LiveSessions.CartSession
   alias BillingWeb.Plugs.SetupGatePlug
-  alias BillingWeb.Plugs.SetupPlug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -16,6 +15,7 @@ defmodule BillingWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
+    plug SetupGatePlug
     plug CartPlug
   end
 
@@ -23,16 +23,8 @@ defmodule BillingWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :setup do
-    plug SetupPlug
-  end
-
-  pipeline :setup_gate do
-    plug SetupGatePlug
-  end
-
   scope "/", BillingWeb do
-    pipe_through [:browser, :setup_gate]
+    pipe_through [:browser]
 
     live_session :init_assings,
       on_mount: [{CartSession, :mount_session}, {BillingWeb.UserAuth, :mount_current_scope}] do
@@ -67,7 +59,7 @@ defmodule BillingWeb.Router do
   ## Authentication routes
 
   scope "/", BillingWeb do
-    pipe_through [:browser, :setup_gate, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{BillingWeb.UserAuth, :require_authenticated}] do
@@ -123,7 +115,7 @@ defmodule BillingWeb.Router do
   end
 
   scope "/", BillingWeb do
-    pipe_through [:browser, :setup_gate]
+    pipe_through [:browser]
 
     live_session :current_user,
       on_mount: [{BillingWeb.UserAuth, :mount_current_scope}] do
@@ -136,7 +128,7 @@ defmodule BillingWeb.Router do
   end
 
   scope "/", BillingWeb do
-    pipe_through [:browser, :setup]
+    pipe_through [:browser]
 
     live_session :setup_current_user,
       on_mount: [{BillingWeb.UserAuth, :mount_current_scope}] do
