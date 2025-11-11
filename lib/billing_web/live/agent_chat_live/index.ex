@@ -77,8 +77,8 @@ defmodule BillingWeb.AgentChatLive.Index do
   @impl true
   def handle_event("validate", %{"chat_message" => params}, socket) do
     changeset =
-      %ChatMessage{}
-      |> ChatMessages.change_chat_message(params)
+      socket.assigns.current_scope
+      |> ChatMessages.change_chat_message(%ChatMessage{}, params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
