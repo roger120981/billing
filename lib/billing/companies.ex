@@ -108,6 +108,6 @@ defmodule Billing.Companies do
   def change_company(%Scope{} = scope, %Company{} = company, attrs \\ %{}) do
     true = company.user_id == scope.user.id
 
-    Company.changeset(company, attrs)
+    Company.changeset(company, attrs, scope)
   end
 end

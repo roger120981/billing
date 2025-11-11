@@ -24,10 +24,10 @@ defmodule Billing.Settings do
 
   """
   def get_setting(%Scope{} = scope) do
-    if setting = Repo.get_by!(Setting, user_id: scope.user.id) do
+    if setting = Repo.get_by(Setting, user_id: scope.user.id) do
       setting
     else
-      %Setting{}
+      %Setting{user_id: scope.user.id}
     end
   end
 
@@ -59,6 +59,6 @@ defmodule Billing.Settings do
 
   """
   def change_setting(%Scope{} = scope, %Setting{} = setting, attrs \\ %{}) do
-    Setting.changeset(scope, setting, attrs)
+    Setting.changeset(setting, attrs, scope)
   end
 end

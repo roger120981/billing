@@ -74,7 +74,7 @@ defmodule BillingWeb.EmissionProfileLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    emission_profile = %EmissionProfile{}
+    emission_profile = %EmissionProfile{user_id: socket.assigns.current_scope.user.id}
 
     socket
     |> assign(:page_title, gettext("New Emission profile"))

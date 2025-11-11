@@ -21,7 +21,7 @@ defmodule Billing.Orders do
 
   """
   def list_orders(%Scope{} = scope) do
-    Repo.all_by(Certificate, user_id: scope.user.id)
+    Repo.all_by(Order, user_id: scope.user.id)
   end
 
   @doc """
@@ -110,7 +110,7 @@ defmodule Billing.Orders do
   def change_order(%Scope{} = scope, %Order{} = order, attrs \\ %{}) do
     true = order.user_id == scope.user.id
 
-    Order.changeset(order, attrs)
+    Order.changeset(order, attrs, scope)
   end
 
   def save_order_amounts(%Order{} = order) do

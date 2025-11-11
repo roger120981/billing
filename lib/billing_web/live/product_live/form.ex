@@ -60,7 +60,7 @@ defmodule BillingWeb.ProductLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    product = %Product{}
+    product = %Product{user_id: socket.assigns.current_scope.user.id}
 
     socket
     |> assign(:page_title, gettext("New Product"))
@@ -70,7 +70,13 @@ defmodule BillingWeb.ProductLive.Form do
 
   @impl true
   def handle_event("validate", %{"product" => product_params}, socket) do
-    changeset = Products.change_product(socket.assigns.product, product_params)
+    changeset =
+      Products.change_product(
+        socket.assigns.current_scope,
+        socket.assigns.product,
+        product_params
+      )
+
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 

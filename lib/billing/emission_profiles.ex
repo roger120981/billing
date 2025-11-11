@@ -107,12 +107,11 @@ defmodule Billing.EmissionProfiles do
   """
   def change_emission_profile(
         %Scope{} = scope,
-        %Scope{} = scope,
         %EmissionProfile{} = emission_profile,
         attrs \\ %{}
       ) do
     true = emission_profile.user_id == scope.user.id
 
-    EmissionProfile.changeset(emission_profile, attrs)
+    EmissionProfile.changeset(emission_profile, attrs, scope)
   end
 end

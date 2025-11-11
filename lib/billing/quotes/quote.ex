@@ -42,7 +42,7 @@ defmodule Billing.Quotes.Quote do
       :due_date,
       :payment_method
     ])
-    |> cast_assoc(:items)
+    |> cast_assoc(:items, with: &QuoteItem.changeset(&1, &2, user_scope))
     |> validate_has_items()
     |> put_change(:user_id, user_scope.user.id)
   end

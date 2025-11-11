@@ -61,7 +61,7 @@ defmodule BillingWeb.CustomerLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    customer = %Customer{}
+    customer = %Customer{user_id: socket.assigns.current_scope.user.id}
 
     socket
     |> assign(:page_title, "New Customer")
@@ -71,7 +71,13 @@ defmodule BillingWeb.CustomerLive.Form do
 
   @impl true
   def handle_event("validate", %{"customer" => customer_params}, socket) do
-    changeset = Customers.change_customer(socket.assigns.customer, customer_params)
+    changeset =
+      Customers.change_customer(
+        socket.assigns.current_scope,
+        socket.assigns.customer,
+        customer_params
+      )
+
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 

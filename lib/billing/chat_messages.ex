@@ -5,8 +5,8 @@ defmodule Billing.ChatMessages do
   alias Billing.Accounts.Scope
 
   def create_chat_message(%Scope{} = scope, attrs) do
-    %ChatMessage{}
-    |> change_chat_message(attrs, scope)
+    scope
+    |> change_chat_message(%ChatMessage{}, attrs)
     |> Repo.insert()
   end
 

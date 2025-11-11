@@ -115,7 +115,11 @@ defmodule Billing.Customers do
         %Scope{} = scope,
         %{identification_number: identification_number} = attrs
       ) do
-    if user = Repo.get_by(Customer, %{identification_number: identification_number}) do
+    if user =
+         Repo.get_by(Customer, %{
+           identification_number: identification_number,
+           user_id: scope.user.id
+         }) do
       {:ok, user}
     else
       create_customer(scope, attrs)

@@ -38,7 +38,7 @@ defmodule Billing.Orders.Order do
       :address,
       :phone_number
     ])
-    |> cast_assoc(:items)
+    |> cast_assoc(:items, with: &OrderItem.changeset(&1, &2, user_scope))
     |> put_change(:user_id, user_scope.user.id)
   end
 end
