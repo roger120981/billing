@@ -1,4 +1,4 @@
-defmodule BillingWeb.CatalogLive.Index do
+defmodule BillingWeb.StoreLive.Index do
   use BillingWeb, :live_view
 
   alias Billing.Products
@@ -45,12 +45,12 @@ defmodule BillingWeb.CatalogLive.Index do
      socket
      |> assign(:page_title, gettext("Listing Products"))
      |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
-     |> stream(:products, list_products(socket.assigns.user_scope))}
+     |> stream(:products, list_products(socket.assigns.store_scope))}
   end
 
   @impl true
   def handle_event("add_to_cart", %{"id" => id}, socket) do
-    product = Products.get_product!(socket.assigns.user_scope, id)
+    product = Products.get_product!(socket.assigns.store_scope, id)
 
     attrs = %{
       cart_uuid: socket.assigns.cart_uuid,

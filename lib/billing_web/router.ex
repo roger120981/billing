@@ -4,7 +4,7 @@ defmodule BillingWeb.Router do
   import BillingWeb.UserAuth
 
   alias BillingWeb.Plugs.CartPlug
-  alias BillingWeb.LiveSessions.CartSession
+  alias BillingWeb.LiveSessions.StoreSession
   alias BillingWeb.Plugs.SetupGatePlug
 
   pipeline :browser do
@@ -27,10 +27,10 @@ defmodule BillingWeb.Router do
     pipe_through [:browser]
 
     live_session :init_assings,
-      on_mount: [{CartSession, :mount_session}, {BillingWeb.UserAuth, :mount_current_scope}] do
-      live "/", CatalogLive.Index, :index
-      live "/cart", CartLive.Index, :index
-      live "/item/:id", CatalogLive.Show, :index
+      on_mount: [{StoreSession, :mount_store_scope}, {BillingWeb.UserAuth, :mount_current_scope}] do
+      live "/", StoreLive.Index, :index
+      live "/cart", StoreLive.Cart, :index
+      live "/item/:id", StoreLive.Product, :index
     end
   end
 

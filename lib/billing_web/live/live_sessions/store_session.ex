@@ -1,4 +1,4 @@
-defmodule BillingWeb.LiveSessions.CartSession do
+defmodule BillingWeb.LiveSessions.StoreSession do
   import Phoenix.Component
 
   alias Billing.Accounts
@@ -7,11 +7,11 @@ defmodule BillingWeb.LiveSessions.CartSession do
   alias Ecto.Query
   alias Billing.Accounts.Scope
 
-  def on_mount(:mount_session, _params, %{"cart_uuid" => cart_uuid} = session, socket) do
+  def on_mount(:mount_store_scope, _params, %{"cart_uuid" => cart_uuid} = session, socket) do
     new_socket =
       socket
       |> assign_new(:cart_uuid, fn -> cart_uuid end)
-      |> assign_new(:user_scope, fn -> get_user_scope(session["user_id"]) end)
+      |> assign_new(:store_scope, fn -> get_user_scope(session["user_id"]) end)
 
     {:cont, new_socket}
   end
