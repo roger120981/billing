@@ -1,4 +1,4 @@
-defmodule BillingWeb.CatalogLive.Show do
+defmodule BillingWeb.StoreLive.Product do
   use BillingWeb, :live_view
 
   alias Billing.Products
@@ -36,7 +36,7 @@ defmodule BillingWeb.CatalogLive.Show do
      socket
      |> assign(:page_title, "Listing Products")
      |> assign(:cart_size, cart_size(socket.assigns.cart_uuid))
-     |> assign(:product, Products.get_product!(socket.assigns.user_scope, id))}
+     |> assign(:product, Products.get_product!(socket.assigns.store_scope, id))}
   end
 
   @impl true

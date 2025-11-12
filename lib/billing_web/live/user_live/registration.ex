@@ -11,7 +11,7 @@ defmodule BillingWeb.UserLive.Registration do
       <div class="mx-auto max-w-sm">
         <div class="text-center">
           <.header>
-            Register for an account
+            {gettext("Register for an account")}
           </.header>
         </div>
 
@@ -19,14 +19,14 @@ defmodule BillingWeb.UserLive.Registration do
           <.input
             field={@form[:email]}
             type="email"
-            label="Email"
+            label={gettext("Email")}
             autocomplete="username"
             required
             phx-mounted={JS.focus()}
           />
 
-          <.button phx-disable-with="Creating account..." class="btn btn-primary w-full">
-            Create an account
+          <.button phx-disable-with={gettext("Creating account...")} class="btn btn-primary w-full">
+            {gettext("Create an account")}
           </.button>
         </.form>
       </div>
@@ -60,7 +60,10 @@ defmodule BillingWeb.UserLive.Registration do
          socket
          |> put_flash(
            :info,
-           "An email was sent to #{user.email}, please access it to confirm your account."
+           gettext(
+             "An email was sent to %{user_email}, please access it to confirm your account.",
+             user_email: user.email
+           )
          )
          |> push_navigate(to: ~p"/users/log-in")}
 
