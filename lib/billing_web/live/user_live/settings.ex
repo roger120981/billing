@@ -4,7 +4,6 @@ defmodule BillingWeb.UserLive.Settings do
   on_mount {BillingWeb.UserAuth, :require_sudo_mode}
 
   alias Billing.Accounts
-  # alias Billing.Settings
   alias BillingWeb.URLHelper
 
   @impl true
@@ -64,25 +63,6 @@ defmodule BillingWeb.UserLive.Settings do
           Save Password
         </.button>
       </.form>
-      <!--
-
-      <div class="divider" />
-
-      <.form
-        for={@setting_form}
-        id="setting_form"
-        phx-submit="update_setting"
-        phx-change="validate_setting"
-      >
-        <.input
-          field={@setting_form[:title]}
-          type="text"
-          label={gettext("Title")}
-          required
-        />
-        <.button variant="primary" phx-disable-with="Changing...">{gettext("Save Settings")}</.button>
-      </.form>
-      -->
     </Layouts.app>
     """
   end
@@ -105,8 +85,6 @@ defmodule BillingWeb.UserLive.Settings do
     user = socket.assigns.current_scope.user
     email_changeset = Accounts.change_user_email(user, %{}, validate_unique: false)
     password_changeset = Accounts.change_user_password(user, %{}, hash_password: false)
-    # setting = Settings.get_setting!(socket.assigns.current_scope)
-    # setting_changeset = Settings.change_setting(socket.assigns.current_scope, setting)
 
     socket =
       socket
@@ -114,9 +92,6 @@ defmodule BillingWeb.UserLive.Settings do
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
-
-    # |> assign(:setting, setting)
-    # |> assign(:setting_form, to_form(setting_changeset))
 
     {:ok, socket}
   end
@@ -183,33 +158,4 @@ defmodule BillingWeb.UserLive.Settings do
         {:noreply, assign(socket, password_form: to_form(changeset, action: :insert))}
     end
   end
-
-  # @impl true
-  # def handle_event("validate_setting", %{"setting" => setting_params}, socket) do
-  #   setting_form =
-  #     socket.assigns.current_scope
-  #     |> Settings.change_setting(socket.assigns.setting, setting_params)
-  #     |> Map.put(:action, :validate)
-  #     |> to_form()
-  #
-  #   {:noreply, assign(socket, setting_form: setting_form)}
-  # end
-  #
-  # def handle_event("update_setting", %{"setting" => setting_params}, socket) do
-  #   user = socket.assigns.current_scope.user
-  #   true = Accounts.sudo_mode?(user)
-  #
-  #   case Settings.save_setting(
-  #          socket.assigns.current_scope,
-  #          socket.assigns.setting,
-  #          setting_params
-  #        ) do
-  #     {:ok, _setting} ->
-  #       info = gettext("Settings saved")
-  #       {:noreply, socket |> put_flash(:info, info)}
-  #
-  #     {:error, changeset} ->
-  #       {:noreply, assign(socket, :setting_form, to_form(changeset, action: :insert))}
-  #   end
-  # end
 end
