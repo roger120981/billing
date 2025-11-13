@@ -6,6 +6,7 @@ defmodule BillingWeb.Router do
   alias BillingWeb.Plugs.CartPlug
   alias BillingWeb.LiveSessions.StoreSession
   alias BillingWeb.Plugs.SetupGatePlug
+  alias BillingWeb.Plugs.SubdomainPlug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -15,6 +16,7 @@ defmodule BillingWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
+    plug SubdomainPlug
     plug SetupGatePlug
     plug CartPlug
   end
@@ -109,6 +111,8 @@ defmodule BillingWeb.Router do
       live "/electronic_invoices/:id", ElectronicInvoiceLive.Show, :show
 
       live "/dashboard", DashboardLive.Index, :index
+
+      live "/settings", SettingLive.Form, :form
     end
 
     post "/users/update-password", UserSessionController, :update_password

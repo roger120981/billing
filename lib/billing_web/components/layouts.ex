@@ -123,6 +123,11 @@ defmodule BillingWeb.Layouts do
             </.link>
           </li>
           <li>
+            <.link navigate={~p"/settings"}>
+              <.icon name="hero-adjustments-vertical" /> {gettext("Settings")}
+            </.link>
+          </li>
+          <li>
             <.link navigate={~p"/users/settings"}>
               <.icon name="hero-user-circle" /> {gettext("Your Account")}
             </.link>
