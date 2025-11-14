@@ -6,7 +6,12 @@ defmodule BillingWeb.CertificateLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/certificates"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/certificates"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Certificates #%{certificate_id}", certificate_id: @certificate.id)}
         <:subtitle>{@certificate.inserted_at}</:subtitle>

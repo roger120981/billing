@@ -11,7 +11,12 @@ defmodule BillingWeb.QuoteLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/quotes"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/quotes"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Quote #%{quote_id}", quote_id: @quote.id)}
         <:subtitle>{@quote.inserted_at}</:subtitle>

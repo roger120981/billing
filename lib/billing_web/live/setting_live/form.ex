@@ -6,7 +6,7 @@ defmodule BillingWeb.SettingLive.Form do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} settings={@settings}>
       <div class="text-center">
         <.header>
           {gettext("Store Setttings")}
@@ -68,7 +68,7 @@ defmodule BillingWeb.SettingLive.Form do
          ) do
       {:ok, _setting} ->
         info = gettext("Settings saved")
-        {:noreply, socket |> put_flash(:info, info)}
+        {:noreply, socket |> put_flash(:info, info) |> push_navigate(to: ~p"/settings")}
 
       {:error, changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset, action: :insert))}

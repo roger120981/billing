@@ -5,6 +5,7 @@ defmodule Billing.AccountsFixtures do
   """
 
   import Ecto.Query
+  import Billing.SettingsFixtures, only: [setting_fixture: 1]
 
   alias Billing.Accounts
   alias Billing.Accounts.Scope
@@ -23,6 +24,8 @@ defmodule Billing.AccountsFixtures do
       attrs
       |> valid_user_attributes()
       |> Accounts.register_user()
+
+    setting_fixture(user_scope_fixture(user))
 
     user
   end

@@ -2,6 +2,7 @@ defmodule BillingWeb.Router do
   use BillingWeb, :router
 
   import BillingWeb.UserAuth
+  import BillingWeb.Settings
 
   alias BillingWeb.Plugs.CartPlug
   alias BillingWeb.LiveSessions.StoreSession
@@ -16,15 +17,18 @@ defmodule BillingWeb.Router do
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
     plug SetupGatePlug
-    plug CartPlug
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  pipeline :store do
+    plug CartPlug
+  end
+
   scope "/", BillingWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :store]
 
     live_session :init_assings,
       on_mount: [{StoreSession, :mount_store_scope}, {BillingWeb.UserAuth, :mount_current_scope}] do
@@ -59,10 +63,13 @@ defmodule BillingWeb.Router do
   ## Authentication routes
 
   scope "/", BillingWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :fetch_settings]
 
     live_session :require_authenticated_user,
-      on_mount: [{BillingWeb.UserAuth, :require_authenticated}] do
+      on_mount: [
+        {BillingWeb.UserAuth, :require_authenticated},
+        {BillingWeb.Settings, :mount_settings}
+      ] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
 
@@ -123,18 +130,10 @@ defmodule BillingWeb.Router do
       on_mount: [{BillingWeb.UserAuth, :mount_current_scope}] do
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+      live "/users/register", UserLive.Registration, :new
     end
 
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
-  end
-
-  scope "/", BillingWeb do
-    pipe_through [:browser]
-
-    live_session :setup_current_user,
-      on_mount: [{BillingWeb.UserAuth, :mount_current_scope}] do
-      live "/users/register", UserLive.Registration, :new
-    end
   end
 end

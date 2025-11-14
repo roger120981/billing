@@ -6,7 +6,7 @@ defmodule BillingWeb.EmissionProfileLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} settings={@settings}>
       <.header>
         {gettext("Emission profiles")}
         <:actions>

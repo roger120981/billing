@@ -5,6 +5,7 @@ defmodule BillingWeb.LiveSessions.StoreSession do
   alias Billing.Accounts.User
   alias Billing.Repo
   alias Billing.Accounts.Scope
+  alias Billing.Settings
 
   defmodule StoreNotFoundError do
     use Gettext, backend: BillingWeb.Gettext
@@ -29,7 +30,10 @@ defmodule BillingWeb.LiveSessions.StoreSession do
   end
 
   def handle_store_scope(%{assigns: %{store_scope: %Scope{user: %User{}}}} = socket) do
-    {:cont, socket}
+    new_socket =
+      assign_new(socket, :settings, fn -> Settings.get_setting!(socket.assigns.store_scope) end)
+
+    {:cont, new_socket}
   end
 
   def handle_store_scope(_socket) do

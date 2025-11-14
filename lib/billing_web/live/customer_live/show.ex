@@ -6,7 +6,12 @@ defmodule BillingWeb.CustomerLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/customers"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/customers"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Customer #%{customer_id}", customer_id: @customer.id)}
         <:subtitle>{@customer.inserted_at}</:subtitle>

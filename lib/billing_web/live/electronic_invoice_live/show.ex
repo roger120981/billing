@@ -14,7 +14,12 @@ defmodule BillingWeb.ElectronicInvoiceLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/electronic_invoices"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/electronic_invoices"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Electronic Invoice %{electronic_invoice_id}",
           electronic_invoice_id: @electronic_invoice.id
