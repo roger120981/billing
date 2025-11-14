@@ -9,7 +9,7 @@ defmodule BillingWeb.StoreLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.public flash={@flash} current_scope={@current_scope}>
+    <Layouts.public flash={@flash} current_scope={@current_scope} settings={@settings}>
       <SharedComponents.cart_status cart_size={@cart_size} />
 
       <.header>

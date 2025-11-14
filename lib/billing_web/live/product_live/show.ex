@@ -7,7 +7,12 @@ defmodule BillingWeb.ProductLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/products"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/products"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Product #%{product_id}", product_id: @product.id)}
         <:subtitle>{@product.inserted_at}</:subtitle>

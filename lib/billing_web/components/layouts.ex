@@ -33,6 +33,10 @@ defmodule BillingWeb.Layouts do
 
   attr :return_to, :string, default: nil
 
+  attr :settings, :map,
+    required: true,
+    doc: "User Settings"
+
   slot :inner_block, required: true
 
   def app(assigns) do
@@ -69,7 +73,7 @@ defmodule BillingWeb.Layouts do
         <ul class="menu bg-base-200 min-h-full w-80 p-4">
           <li class="menu-title inline-block">
             <.link navigate={~p"/"}>
-              <img src={~p"/images/logo.svg"} width="36" />
+              <img src={~p"/images/logo.svg"} width="36" /> {@settings.title}
             </.link>
           </li>
           <li>
@@ -167,14 +171,25 @@ defmodule BillingWeb.Layouts do
 
   attr :return_to, :string, default: nil
 
+  attr :settings, :map,
+    default: nil,
+    doc: "User Settings"
+
   slot :inner_block, required: true
 
   def public(assigns) do
+    assigns =
+      assign_new(assigns, :title, fn ->
+        if settings = assigns.settings do
+          settings.title
+        end
+      end)
+
     ~H"""
     <header class="navbar mx-auto max-w-2xl">
       <div class="flex-1">
         <.link navigate={~p"/"} class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="48" />
+          <img src={~p"/images/logo.svg"} width="48" /> {@title}
         </.link>
       </div>
       <div class="flex justify-end items-center space-x-2">

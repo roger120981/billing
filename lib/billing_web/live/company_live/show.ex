@@ -6,7 +6,12 @@ defmodule BillingWeb.CompanyLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} return_to={~p"/companies"}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      return_to={~p"/companies"}
+      settings={@settings}
+    >
       <.header>
         {gettext("Company #%{company_id}", company_id: @company.id)}
         <:subtitle>{@company.inserted_at}</:subtitle>

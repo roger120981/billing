@@ -7,7 +7,7 @@ defmodule BillingWeb.CompanyLive.Form do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} settings={@settings}>
       <.header>
         {@page_title}
       </.header>
