@@ -9,7 +9,7 @@ defmodule Billing.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Billing", "contact@example.com"})
+      |> from({"Billing", Billing.get_from_email()})
       |> subject(subject)
       |> text_body(body)
 
