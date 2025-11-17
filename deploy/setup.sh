@@ -3,22 +3,19 @@ set -xe
 
 echo "Starting initial setup..."
 
-docker compose up -d postgres caddy compritas
+docker compose up -d postgres caddy
 
-echo "Waiting for database to be ready..."
+echo "Waiting for database..."
 until docker compose exec -T postgres pg_isready -U postgres > /dev/null 2>&1; do
   echo "Postgres not ready yet, waiting..."
   sleep 5
 done
 
-echo "Waiting for app healthcheck..."
-until [ "$(docker inspect --format='{{.State.Health.Status}}' compritas-compritas-1)" = "healthy" ]; do
-  echo "App not healthy yet, waiting..."
-  sleep 5
-done
-
 echo "Running migrations..."
 docker compose run --rm compritas ./bin/migrate
+
+echo "Starting application..."
+docker compose up -d compritas
 
 echo "Setup completed!"
 docker compose ps
