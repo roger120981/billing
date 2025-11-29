@@ -33,9 +33,11 @@ env:
     - FROM_EMAIL
     - SMTP_SERVER
     - SMTP_PORT
+    - SMTP_TEST
 
 aliases:
   migrate: app exec --reuse "/app/bin/migrate"
+  logs: app logs -f
 
 ssh:
   user: deploy
