@@ -1,6 +1,6 @@
 service: compritas
 
-image: joselo/compritas
+image: joselo/compritas:kamal
 
 servers:
   web:
