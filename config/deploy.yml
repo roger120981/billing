@@ -24,8 +24,6 @@ builder:
 env:
   clear:
     PHX_SERVER: true
-    STORAGE_PATH: /app/storage
-    UPLOADS_PATH: /app/priv/static/uploads
   secret:
     - SECRET_KEY_BASE
     - DATABASE_URL
@@ -44,6 +42,6 @@ ssh:
   user: deploy
 
 volumes:
-  - "/var/lib/compritas/storage:/app/storage"
-  - "/var/lib/compritas/uploads:/app/priv/static/uploads"
+  - storage:/app/storage
+  - uploads:/app/priv/static/uploads
 

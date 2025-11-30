@@ -28,6 +28,10 @@ RUN apt-get update \
 # prepare build dir
 WORKDIR /app
 
+# Create volume storage
+RUN mkdir -p /app/storage /app/priv/static/uploads \
+    && chown -R nobody:nogroup /app/storage /app/priv/static/uploads
+
 # install hex + rebar
 RUN mix local.hex --force \
   && mix local.rebar --force
