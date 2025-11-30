@@ -28,7 +28,7 @@ defmodule BillingWeb.Endpoint do
 
   plug Plug.Static,
     at: "/uploads",
-    from: Path.expand("./uploads"),
+    from: Path.expand("./storage/uploads"),
     gzip: false
 
   if Code.ensure_loaded?(Tidewave) do

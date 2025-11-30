@@ -12,7 +12,7 @@ defmodule Billing do
   end
 
   def get_uploads_path do
-    System.get_env("UPLOADS_PATH", "./uploads")
+    System.get_env("UPLOADS_PATH", "./storage/uploads")
   end
 
   def get_from_email do

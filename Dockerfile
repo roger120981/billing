@@ -89,9 +89,6 @@ RUN chown nobody /app
 RUN mkdir -p /app/storage \
     && chown -R nobody:root /app/storage
 
-RUN mkdir -p /app/uploads \
-    && chown -R nobody:root /app/uploads
-
 # set runner ENV
 ENV MIX_ENV="prod"
 
