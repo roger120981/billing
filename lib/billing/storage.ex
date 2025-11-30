@@ -1,4 +1,6 @@
 defmodule Billing.Storage do
+  require Logger
+
   alias Billing.Accounts.Scope
 
   def save_file(file_path, content) do
@@ -39,6 +41,11 @@ defmodule Billing.Storage do
   end
 
   def copy_file!(file_path, dest_path) do
+    Logger.info("-------------------")
+    Logger.info(file_path)
+    Logger.info(dest_path)
+    Logger.info("-------------------")
+
     case ensure_directory_exists(dest_path) do
       :ok ->
         File.cp!(file_path, dest_path)
