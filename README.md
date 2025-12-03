@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/joselo/compritas/develop/docs/images/compritas.png" alt="Compritas" width="300"/>
+  <img src="https://raw.githubusercontent.com/joselo/compritas/develop/docs/images/compritas.png" alt="Compritas" />
 </p>
 
 # Compritas
