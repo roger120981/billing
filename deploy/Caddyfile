@@ -13,7 +13,7 @@
 }
 
 https://{$PHX_HOST} {
-    # tls internal
+    tls internal
     import compritas
 }
 
