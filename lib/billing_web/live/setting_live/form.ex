@@ -31,8 +31,8 @@ defmodule BillingWeb.SettingLive.Form do
           required
         />
 
-        <div>
-          <.live_file_input upload={@uploads.avatar} />
+        <div class="mb-3">
+          <.live_file_input upload={@uploads.avatar} class="file-input" />
         </div>
 
         <section phx-drop-target={@uploads.avatar.ref} class="phx-drop-target-active:scale-105">
@@ -97,8 +97,7 @@ defmodule BillingWeb.SettingLive.Form do
   end
 
   def handle_event("update_setting", %{"setting" => setting_params}, socket) do
-    uploaded_files =
-      avatar =
+    avatar =
       socket
       |> consume_files(:avatar)
       |> List.first()
