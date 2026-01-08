@@ -31,8 +31,13 @@ defmodule BillingWeb.SettingLive.Form do
           required
         />
 
-        <div class="mb-3">
+        <div class="fieldset mb-2">
+          <label>
+            <span class="label mb-1">{gettext("Logo")}</span>
+            <div>
           <.live_file_input upload={@uploads.avatar} class="file-input" />
+            </div>
+          </label>
         </div>
 
         <section phx-drop-target={@uploads.avatar.ref} class="phx-drop-target-active:scale-105">
@@ -62,6 +67,18 @@ defmodule BillingWeb.SettingLive.Form do
             {error_to_string(err)}
           </p>
         </section>
+
+        <.input
+          field={@form[:light_theme]}
+          type="textarea"
+          label={gettext("Light Theme")}
+        />
+
+        <.input
+          field={@form[:dark_theme]}
+          type="textarea"
+          label={gettext("Dark Theme")}
+        />
 
         <.button variant="primary" phx-disable-with={gettext("Changing...")}>
           {gettext("Save Settings")}

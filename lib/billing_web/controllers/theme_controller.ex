@@ -11,6 +11,7 @@ defmodule BillingWeb.ThemeController do
       settings = Settings.get_setting!(store_scope)
 
       conn
+      |> assign(:settings, settings)
       |> put_resp_content_type("text/css")
       |> render("index.css")
     else
