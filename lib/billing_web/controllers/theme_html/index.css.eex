@@ -1,0 +1,20 @@
+@media (prefers-color-scheme: light) {
+  :root {
+    <%= @settings.light_theme %>
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    <%= @settings.dark_theme %>
+  }
+}
+
+[data-theme="light"] {
+  <%= @settings.light_theme %>
+}
+
+[data-theme="dark"] {
+  <%= @settings.dark_theme %>
+}
+

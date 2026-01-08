@@ -19,12 +19,22 @@ Copiar los archivos de la carpeta `deploy` a la carpeta `compritas` creada.
     cp deploy/* ~/compritas
 
 Ingresar a la carpeta `compritas`
-		
-    cd ~/compritas
-		
-Renombrar el archivo `env.sample` a `.env` y personalizar según corresponda
 
-    mv env.sample .env
+    cd ~/compritas
+
+Antes de levantar la aplicación, se necesitan las siguientes variables de entorno:
+
+|Variable|Ejemplo
+|--|--|
+|PHX_HOST| compritas.test
+|SECRET_KEY_BASE|Generar con `mix phx.gen.secret`
+|DATABASE_URL|postgres://user:pass@172.17.0.1/db
+|FROM_EMAIL|no-responder@compritas.test
+|STORAGE_PATH|/app/storage|
+|SMTP_SERVER| |
+|SMTP_PORT| |
+|SMTP_USERNAME| |
+|SMTP_PASSWORD| |
 
 Levantar los servicios
 
@@ -38,7 +48,6 @@ Levantar los servicios
 |--|--|
 |Caddyfile  | [Caddy](https://caddyserver.com/) es un servidor proxy; se usa como balanceador de carga para la aplicación y soportar SSL a través de [Letsencrypt](https://letsencrypt.org). |
 |docker-compose.yml|Archivo [Docker Compose](https://docs.docker.com/compose/) para desplegar los servicios.|
-|env.sample|Un archivo .env de ejemplo que contiene las variables del sistema requeridas.|
 
 
 **Otros archivos**

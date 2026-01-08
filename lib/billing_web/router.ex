@@ -27,6 +27,17 @@ defmodule BillingWeb.Router do
     plug CartPlug
   end
 
+  pipeline :css do
+    plug :accepts, ["css"]
+    plug :fetch_session
+  end
+
+  scope "/", BillingWeb do
+    pipe_through [:css]
+
+    get "/theme.css", ThemeController, :index
+  end
+
   scope "/", BillingWeb do
     pipe_through [:browser, :store]
 

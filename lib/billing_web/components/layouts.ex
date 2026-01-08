@@ -72,8 +72,8 @@ defmodule BillingWeb.Layouts do
         <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu bg-base-200 min-h-full w-80 p-4">
           <li class="menu-title inline-block">
-            <.link navigate={~p"/"}>
-              <img src={~p"/images/logo.svg"} width="36" /> {@settings.title}
+            <.link navigate={~p"/"} class="flex-1 flex w-fit items-center gap-2">
+              <.logo settings={@settings} width="64" /> {@settings.title}
             </.link>
           </li>
           <li>
@@ -189,7 +189,7 @@ defmodule BillingWeb.Layouts do
     <header class="navbar mx-auto max-w-2xl">
       <div class="flex-1">
         <.link navigate={~p"/"} class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="48" /> {@title}
+          <.logo settings={@settings} width="64" /> {@title}
         </.link>
       </div>
       <div class="flex justify-end items-center space-x-2">
@@ -321,6 +321,24 @@ defmodule BillingWeb.Layouts do
         <.icon name="hero-moon-micro" class="size-4 opacity-75 hover:opacity-100" />
       </button>
     </div>
+    """
+  end
+
+  attr :settings, Billing.Settings.Setting, default: nil
+  attr :width, :string, default: "36"
+
+  defp logo(assigns) do
+    assigns =
+      assign_new(assigns, :avatar, fn ->
+        if assigns.settings && assigns.settings.avatar do
+          assigns.settings.avatar
+        else
+          ~p"/images/logo.svg"
+        end
+      end)
+
+    ~H"""
+    <img src={@avatar} width={@width} />
     """
   end
 end
